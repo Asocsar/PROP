@@ -116,6 +116,5 @@ public class LZW {
         List<Integer> s = compress(br);
         System.out.println(s);
         System.out.println(descomprimir(s));
-        int n = 4;
     }
 }
