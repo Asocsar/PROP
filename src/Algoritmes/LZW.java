@@ -9,7 +9,7 @@ import java.lang.Math;
 
 public class LZW {
 
-
+    private double last_rate;
     private static Map<String, Integer> Alfabet = new HashMap<String, Integer>();
     private static Map<Integer, String> Alfabet_inv = new HashMap<Integer, String>();
 
@@ -49,11 +49,22 @@ public class LZW {
 
     }
 
-    private static double log (int x, int base ) {
+    private double log(int x, int base) {
         return (double) Math.round(Math.log(x) / Math.log(base));
     }
 
-    public static List<Integer> compress(BufferedReader file) throws IOException {
+    private void set_last_rate (double n1, double n2) {
+        this.last_rate = n1/n2;
+    }
+
+    public LZW() {
+        create_alfa();
+        last_rate = 0;
+    }
+
+
+    public List<Integer> compress(BufferedReader file) throws IOException {
+        create_alfa();
         Map<String, Integer> Alf_aux = new HashMap<String, Integer>(Alfabet);
         int n = file.read();
         String w = "";
@@ -76,7 +87,7 @@ public class LZW {
             }
         double n1 = cantidad*8;
         double n2 =  log(Alf_aux.size(), 2)*result.size();
-        System.out.println(n1/n2);
+        set_last_rate(n1,n2);
         return result;
     }
 
@@ -111,12 +122,12 @@ public class LZW {
         return result;
     }
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         File file = new File ("/home/asocar/Desktop/Ejemplo.txt");
         BufferedReader br = new BufferedReader(new FileReader (file));
         create_alfa();
         List<Integer> s = compress(br);
         System.out.println(s);
         System.out.println(descomprimir(s));
-    }
+    }*/
 }
