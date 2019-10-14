@@ -70,5 +70,6 @@ public class Cont_CD {
     public static void main(String[] args) throws IOException {
         Item I = new Item();
         compressio_descompressio(I,3,"/home/asocar/Desktop/Ejemplo_salida.txt", false);
+        int n = 4;
     }
 }
