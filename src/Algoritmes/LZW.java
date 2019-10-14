@@ -1,4 +1,4 @@
-package LZW;
+package Algoritmes;
 
 import java.io.*;
 import java.util.ArrayList;
