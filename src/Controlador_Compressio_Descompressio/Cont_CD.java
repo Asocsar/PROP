@@ -32,45 +32,28 @@ public class Cont_CD {
         String S;
         File file = new File(path);
         BufferedReader br = new BufferedReader(new FileReader(file));
-        if (comprimir) {
-            switch (id) {
-                case 1:
-                    LZ78 L8 = new LZ78();
-                    break;
-
-                case 2:
-                    LZSS LS = new LZSS();
-                    break;
-
-                case 3:
-                    LZW LW = new LZW();
+        switch (id) {
+            case 1:
+                LZ78 L8 = new LZ78();
+                break;
+            case 2:
+                LZSS LS = new LZSS();
+                break;
+            case 3:
+                LZW LW = new LZW();
+                if (comprimir)
                     L = LW.compress(br);
-                    break;
-
-                case 4:
-                    JPEG JG = new JPEG();
-                    break;
+                else
+                    S = LW.descomprimir(I.getcode());
+                break;
+            case 4:
+                JPEG JG = new JPEG();
+                break;
             }
-        } else {
-            switch (id) {
-                case 1:
-                    LZ78 L8 = new LZ78();
-                    break;
 
-                case 2:
-                    LZSS LS = new LZSS();
-                    break;
+        int n = 4;
 
-                case 3:
-                    LZW LW = new LZW();
-                    //S = LW.descomprimir(br);
-                    break;
 
-                case 4:
-                    JPEG JG = new JPEG();
-                    break;
-            }
-        }
     }
 
     public static void main(String[] args) {
