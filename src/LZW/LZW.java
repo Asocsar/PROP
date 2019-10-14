@@ -1,3 +1,5 @@
+package LZW;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +14,7 @@ public class LZW {
     private static Map<Integer, String> Alfabet_inv = new HashMap<Integer, String>();
 
 
-    public static final char[] EXTENDED = { 0x00C7, 0x00FC, 0x00E9, 0x00E2,
+    private static char[] EXTENDED = { 0x00C7, 0x00FC, 0x00E9, 0x00E2,
             0x00E4, 0x00E0, 0x00E5, 0x00E7, 0x00EA, 0x00EB, 0x00E8, 0x00EF,
             0x00EE, 0x00EC, 0x00C4, 0x00C5, 0x00C9, 0x00E6, 0x00C6, 0x00F4,
             0x00F6, 0x00F2, 0x00FB, 0x00F9, 0x00FF, 0x00D6, 0x00DC, 0x00A2,
@@ -30,7 +32,7 @@ public class LZW {
             0x2320, 0x2321, 0x00F7, 0x2248, 0x00B0, 0x2219, 0x00B7, 0x221A,
             0x207F, 0x00B2, 0x25A0, 0x00A0 };
 
-    public static void create_alfa() {
+    private static void create_alfa() {
         int aux = 0;
         for (int i = 0; i < EXTENDED.length-1; ++i) {
             String s = Character.toString((char) i);
@@ -47,7 +49,7 @@ public class LZW {
 
     }
 
-    public static double log (int x, int base ) {
+    private static double log (int x, int base ) {
         return (double) Math.round(Math.log(x) / Math.log(base));
     }
 
@@ -116,6 +118,5 @@ public class LZW {
         List<Integer> s = compress(br);
         System.out.println(s);
         System.out.println(descomprimir(s));
-        int n = 4;
     }
 }
