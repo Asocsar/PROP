@@ -1,11 +1,9 @@
 package Algoritmes;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.lang.Math;
+import org.junit.*;
 
 public class LZW {
 
@@ -111,12 +109,21 @@ public class LZW {
         return result;
     }
 
+    @Test
     public static void main(String[] args) throws Exception {
+        Scanner S = new Scanner(System.in);
+        String Ej = "";
+        while (S.hasNext()) Ej += S.nextLine() + '\n';
+        System.out.println(Ej);
+        FileWriter fw = new FileWriter("/home/asocar/Desktop/Ejemplo.txt");
+        fw.write(Ej);
+        fw.close();
         File file = new File ("/home/asocar/Desktop/Ejemplo.txt");
         BufferedReader br = new BufferedReader(new FileReader (file));
         create_alfa();
         List<Integer> s = compress(br);
         System.out.println(s);
         System.out.println(descomprimir(s));
+
     }
 }
