@@ -1,12 +1,13 @@
 package Controlador_Compressio_Descompressio;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import Algoritmes.*;
+import java.util.*;
+
 
 public class Cont_CD {
+
+    public Cont_CD (){
+    }
 
     public static class Item {
         private String path;
@@ -26,20 +27,89 @@ public class Cont_CD {
         public List<Integer> getcode() { return this.Cod; }
     }
 
+    public static class LZW {
+        public LZW () {
+        }
+
+        public List<Integer> compress (BufferedReader file) {
+            Item I = new Item();
+            List<Integer> L = I.getcode();
+            return L;
+        }
+
+        public String descomprimir (List<Integer> s) {
+            String S = "Hola";
+            return S;
+        }
+    }
+
+    public static class LZSS {
+        public LZSS () {
+        }
+        public List<Integer> compress (BufferedReader file) {
+            Item I = new Item();
+            List<Integer> L = I.getcode();
+            return L;
+        }
+
+        public String descomprimir (List<Integer> s) {
+            String S = "Hola";
+            return S;
+        }
+    }
+
+    public static class LZ78 {
+        public LZ78 () {}
+
+        public List<Integer> compress (BufferedReader file) {
+            Item I = new Item();
+            List<Integer> L = I.getcode();
+            return L;
+        }
+
+        public String descomprimir (List<Integer> s) {
+            String S = "Hola";
+            return S;
+        }
+    }
+
+    public static class JPEG {
+        public JPEG () {}
+
+        public List<Integer> compress (BufferedReader file) {
+            Item I = new Item();
+            List<Integer> L = I.getcode();
+            return L;
+        }
+
+        public String descomprimir (List<Integer> s) {
+            String S = "Hola";
+            return S;
+        }
+    }
+
     public static  void compressio_descompressio (Item I, int id, String path_dest, boolean comprimir) throws IOException {
         String path = I.getpath();
         if (path_dest == "") path_dest = path;
         if (id == 0) id = I.gethmetod();
         List<Integer> L = new ArrayList<>();
-        String S = new String();
+        String S = "";
         File file = new File(path);
         BufferedReader br = new BufferedReader(new FileReader(file));
         switch (id) {
             case 1:
                 LZ78 L8 = new LZ78();
+                if (comprimir)
+                    L = L8.compress(br);
+                else
+                    S = L8.descomprimir(I.getcode());
                 break;
             case 2:
                 LZSS LS = new LZSS();
+                if (comprimir)
+                    L = LS.compress(br);
+                else
+                    S = LS.descomprimir(I.getcode());
                 break;
             case 3:
                 LZW LW = new LZW();
@@ -50,6 +120,10 @@ public class Cont_CD {
                 break;
             case 4:
                 JPEG JG = new JPEG();
+                if (comprimir)
+                    L = JG.compress(br);
+                else
+                    S = JG.descomprimir(I.getcode());
                 break;
             }
 
