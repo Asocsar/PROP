@@ -5,6 +5,8 @@ import java.util.*;
 import java.lang.Math;
 import org.junit.*;
 
+import static org.junit.Assert.assertEquals;
+
 public class LZW {
 
 
@@ -123,7 +125,9 @@ public class LZW {
         create_alfa();
         List<Integer> s = compress(br);
         System.out.println(s);
-        System.out.println(descomprimir(s));
+        String Ex = descomprimir(s);
+        System.out.println(Ex);
+        assertEquals ("Mensaje ?", Ex, Ej);
 
     }
 }
