@@ -7,7 +7,6 @@ import java.lang.Math;
 
 
 public class LZSS {
-             //https://gist.github.com/fogus/5404660
             public static List<List<Integer>> compress(BufferedReader file) throws IOException {
                 List<List<Integer>> result = new ArrayList<List<Integer>>();
                 StringBuffer SearchBuffer = new StringBuffer();
@@ -22,7 +21,8 @@ public class LZSS {
                     if (tempIndex != -1) {
                         currentMatch += (char) nextC;
                         matchIndex = tempIndex;
-                    } else {
+                    }
+                    else {
                         // S'ha acabat el match, el codifiquem
                         List<Integer> act = new ArrayList<>();
                         c = (char) nextC;
@@ -35,7 +35,8 @@ public class LZSS {
                             SearchBuffer.append(union);
                             currentMatch = "";
                             matchIndex = 0;
-                        } else {
+                        }
+                        else {
                             currentMatch = union;
                             matchIndex = -1;
                             while (currentMatch.length() > 1 && matchIndex == -1) {
