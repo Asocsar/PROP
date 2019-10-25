@@ -61,6 +61,7 @@ public class LZW {
         List<Integer> result = new ArrayList<>();
         boolean one_more = true;
             while (one_more) {
+                //System.out.println((char)n);
                 one_more = (n != -1);
                 ++cantidad;
                 String k = "" + (char) n;
