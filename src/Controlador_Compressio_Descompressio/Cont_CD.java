@@ -6,8 +6,8 @@ import java.util.*;
 
 public class Cont_CD {
 
-    private static String path1 = "/home/asocar/Desktop/Ejemplo.txt";
-    private static String path2 = "/home/asocar/Desktop/Ejemplo_salida.LZW";
+    private static String path1 = "";
+    private static String path2 = "";
 
     public Cont_CD (){
     }
@@ -141,7 +141,7 @@ public class Cont_CD {
         }
     }
 
-    public static  void compressio_descompressio (String path, int id, String path_dest, boolean comprimir) throws IOException {
+    public  void compressio_descompressio (String path, int id, String path_dest, boolean comprimir) throws IOException {
         Item I = new Item();
         if (path_dest == "") path_dest = path;
         if (id == 0) {
@@ -235,7 +235,7 @@ public class Cont_CD {
 
     }
 
-    public static void comparar () throws IOException {
+    public void comparar () throws IOException {
         System.out.println(path1);
         File file1 = new File(path1);
         BufferedReader br = new BufferedReader(new FileReader(file1));
@@ -259,8 +259,8 @@ public class Cont_CD {
         System.out.println(S);
     }
 
-    public static void main(String[] args) throws IOException {
+    /*public static void main(String[] args) throws IOException {
         compressio_descompressio("/home/asocar/Desktop/Ejemplo.txt", 3,"/home/asocar/Desktop/Ejemplo_salida.LZW", true);
-        comparar();
-    }
+        /comparar();
+    }*/
 }
