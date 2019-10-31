@@ -10,8 +10,14 @@ import java.lang.*;
 
         public static BitSet flags = new BitSet();
 
-        public static double CompressRatio (String src, List<Integer> encoded){
-            return encoded.size()/src.length();
+        public static double filesize;
+
+        //public static double compressedsize;
+
+
+
+        public static double CompressRatio (double srcsize,double compressedsize){
+            return compressedsize/srcsize;
         }
 
 
@@ -28,6 +34,7 @@ import java.lang.*;
             int act;
             while ((act = file.read()) != -1) {
                 src += (char) act;
+                filesize++;
             }
             return src;
 
@@ -67,7 +74,6 @@ import java.lang.*;
                 for (int LA = rec - 6; LA < rec  & rec < sequence.length();) {
                     if (sequence.charAt(rec) == sequence.charAt(LA) & !found) {
                         offset = rec-LA;
-                        //flags.set(rec);
                         found = true;
                         match++;
                         LA++;
@@ -83,11 +89,9 @@ import java.lang.*;
                         matched.add(match);
                         matched.add(offset);
                         result.add(matched);
-                        //flags.set(rec-match-1);
                         match = 0;
                         offset = 0;
                         found = false;
-                        //rec++;
                         LA = rec-6;
                     }
                     else if (LA == rec-1 & !found){
@@ -123,7 +127,7 @@ import java.lang.*;
        public static StringBuilder decompress (List<Integer> encoded, BitSet flags) {
            StringBuilder result = new StringBuilder();
            int resultindex = 0;
-           for (int i = 0; i < encoded.size();/*i++*/) {
+           for (int i = 0; i < encoded.size();) {
                if (!flags.get(i)) {
                    result.append((char) (encoded.get(i).intValue()));
                    ++i;
@@ -134,7 +138,7 @@ import java.lang.*;
                    for (int match = 0; match < encoded.get(i) ; ++match ) {
                        result.append((result.charAt(resultindex-offset)));
                        resultindex++;
-                       offset--;
+                       //offset--;
                        }
                        i += 2;
                }
@@ -144,7 +148,7 @@ import java.lang.*;
 
 
 
-        public static void print_compress (List<List<Integer>> compressed, List<Integer> encoded, StringBuilder decompressed) {
+        public static void print_status(List<List<Integer>> compressed, List<Integer> encoded, StringBuilder decompressed, double compressratio) {
             for (int i = 0; i < compressed.size(); ++i) {
                 System.out.print("/");
                 for (int j = 0; j < compressed.get(i).size(); ++j) {
@@ -158,6 +162,8 @@ import java.lang.*;
             for (int s = 0; s < encoded.size(); ++s) System.out.println(encoded.get(s));
             System.out.println("\n");
             for (int d = 0; d < decompressed.length();++d) System.out.println(decompressed.charAt(d));
+            System.out.println("\n");
+            System.out.println(compressratio);
         }
 
         public static void WriteatFile (StringBuilder decompressed) throws IOException{
@@ -176,8 +182,9 @@ import java.lang.*;
             List<List<Integer>> compressed = compress_mine2(br);
             List<Integer> encoded = encode(compressed);
             StringBuilder decompressed = decompress(encoded,flags);
+            double compress_ratio = CompressRatio(filesize, encoded.size());
             WriteatFile(decompressed);
-            print_compress(compressed,encoded,decompressed);
+            print_status(compressed,encoded,decompressed,compress_ratio);
         }
     }
 
