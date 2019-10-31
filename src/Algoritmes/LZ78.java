@@ -108,16 +108,24 @@ public class LZ78 {
 
     }
 
+    public static Double ratio_c(double a, double b){
+        return b/a;
+    }
 
 
     public static void main(String[] args) throws IOException {
+        long startTime = System.currentTimeMillis();
         File file = new File ("D:\\Mis documentos\\PAU\\UPC\\19-20 QT\\PROP\\Projecte\\proves\\trycompressio.txt");
         BufferedReader br = new BufferedReader(new FileReader (file));
         File file2 = new File ("D:\\Mis documentos\\PAU\\UPC\\19-20 QT\\PROP\\Projecte\\proves\\trydescompressio.txt");
         BufferedReader br2 = new BufferedReader(new FileReader (file2));
         String s = compresio(br);
         System.out.println(s);
+        System.out.println(ratio_c(s.length(), file.length()));
         String t= descompresio(br2);
         System.out.println(t);
+        long endTime = System.currentTimeMillis();
+        long durationInNano = (endTime - startTime);
+        System.out.println(durationInNano);
     }
 }
