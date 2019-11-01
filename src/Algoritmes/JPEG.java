@@ -229,35 +229,36 @@ public class JPEG {
 
         int height = Y.length;
         int width = Y[0].length;
-        int length = height*width /8;
+        int length = height*width /64;
         int[][] buff = new int[length][];
 
         for(int i = 0; i < length; ++i){
             int[][] m = new int[8][8];
             for(int x = 0; x < 8; ++x){
                 for(int y =0; y < 8; ++y){
-                    m[x][y] = Y[i/8][i%8];
+                    m[x][y] = Y[i/length * 8][i%width *8];
                 }
             }
             buff[i] = compress8(m,false);
         }
-
         return buff;
     }
 
 
-    public static int[][][] decompress(int[] buff, int height, int width) {
+    public static int[][] decompress(int[][] buff, int height, int width) {
 
-        int[][] buff = new int[length][];
 
+        int length =  height*width /64;
+        int[][] m = new int[8][8];
+        int[][] Y = new int[height][width];
         for(int i = 0; i < length; ++i){
-            int[][] m = new int[8][8];
+            m = decompress8(buff[i],false);
             for(int x = 0; x < 8; ++x){
                 for(int y =0; y < 8; ++y){
-                    m[x][y] = Y[i/8][i%8];
+                    Y[i/length * 8][i%width *8] = m[x][y];
                 }
             }
-            buff[i] = decompress8(m,false);
+
         }
 
         return buff;
