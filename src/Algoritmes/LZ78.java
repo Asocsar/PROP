@@ -125,7 +125,7 @@ public class LZ78 {
         String t= descompresio(br2);
         System.out.println(t);
         long endTime = System.currentTimeMillis();
-        long durationInNano = (endTime - startTime);
+        long durationInMilli = (endTime - startTime);
         System.out.println(durationInNano);
     }
 }
