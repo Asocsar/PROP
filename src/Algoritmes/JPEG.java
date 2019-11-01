@@ -1,8 +1,11 @@
 package Algoritmes;
 
 
+import org.w3c.dom.ls.LSOutput;
+
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class JPEG {
@@ -293,27 +296,37 @@ public class JPEG {
 
         try {
 
-            File infile = new File("/home/maller/Downloads/tiny.ppm");
-            File outfile = new File("/home/maller/Downloads/tinessed.ppm");
+            File infile = new File("/home/maller/Downloads/west_1.ppm");
+            File outfile = new File("/home/maller/Downloads/wested.ppm");
 
+            Scanner in = new Scanner(infile);
+            String filetype = infile.nextLine();
+            String comments = infile.nextLine();
             /*
-            long size = infile.length(); //Tamany del fitxer per posar-lo al buffer
-            int[] buffer = new int[(int) size];
-            */
 
             FileInputStream fis = new FileInputStream(infile);
             BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
-
+            DataInputStream dis = new DataInputStream(fis);
+            */
             int width, height;
 
+            height = in.nextInt();
+            width = in.nextInt();
+
             ArrayList<String> header = new ArrayList<>();
+
             String line = br.readLine();
-
+            System.out.println(line);
             header.add(line); //ADD P6
-            while ((line = br.readLine()) != null && line.charAt(0) == '#') header.add(line);
 
-            line = br.readLine(); //Read width and height
+
+            while ((line = br.readLine()) != null && line.charAt(0) == '#') {
+                header.add(line);
+                System.out.println(line);
+            }
+
+            //Read width and height
+            System.out.println(line);
             StringTokenizer st = new StringTokenizer(line);
             width = Integer.parseInt(st.nextToken());
             height = Integer.parseInt(st.nextToken());
@@ -324,12 +337,22 @@ public class JPEG {
 
             br.readLine(); //Skip 255 -> depth
 
+
+            line = br.readLine();
+
+            st = new StringTokenizer(line);
+            for (int i = 0; i < 3; ++i) Integer.parseInt(st.nextToken());
+
+
             int r, g, b;
             for (int i = 0; i < height; ++i) {
                 for (int j = 0; j < width; ++j) {
                     r = dis.readInt();
+                   // System.out.println("r: " + r);
                     g = dis.readInt();
+                    //System.out.println("g: " + g);
                     b = dis.readInt();
+                   // System.out.println("b: " + b);
 
                     Y[i][j] = (int) (0.299 * r + 0.587 * g + 0.114 * b);
                     Cb[i][j] = (int) (128 - 0.1687 * r - 0.3313 * g + 0.5 * b);
@@ -337,6 +360,8 @@ public class JPEG {
 
                 }
             }
+
+            System.out.println("Finished reading");
 
             decompress(compress(Y, Cb, Cr), height, width);
 
@@ -378,6 +403,7 @@ public class JPEG {
 
         }
         catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Error en la entrada salida");
         }
 
