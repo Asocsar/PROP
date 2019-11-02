@@ -49,6 +49,7 @@ public class LZW {
 
     }
 
+
     private static double log (int x, int base ) {
         return (double) Math.round(Math.log(x) / Math.log(base));
     }
@@ -61,7 +62,6 @@ public class LZW {
         List<Integer> result = new ArrayList<>();
         boolean one_more = true;
             while (one_more) {
-                //System.out.println((char)n);
                 one_more = (n != -1);
                 ++cantidad;
                 String k = "" + (char) n;
@@ -82,10 +82,10 @@ public class LZW {
     }
 
 
-    public static String descomprimir (List<Integer> s) {
+    public static String descomprimir (List<String> s) {
         Map<Integer, String> Alf_aux = new HashMap<Integer, String>(Alfabet_inv);
         int i = 0;
-        int cod_viejo = s.get(i);
+        int cod_viejo = Integer.parseInt(s.get(i));
         String caracter = Alf_aux.get(cod_viejo);
         int cod_nuevo;
         String cadena;
@@ -93,7 +93,7 @@ public class LZW {
         ++i;
         while (i < s.size()) {
             cadena = "";
-            cod_nuevo = s.get(i);
+            cod_nuevo = Integer.parseInt(s.get(i));
             if (Alf_aux.containsKey(cod_nuevo)) {
                 cadena = Alf_aux.get(cod_nuevo);
             }
@@ -126,9 +126,9 @@ public class LZW {
         create_alfa();
         List<Integer> s = compress(br);
         System.out.println(s);
-        String Ex = descomprimir(s);
-        System.out.println(Ex);
-        assertEquals ("Mensaje ?", Ex, Ej);
+        //String Ex = descomprimir(s);
+        //System.out.println(Ex);
+        //assertEquals ("Mensaje ?", Ex, Ej);
 
     }
 }
