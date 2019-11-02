@@ -1,6 +1,5 @@
 package Algoritmes;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.lang.*;
 
@@ -11,9 +10,6 @@ import java.lang.*;
         public static BitSet flags = new BitSet();
 
         public static double filesize;
-
-        //public static double compressedsize;
-
 
 
         public static double CompressRatio (double srcsize,double compressedsize){
@@ -37,8 +33,6 @@ import java.lang.*;
                 filesize++;
             }
             return src;
-
-
         }
 
 
@@ -110,10 +104,10 @@ import java.lang.*;
 
         public static List<Integer> encode (List<List<Integer>> compressed){
             List<Integer> encoded = new ArrayList<>();
-            int flag = 0;
+            int flag = 5;
             for (List<Integer> act : compressed){
                 if (act.size() == 2) {
-                    flags.set(flag+5);
+                    flags.set(flag);
                     flag +=2;
                 }
                 else ++flag;
@@ -138,7 +132,6 @@ import java.lang.*;
                    for (int match = 0; match < encoded.get(i) ; ++match ) {
                        result.append((result.charAt(resultindex-offset)));
                        resultindex++;
-                       //offset--;
                        }
                        i += 2;
                }
@@ -148,7 +141,7 @@ import java.lang.*;
 
 
 
-        public static void print_status(List<List<Integer>> compressed, List<Integer> encoded, StringBuilder decompressed, double compressratio) {
+        public static void print_status(List<List<Integer>> compressed, List<Integer> encoded, StringBuilder decompressed, double compressratio, double timeinMilli) {
             for (int i = 0; i < compressed.size(); ++i) {
                 System.out.print("/");
                 for (int j = 0; j < compressed.get(i).size(); ++j) {
@@ -157,13 +150,15 @@ import java.lang.*;
                 }
             }
             System.out.println("\n");
-            for (int f = 0; f < flags.length(); f++) System.out.println(flags.get(f));
+            for (int f = 0; f < flags.length(); f++) if (flags.get(f)) System.out.println(f);
             System.out.println("\n");
             for (int s = 0; s < encoded.size(); ++s) System.out.println(encoded.get(s));
             System.out.println("\n");
             for (int d = 0; d < decompressed.length();++d) System.out.println(decompressed.charAt(d));
             System.out.println("\n");
             System.out.println(compressratio);
+            System.out.println("\n");
+            System.out.println(timeinMilli/1000);
         }
 
         public static void WriteatFile (StringBuilder decompressed) throws IOException{
@@ -177,14 +172,22 @@ import java.lang.*;
 
 
         public static void main(String[] args) throws IOException {
+
+            double startTime = System.currentTimeMillis();
+
             File file = new File("/home/clums/Escriptori/Ejemplo.txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
             List<List<Integer>> compressed = compress_mine2(br);
             List<Integer> encoded = encode(compressed);
+
+            double endTime = System.currentTimeMillis();
+            double timeinMilli = (endTime - startTime);
+
+
             StringBuilder decompressed = decompress(encoded,flags);
             double compress_ratio = CompressRatio(filesize, encoded.size());
             WriteatFile(decompressed);
-            print_status(compressed,encoded,decompressed,compress_ratio);
+            print_status(compressed,encoded,decompressed,compress_ratio,timeinMilli);
         }
     }
 
