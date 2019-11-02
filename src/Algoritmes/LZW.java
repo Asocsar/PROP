@@ -63,7 +63,7 @@ public class LZW {
     }
 
 
-    public List<Integer> compress(BufferedReader file) throws IOException {
+    public List<Integer> compress (BufferedReader file) throws IOException {
         create_alfa();
         Map<String, Integer> Alf_aux = new HashMap<String, Integer>(Alfabet);
         int n = file.read();
