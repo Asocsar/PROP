@@ -1,5 +1,6 @@
 package Algoritmes;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.lang.*;
 
@@ -11,8 +12,20 @@ import java.lang.*;
 
         public static double filesize;
 
+        public static double CompressTime;
 
-        public static double CompressRatio (double srcsize,double compressedsize){
+        public static double CompressRatio;
+
+
+        public static double getRate(){
+            return CompressRatio;
+        }
+
+        public static double getTime(){
+            return CompressTime;
+        }
+
+        public static double CalcCompressRatio (double srcsize,double compressedsize){
             return compressedsize/srcsize;
         }
 
@@ -104,61 +117,78 @@ import java.lang.*;
 
         public static List<Integer> encode (List<List<Integer>> compressed){
             List<Integer> encoded = new ArrayList<>();
-            int flag = 5;
+            int last = 0;
             for (List<Integer> act : compressed){
+                ++last;
                 if (act.size() == 2) {
-                    flags.set(flag);
-                    flag +=2;
+                    encoded.add(-1);
+                    //flags.set(flag);
+                    //flag +=2;
                 }
-                else ++flag;
+                //else ++flag;
                 for(Integer acti : act){
                     encoded.add(acti);
+                    //if( last < compressed.size()) encoded.add((int) ',');
                 }
+
             }
             return encoded;
         }
 
-       public static StringBuilder decompress (List<Integer> encoded, BitSet flags) {
+
+        public static Integer[] conversion (List<String> encoded){
+            Integer[] aux = new Integer[encoded.size()];
+            String [] Arrayencoded = encoded.toArray(new String[0]);
+            for (int i = 0; i < encoded.size(); ++i){
+                aux[i] = Integer.parseInt((Arrayencoded[i]));
+            }
+            return aux;
+        }
+
+
+       public static StringBuilder decompress (List<String> encoded/*, BitSet flags*/) {
            StringBuilder result = new StringBuilder();
            int resultindex = 0;
+           //String[] aux = new String[encoded.size()];
+           //aux = encoded.toArray(aux);
+           Integer[] aux = conversion(encoded);
            for (int i = 0; i < encoded.size();) {
-               if (!flags.get(i)) {
-                   result.append((char) (encoded.get(i).intValue()));
-                   ++i;
-                   resultindex++;
-               }
-               else {
-                   int offset = encoded.get(i + 1);
-                   for (int match = 0; match < encoded.get(i) ; ++match ) {
-                       result.append((result.charAt(resultindex-offset)));
+                   if (aux[i] != -1) {
+                       result.append(Character.toString(aux[i]));
+                       ++i;
                        resultindex++;
+                   } else {
+                       int offset = aux[i+2];
+                       for (int match = 0; match < aux[i+1]; ++match) {
+                           result.append((result.charAt(resultindex - offset)));
+                           resultindex++;
                        }
-                       i += 2;
+                       i += 3;
+                   }
                }
-           }
            return result;
        }
 
 
 
-        public static void print_status(List<List<Integer>> compressed, List<Integer> encoded, StringBuilder decompressed, double compressratio, double timeinMilli) {
+        public static void print_status(List<List<Integer>> compressed, List<Integer> encoded, StringBuilder decompressed) {
             for (int i = 0; i < compressed.size(); ++i) {
                 System.out.print("/");
                 for (int j = 0; j < compressed.get(i).size(); ++j) {
                     System.out.print(compressed.get(i).get(j));
-                    System.out.print("~");
+                    System.out.print(",");
                 }
             }
             System.out.println("\n");
             for (int f = 0; f < flags.length(); f++) if (flags.get(f)) System.out.println(f);
             System.out.println("\n");
-            for (int s = 0; s < encoded.size(); ++s) System.out.println(encoded.get(s));
+            for (Integer i : encoded) System.out.print(i + ",");
             System.out.println("\n");
             for (int d = 0; d < decompressed.length();++d) System.out.println(decompressed.charAt(d));
             System.out.println("\n");
-            System.out.println(compressratio);
+            System.out.println(CompressRatio);
             System.out.println("\n");
-            System.out.println(timeinMilli/1000);
+            System.out.println(CompressTime);
         }
 
         public static void WriteatFile (StringBuilder decompressed) throws IOException{
@@ -171,6 +201,8 @@ import java.lang.*;
             }
 
 
+
+
         public static void main(String[] args) throws IOException {
 
             double startTime = System.currentTimeMillis();
@@ -180,14 +212,16 @@ import java.lang.*;
             List<List<Integer>> compressed = compress_mine2(br);
             List<Integer> encoded = encode(compressed);
 
+
             double endTime = System.currentTimeMillis();
-            double timeinMilli = (endTime - startTime);
+            CompressTime = (endTime - startTime);
 
-
-            StringBuilder decompressed = decompress(encoded,flags);
-            double compress_ratio = CompressRatio(filesize, encoded.size());
-            WriteatFile(decompressed);
-            print_status(compressed,encoded,decompressed,compress_ratio,timeinMilli);
+           List<String> voidl = Arrays.asList("118","105","115","116","97","32","-1","1","2","-1","4","5","99","-1","5","6","109","-1","3","6","114","101","32","112","97","115","116","-1","1","3","-1","1","6","108","-1","5","6","-1","2","5","100","-1","2","6","10");
+           //for(Integer i: encoded) System.out.print(i); System.out.print(',');
+           StringBuilder decompressed = decompress(voidl/*,flags*/);
+            CompressRatio = CalcCompressRatio(filesize, encoded.size());
+            //WriteatFile(decompressed);
+            print_status(compressed,encoded,decompressed);
         }
     }
 
