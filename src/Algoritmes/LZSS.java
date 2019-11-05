@@ -16,6 +16,8 @@ import java.lang.*;
 
         public static double CompressRatio;
 
+        public static int search_buffer;
+
 
         public static double getRate(){
             return CompressRatio;
@@ -52,8 +54,8 @@ import java.lang.*;
 
         public static List<Integer> initialize_searchbuff (String sequence){
             List<Integer> ini = new ArrayList<>();
-            for (int i = 0; i < sequence.length(); i++){
-                int init = sequence.charAt(i);
+            if (sequence.length() > 0){
+                int init = sequence.charAt(0);
                 ini.add(init);
             }
             return ini;
@@ -62,36 +64,20 @@ import java.lang.*;
         public static List<List<Integer>> compress_mine2 (BufferedReader file) throws IOException {
             String sequence = getString(file);
             flags.set(0, sequence.length(), false);
-            int match, offset;
+            int match, offset, LA, rec;
             match = 0;
             offset = 0;
+            LA = 0;
+            rec = 1;
             boolean found = false;
+
             List<List<Integer>> result = new ArrayList<>();
-            String init;
-            int ini;
-            if(sequence.length() > 1){
-                init = sequence.substring(0,1);
-                ini = 6;
-            }
-            else {
-                init = sequence;
-                ini = 1;
-            }
-            result.add(initialize_searchbuff(init));
-            int search_buffer ;
-            int LA = 0;
-            for (int rec = 1; rec < sequence.length();) {
-                if (rec - LA < 4096) search_buffer = 0;
-                else search_buffer = 4096;
+            result.add(initialize_searchbuff(sequence.substring(0,1)));
+
+            if (filesize < 4096) search_buffer = 0;
+            else search_buffer = 4096;
                 while (LA < rec & rec < sequence.length()) {
-                    if (sequence.charAt(rec) == sequence.charAt(LA) & !found) {
-                        offset = rec - LA;
-                        found = true;
-                        match++;
-                        LA++;
-                        rec++;
-                    }
-                else if ((match == 32 & found) | (sequence.charAt(rec) != sequence.charAt(LA) & found & match > 2) ) {
+                    if ((match == 32 & found) | (sequence.charAt(rec) != sequence.charAt(LA) & found & match > 2) ) {
                         List<Integer> matched = new ArrayList<>(2);
                         matched.add(match);
                         matched.add(offset);
@@ -101,35 +87,36 @@ import java.lang.*;
                         found = false;
                         LA = search_buffer;
                     }
-                else if (sequence.charAt(rec) == sequence.charAt(LA) & found) {
-                        match++;
-                        LA++;
-                        rec++;
+                    else if (sequence.charAt(rec) == sequence.charAt(LA) ){
+                        if (!found) {
+                            offset = rec - LA;
+                            found = true;
+                        }
+                            match++;
+                            LA++;
+                            rec++;
                     }
-                else if (sequence.charAt(rec) != sequence.charAt(LA) & found & match < 3) {
+
+                    else if (sequence.charAt(rec) != sequence.charAt(LA) & found & match < 3 | LA == rec -1)  {
                         List<Integer> character = new ArrayList<>(1);
-                        int notmatched = sequence.charAt(rec-match);
+                        int notmatched;
+                        if (found) {
+                            notmatched = sequence.charAt(rec-match);
+                            found = false;
+                            rec -= (match+1);
+                        }
+                        else{
+                            notmatched = sequence.charAt(rec);
+                            rec++;
+                        }
                         character.add(notmatched);
                         result.add(character);
-                        found = false;
                         LA = search_buffer;
-                        rec= rec-match+1;
-                    }
-                else if ((LA == rec - 1 & !found))  {
-                        List<Integer> character = new ArrayList<>(1);
-                        int notmatched = sequence.charAt(rec);
-                        character.add(notmatched);
-                        result.add(character);
-                        LA = search_buffer;
-                        rec++;
-                    }
-                else {
                         offset = 0;
                         match = 0;
-                        ++LA;
                     }
+                else  ++LA;
                 }
-            }
             return result;
         }
 
