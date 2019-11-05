@@ -26,6 +26,7 @@ import java.lang.*;
         }
 
         public static double CalcCompressRatio (double srcsize,double compressedsize){
+
             return compressedsize/srcsize;
         }
 
@@ -65,11 +66,11 @@ import java.lang.*;
             match = 0;
             offset = 0;
             boolean found = false;
-            List<List<Integer>> result = new ArrayList<List<Integer>>();
+            List<List<Integer>> result = new ArrayList<>();
             String init;
             int ini;
-            if(sequence.length() > 6){
-                init = sequence.substring(0,6);
+            if(sequence.length() > 1){
+                init = sequence.substring(0,1);
                 ini = 6;
             }
             else {
@@ -77,21 +78,20 @@ import java.lang.*;
                 ini = 1;
             }
             result.add(initialize_searchbuff(init));
-            for (int rec = ini; rec < sequence.length();) {
-                for (int LA = rec - 6; LA < rec  & rec < sequence.length();) {
+            int search_buffer ;
+            int LA = 0;
+            for (int rec = 1; rec < sequence.length();) {
+                if (rec - LA < 4096) search_buffer = 0;
+                else search_buffer = 4096;
+                while (LA < rec & rec < sequence.length()) {
                     if (sequence.charAt(rec) == sequence.charAt(LA) & !found) {
-                        offset = rec-LA;
+                        offset = rec - LA;
                         found = true;
                         match++;
                         LA++;
                         rec++;
                     }
-                    else if (sequence.charAt(rec) == sequence.charAt(LA) & found) {
-                        match++;
-                        LA++;
-                        rec++;
-                    }
-                    else if (sequence.charAt(rec) != sequence.charAt(LA) & found) {
+                else if ((match == 32 & found) | (sequence.charAt(rec) != sequence.charAt(LA) & found & match > 2) ) {
                         List<Integer> matched = new ArrayList<>(2);
                         matched.add(match);
                         matched.add(offset);
@@ -99,27 +99,43 @@ import java.lang.*;
                         match = 0;
                         offset = 0;
                         found = false;
-                        LA = rec-6;
+                        LA = search_buffer;
                     }
-                    else if (LA == rec-1 & !found){
+                else if (sequence.charAt(rec) == sequence.charAt(LA) & found) {
+                        match++;
+                        LA++;
+                        rec++;
+                    }
+                else if (sequence.charAt(rec) != sequence.charAt(LA) & found & match < 3) {
+                        List<Integer> character = new ArrayList<>(1);
+                        int notmatched = sequence.charAt(rec-match);
+                        character.add(notmatched);
+                        result.add(character);
+                        found = false;
+                        LA = search_buffer;
+                        rec= rec-match+1;
+                    }
+                else if ((LA == rec - 1 & !found))  {
                         List<Integer> character = new ArrayList<>(1);
                         int notmatched = sequence.charAt(rec);
                         character.add(notmatched);
                         result.add(character);
+                        LA = search_buffer;
                         rec++;
-                        LA = rec-6;
                     }
-                    else ++LA;
+                else {
+                        offset = 0;
+                        match = 0;
+                        ++LA;
+                    }
                 }
             }
             return result;
         }
 
-        public static List<Integer> encode (List<List<Integer>> compressed){
+        public static List<Integer> encode (List<List<Integer>> compressed) {
             List<Integer> encoded = new ArrayList<>();
-            int last = 0;
             for (List<Integer> act : compressed){
-                ++last;
                 if (act.size() == 2) {
                     encoded.add(-1);
                     //flags.set(flag);
@@ -146,7 +162,8 @@ import java.lang.*;
         }
 
 
-       public static StringBuilder decompress (List<String> encoded/*, BitSet flags*/) {
+       public static StringBuilder decompress (Object o/*List<String> encoded, BitSet flags*/) {
+           List <String> encoded = (List<String>) o;
            StringBuilder result = new StringBuilder();
            int resultindex = 0;
            //String[] aux = new String[encoded.size()];
@@ -173,7 +190,6 @@ import java.lang.*;
 
         public static void print_status(List<List<Integer>> compressed, List<Integer> encoded, StringBuilder decompressed) {
             for (int i = 0; i < compressed.size(); ++i) {
-                System.out.print("/");
                 for (int j = 0; j < compressed.get(i).size(); ++j) {
                     System.out.print(compressed.get(i).get(j));
                     System.out.print(",");
@@ -217,8 +233,8 @@ import java.lang.*;
             CompressTime = (endTime - startTime);
 
            List<String> voidl = Arrays.asList("118","105","115","116","97","32","-1","1","2","-1","4","5","99","-1","5","6","109","-1","3","6","114","101","32","112","97","115","116","-1","1","3","-1","1","6","108","-1","5","6","-1","2","5","100","-1","2","6","10");
-           //for(Integer i: encoded) System.out.print(i); System.out.print(',');
-           StringBuilder decompressed = decompress(voidl/*,flags*/);
+           Object o = voidl;
+           StringBuilder decompressed = decompress(o/*,flags*/);
             CompressRatio = CalcCompressRatio(filesize, encoded.size());
             //WriteatFile(decompressed);
             print_status(compressed,encoded,decompressed);
