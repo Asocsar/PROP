@@ -4,82 +4,90 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-//carga estadistiques primer metodo llamado /*lees archivo que tiene todas las estadisticas y actualizas los metodos con el archivo set estadistiques lzw
-
-
 
 public class Cont_Est {
 
-    public static class Estadístiques{
+    public static class Estadístiques{ //Stats Stub
 
-    private static double timeLZW;
-    private static double timeLZ78;
-    private static double timeLZSS;
-    private static double timeJPEG;
+        //LZW
 
-    private static double GtimeLZW;
-    private static double GtimeLZ78;
-    private static double GtimeLZSS;
-    private static double GtimeJPEG;
+        private static double timeLZW;
+        private static double GtimeLZW;
+        private static double ratioLZW;
+        private static double GratioLZW;
+        private static double QuantLZW;
 
-    private static double ratioLZW;
-    private static double ratioLZ78;
-    private static double ratioLZSS;
-    private static double ratioJPEG;
-
-    private static double GratioLZW;
-    private static double GratioLZ78;
-    private static double GratioLZSS;
-    private static double GratioJPEG;
-
-    private static double QuantLZW;
-    private static double QuantLZ78;
-    private static double QuantLZSS;
-    private static double QuantJPEG;
-
-        public static double getTimeLZSS(){ return 4.0;}
-        public static double getGlobTimeLZSS(){ return 4.0;}
-        public static double getRatioLZSS(){ return 4.0;}
-        public static double getQuantLZSS(){ return 4.0;}
-        public static void setLZSS(double tl,double tg,double rl,double rg, double quant){}
-
+        public static void setLZW(double tl,double tg,double rl,double rg, double quant){}
         public static double getTimeLZW(){ return 4.0;}
         public static double getGlobTimeLZW(){ return 4.0;}
         public static double getRatioLZW(){ return 4.0;}
+        public static double getGlobRatioLZW() { return 3.0;}
         public static double getQuantLZW(){ return 4.0;}
-        public static void setLZW(double tl,double tg,double rl,double rg, double quant){}
 
+
+
+        //LZ78
+
+        private static double timeLZ78;
+        private static double GtimeLZ78;
+        private static double ratioLZ78;
+        private static double GratioLZ78;
+        private static double QuantLZ78;
+
+        public static void setLZSS(double tl,double tg,double rl,double rg, double quant){}
+        public static double getTimeLZSS(){ return 4.0;}
+        public static double getGlobTimeLZSS(){ return 4.0;}
+        public static double getRatioLZSS(){ return 4.0;}
+        public static double getGlobRatioLZSS() { return 3.0;}
+        public static double getQuantLZSS(){ return 4.0;}
+
+
+
+        //LZSS
+
+        private static double timeLZSS;
+        private static double GtimeLZSS;
+        private static double ratioLZSS;
+        private static double GratioLZSS;
+        private static double QuantLZSS;
+
+        public static void setLZ78(double tl,double tg,double rl,double rg, double quant){}
         public static double getTimeLZ78(){ return 4.0;}
         public static double getGlobTimeLZ78(){ return 4.0;}
         public static double getRatioLZ78(){ return 4.0;}
+        public static double getGlobRatioLZ78() { return 3.0;}
         public static double getQuantLZ78(){ return 4.0;}
-        public static void setLZ78(double tl,double tg,double rl,double rg, double quant){}
 
+
+        //JPEG
+
+        private static double timeJPEG;
+        private static double GtimeJPEG;
+        private static double ratioJPEG;
+        private static double GratioJPEG;
+        private static double QuantJPEG;
+
+
+        public static void setJPEG(double tl,double tg,double rl,double rg, double quant){}
         public static double getTimeJPEG(){ return 4.0;}
         public static double getGlobTimeJPEG(){ return 4.0;}
         public static double getRatioJPEG(){ return 4.0;}
+        public static double getGlobRatioJPEG() { return 3.0;}
         public static double getQuantJPEG(){ return 4.0;}
-        public static void setJPEG(double tl,double tg,double rl,double rg, double quant){}
+
+        //LAST ALGORITHM USED
 
         public static String getLastAlg(){ return "LZSS";}
-
-        public static void setLastAlg(String lAlg){}
-
-
-        public static double getGlobRatioLZW() { return 3.0;}
-        public static double getGlobRatioLZSS() { return 3.0;}
-        public static double getGlobRatioLZ78() { return 3.0;}
-        public static double getGlobRatioJPEG() { return 3.0;}
+        public static void setLastAlg (String lAlg) {}
+        
 
     }
 
 
 
     public static void main() throws  IOException{
-        File file = new File("/home/clums/Escriptori/Estadisticas.txt");
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        Estadístiques E = new Estadístiques();
-        //Estadistiques E = new Estadistiques();
+     Stats_Update();
+     GetStats();
     }
 
 
@@ -89,8 +97,7 @@ public class Cont_Est {
 
         Estadístiques E = new Estadístiques();
         File out = new File("/home/clums/Escriptori/Estadisticas.txt");
-        FileWriter write = new FileWriter(out);
-        PrintWriter pw = new PrintWriter(write);
+        PrintWriter pw = new PrintWriter(new FileWriter(out));
 
         // Save Stats LZW
 
@@ -135,7 +142,11 @@ public class Cont_Est {
 
     }
 
-        public static void GetStats (BufferedReader file){//Set stats from file to classes
+        public static void GetStats () throws IOException{ //Set stats from file to classes
+
+
+            File OldStats = new File("/home/clums/Escriptori/Estadisticas.txt");
+            BufferedReader file = new BufferedReader(new FileReader(OldStats));
 
             Estadístiques oldE = new Estadístiques();
             int act;
