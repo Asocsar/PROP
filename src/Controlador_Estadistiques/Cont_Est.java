@@ -1,4 +1,6 @@
-package Controlador_Estadisticas;
+package Controlador_Estadistiques;
+import Estadístiques.Estadistiques;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,69 +11,6 @@ import java.util.List;
 
 
 public class Cont_Est {
-
-    public static class Estadístiques{
-
-    private static double timeLZW;
-    private static double timeLZ78;
-    private static double timeLZSS;
-    private static double timeJPEG;
-
-    private static double GtimeLZW;
-    private static double GtimeLZ78;
-    private static double GtimeLZSS;
-    private static double GtimeJPEG;
-
-    private static double ratioLZW;
-    private static double ratioLZ78;
-    private static double ratioLZSS;
-    private static double ratioJPEG;
-
-    private static double GratioLZW;
-    private static double GratioLZ78;
-    private static double GratioLZSS;
-    private static double GratioJPEG;
-
-    private static double QuantLZW;
-    private static double QuantLZ78;
-    private static double QuantLZSS;
-    private static double QuantJPEG;
-
-        public static double getTimeLZSS(){ return 4.0;}
-        public static double getGlobTimeLZSS(){ return 4.0;}
-        public static double getRatioLZSS(){ return 4.0;}
-        public static double getQuantLZSS(){ return 4.0;}
-        public static void setLZSS(double tl,double tg,double rl,double rg, double quant){}
-
-        public static double getTimeLZW(){ return 4.0;}
-        public static double getGlobTimeLZW(){ return 4.0;}
-        public static double getRatioLZW(){ return 4.0;}
-        public static double getQuantLZW(){ return 4.0;}
-        public static void setLZW(double tl,double tg,double rl,double rg, double quant){}
-
-        public static double getTimeLZ78(){ return 4.0;}
-        public static double getGlobTimeLZ78(){ return 4.0;}
-        public static double getRatioLZ78(){ return 4.0;}
-        public static double getQuantLZ78(){ return 4.0;}
-        public static void setLZ78(double tl,double tg,double rl,double rg, double quant){}
-
-        public static double getTimeJPEG(){ return 4.0;}
-        public static double getGlobTimeJPEG(){ return 4.0;}
-        public static double getRatioJPEG(){ return 4.0;}
-        public static double getQuantJPEG(){ return 4.0;}
-        public static void setJPEG(double tl,double tg,double rl,double rg, double quant){}
-
-        public static String getLastAlg(){ return "LZSS";}
-        public static void setLastAlg(String lAlg){}
-
-
-        public static double getGlobRatioLZW() { return 3.0;}
-        public static double getGlobRatioLZSS() { return 3.0;}
-        public static double getGlobRatioLZ78() { return 3.0;}
-        public static double getGlobRatioJPEG() { return 3.0;}
-
-    }
-
 
 /*
 
@@ -152,21 +91,21 @@ public class Cont_Est {
         }
     */
 
-    public static void main() throws  IOException{
+    /*public static void main() throws  IOException{
         File file = new File("/home/clums/Escriptori/Estadisticas.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         Estadístiques E = new Estadístiques();
         //Estadistiques E = new Estadistiques();
-    }
+    }*/
 
-
-    public static void Stats_Update(BufferedReader file) throws  IOException{
+/*
+    public void Stats_Update(BufferedReader file) throws  IOException{
 
         //Update stats from last compression
-        Estadístiques E = new Estadístiques();
+        Estadistiques E = new Estadistiques();
         /*File out = new File("/home/clums/Escriptori/Estadisticas.txt");
         FileWriter write = new FileWriter(out);
-        PrintWriter pw = new PrintWriter(write);*/
+        PrintWriter pw = new PrintWriter(write);
         Estadístiques.timeLZW = E.getTimeLZW();
         Estadístiques.GtimeLZW = Estadístiques.getGlobTimeLZW();
         Estadístiques.timeLZSS = E.getTimeLZSS();
@@ -232,5 +171,5 @@ public class Cont_Est {
             }
 
         }
-    }
+    }*/
 }

@@ -9,7 +9,7 @@ import java.lang.Math;
 
 public class LZW {
 
-    private double last_rate;
+
     private static Map<String, Integer> Alfabet = new HashMap<String, Integer>();
     private static Map<Integer, String> Alfabet_inv = new HashMap<Integer, String>();
 
@@ -32,7 +32,7 @@ public class LZW {
             0x2320, 0x2321, 0x00F7, 0x2248, 0x00B0, 0x2219, 0x00B7, 0x221A,
             0x207F, 0x00B2, 0x25A0, 0x00A0 };
 
-    private static void create_alfa() {
+    private void create_alfa() {
         int aux = 0;
         for (int i = 0; i < EXTENDED.length-1; ++i) {
             String s = Character.toString((char) i);
@@ -49,22 +49,11 @@ public class LZW {
 
     }
 
-    private double log(int x, int base) {
+    private double log (int x, int base ) {
         return (double) Math.round(Math.log(x) / Math.log(base));
     }
 
-    private void set_last_rate (double n1, double n2) {
-        this.last_rate = n1/n2;
-    }
-
-    public LZW() {
-        create_alfa();
-        last_rate = 0;
-    }
-
-
-    public List<Integer> compress (BufferedReader file) throws IOException {
-        create_alfa();
+    public List<Integer> compress(BufferedReader file) throws IOException {
         Map<String, Integer> Alf_aux = new HashMap<String, Integer>(Alfabet);
         int n = file.read();
         String w = "";
@@ -87,12 +76,12 @@ public class LZW {
             }
         double n1 = cantidad*8;
         double n2 =  log(Alf_aux.size(), 2)*result.size();
-        set_last_rate(n1,n2);
+        System.out.println(n1/n2);
         return result;
     }
 
 
-    public static String descomprimir (List<Integer> s) {
+    public String descomprimir (List<Integer> s) {
         Map<Integer, String> Alf_aux = new HashMap<Integer, String>(Alfabet_inv);
         int i = 0;
         int cod_viejo = s.get(i);
@@ -121,8 +110,8 @@ public class LZW {
         }
         return result;
     }
-
-    /*public static void main(String[] args) throws Exception {
+/*
+    public static void main(String[] args) throws Exception {
         File file = new File ("/home/asocar/Desktop/Ejemplo.txt");
         BufferedReader br = new BufferedReader(new FileReader (file));
         create_alfa();

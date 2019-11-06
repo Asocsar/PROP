@@ -10,7 +10,7 @@ import java.lang.String;
 
 public class LZ78 {
 
-    public static String ajuntar_llistes(List<Integer> a, List<Character> b){
+    public String ajuntar_llistes(List<Integer> a, List<Character> b){
         int n= a.size();
         String aux="";
         int aux_num;
@@ -21,7 +21,7 @@ public class LZ78 {
         return aux;
     }
 
-    public static String compresio(BufferedReader file) throws IOException {
+    public String compresio(BufferedReader file) throws IOException {
         List<Integer> Indexs = new ArrayList<>();
         List<Character> Coded_text = new ArrayList<>();
         List<String> Caracters = new ArrayList<>();
@@ -48,7 +48,7 @@ public class LZ78 {
         return Coded;
     }
 
-    public static String escriure_llistes(List<String> a){
+    public String escriure_llistes(List<String> a){
         int n= a.size();
         String aux="";
         for (int i= 1; i < n; ++i){
@@ -59,7 +59,7 @@ public class LZ78 {
         return aux;
     }
 
-    public static String descompresio(BufferedReader file) throws IOException {
+    public String descompresio(BufferedReader file) throws IOException {
         List<String> Caracters = new ArrayList<>();
         Caracters.add(null);
         int lletra = file.read();
@@ -113,7 +113,7 @@ public class LZ78 {
     }
 
 
-    public static void main(String[] args) throws IOException {
+   /* public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
         File file = new File ("D:\\Mis documentos\\PAU\\UPC\\19-20 QT\\PROP\\Projecte\\proves\\trycompressio.txt");
         BufferedReader br = new BufferedReader(new FileReader (file));
@@ -126,6 +126,6 @@ public class LZ78 {
         System.out.println(t);
         long endTime = System.currentTimeMillis();
         long durationInMilli = (endTime - startTime);
-        System.out.println(durationInNano);
-    }
+        System.out.println(durationInMilli);
+    }*/
 }
