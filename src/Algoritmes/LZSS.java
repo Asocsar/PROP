@@ -72,7 +72,7 @@ import java.lang.*;
             boolean found = false;
 
             List<List<Integer>> result = new ArrayList<>();
-            result.add(initialize_searchbuff(sequence.substring(0,1)));
+            result.add(initialize_searchbuff(sequence));
 
             if (filesize < 4096) search_buffer = 0;
             else search_buffer = 4096;
@@ -85,7 +85,8 @@ import java.lang.*;
                         match = 0;
                         offset = 0;
                         found = false;
-                        LA = search_buffer;
+                        if(rec >= 4096) LA = rec - search_buffer;
+                        else LA = 0;
                     }
                     else if (sequence.charAt(rec) == sequence.charAt(LA) ){
                         if (!found) {
@@ -97,23 +98,24 @@ import java.lang.*;
                             rec++;
                     }
 
-                    else if (sequence.charAt(rec) != sequence.charAt(LA) & found & match < 3 | LA == rec -1)  {
+                    else if (sequence.charAt(rec) != sequence.charAt(LA) & found & match < 3 | LA == rec -1 & !found)  {
                         List<Integer> character = new ArrayList<>(1);
                         int notmatched;
                         if (found) {
                             notmatched = sequence.charAt(rec-match);
                             found = false;
-                            rec -= (match+1);
+                            rec -= match;
                         }
                         else{
                             notmatched = sequence.charAt(rec);
-                            rec++;
                         }
+                        rec++;
                         character.add(notmatched);
                         result.add(character);
-                        LA = search_buffer;
                         offset = 0;
                         match = 0;
+                        if(rec >= 4096) LA = rec - search_buffer;
+                        else LA = 0;
                     }
                 else  ++LA;
                 }
