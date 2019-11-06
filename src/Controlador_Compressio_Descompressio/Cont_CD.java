@@ -11,7 +11,7 @@ public class Cont_CD {
 
     public Cont_CD (){
     }
-
+/*
     public static class Item {
         private String path;
         private int best_metod;
@@ -138,7 +138,7 @@ public class Cont_CD {
             return S;
         }
     }
-
+*/
     public static void compressio_descompressio(String path, int id, String path_dest, boolean comprimir) throws IOException {
         Item I = new Item(path);
         if (path_dest == "") path_dest = path;
@@ -211,7 +211,7 @@ public class Cont_CD {
                 break;
             }
 
-        BufferedWriter F = new BufferedWriter(new FileWriter(path_dest));
+        /*BufferedWriter F = new BufferedWriter(new FileWriter(path_dest));
         if (comprimir) {
             for (int i = 0; i < L.size(); ++i) {
                 F.write(L.get(i) + ",");
@@ -221,7 +221,7 @@ public class Cont_CD {
             F.write(S);
 
         F.flush();
-        F.close();
+        F.close();*/
 
         if (comprimir) {
             path1 = path;
