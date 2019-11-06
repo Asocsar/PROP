@@ -89,7 +89,6 @@ public class Estadistiques {
         gradeG = gr;
         gradeGT += gr;
         numG += 1;
-        int i = 1;
     }
 
 
