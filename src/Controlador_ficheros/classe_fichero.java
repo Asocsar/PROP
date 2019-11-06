@@ -1,3 +1,5 @@
+package Controlador_ficheros;
+
 import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
