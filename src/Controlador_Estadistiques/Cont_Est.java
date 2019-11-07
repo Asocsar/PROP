@@ -11,11 +11,11 @@ public class Cont_Est {
 
         //LZW
 
-        private static double timeLZW;
-        private static double GtimeLZW;
-        private static double ratioLZW;
-        private static double GratioLZW;
-        private static double QuantLZW;
+        private static double timeLZW = 0;
+        private static double GtimeLZW = 0;
+        private static double ratioLZW = 0;
+        private static double GratioLZW = 0;
+        private static double QuantLZW = 0;
 
         public static void setLZW(double tl,double tg,double rl,double rg, double quant){}
         public static double getTimeLZW(){ return 4.0;}
@@ -28,11 +28,11 @@ public class Cont_Est {
 
         //LZ78
 
-        private static double timeLZ78;
-        private static double GtimeLZ78;
-        private static double ratioLZ78;
-        private static double GratioLZ78;
-        private static double QuantLZ78;
+        private static double timeLZ78 = 0;
+        private static double GtimeLZ78 = 0;
+        private static double ratioLZ78 = 0;
+        private static double GratioLZ78 = 0;
+        private static double QuantLZ78 = 0;
 
         public static void setLZSS(double tl,double tg,double rl,double rg, double quant){}
         public static double getTimeLZSS(){ return 4.0;}
@@ -42,14 +42,13 @@ public class Cont_Est {
         public static double getQuantLZSS(){ return 4.0;}
 
 
-
         //LZSS
 
-        private static double timeLZSS;
-        private static double GtimeLZSS;
-        private static double ratioLZSS;
-        private static double GratioLZSS;
-        private static double QuantLZSS;
+        private static double timeLZSS = 0;
+        private static double GtimeLZSS = 0;
+        private static double ratioLZSS = 0;
+        private static double GratioLZSS = 0;
+        private static double QuantLZSS = 0;
 
         public static void setLZ78(double tl,double tg,double rl,double rg, double quant){}
         public static double getTimeLZ78(){ return 4.0;}
@@ -61,11 +60,11 @@ public class Cont_Est {
 
         //JPEG
 
-        private static double timeJPEG;
-        private static double GtimeJPEG;
-        private static double ratioJPEG;
-        private static double GratioJPEG;
-        private static double QuantJPEG;
+        private static double timeJPEG = 0;
+        private static double GtimeJPEG = 0;
+        private static double ratioJPEG = 0;
+        private static double GratioJPEG = 0;
+        private static double QuantJPEG = 0;
 
 
         public static void setJPEG(double tl,double tg,double rl,double rg, double quant){}
@@ -77,17 +76,28 @@ public class Cont_Est {
 
         //LAST ALGORITHM USED
 
+        public static String LastAlg = "LZ78";
+
         public static String getLastAlg(){ return "LZSS";}
         public static void setLastAlg (String lAlg) {}
-        
+
 
     }
 
 
 
     public static void main() throws  IOException{
-     Stats_Update();
-     GetStats();
+
+        Stats_Update();
+
+        System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
+
+
+        GetStats();
+
+
+
+
     }
 
 
@@ -96,7 +106,8 @@ public class Cont_Est {
         //Update stats from last compression
 
         Estadístiques E = new Estadístiques();
-        File out = new File("/home/clums/Escriptori/Estadisticas.txt");
+        File out = new File("/home/clums/Escriptori/UpdateEstadisticas.txt");
+        if (!out.exists()) out.createNewFile();
         PrintWriter pw = new PrintWriter(new FileWriter(out));
 
         // Save Stats LZW
@@ -107,7 +118,7 @@ public class Cont_Est {
         Estadístiques.GratioLZW = E.getGlobRatioLZW();
         Estadístiques.QuantLZW = E.getQuantLZW();
 
-        pw.print(0+Estadístiques.timeLZW+Estadístiques.GtimeLZW+Estadístiques.ratioLZW+Estadístiques.GratioLZW+Estadístiques.QuantLZW);
+        pw.print(0+Estadístiques.timeLZW+','+Estadístiques.GtimeLZW+','+Estadístiques.ratioLZW+','+Estadístiques.GratioLZW+','+Estadístiques.QuantLZW+"\n");
 
         // Save Stats LZSS
 
@@ -117,7 +128,7 @@ public class Cont_Est {
         Estadístiques.GratioLZSS = E.getGlobRatioLZSS();
         Estadístiques.QuantLZSS = E.getQuantLZSS();
 
-        pw.print(1+Estadístiques.timeLZSS+Estadístiques.GtimeLZSS+Estadístiques.ratioLZSS+Estadístiques.GratioLZSS+Estadístiques.QuantLZSS);
+        pw.print(1+Estadístiques.timeLZSS+','+Estadístiques.GtimeLZSS+','+Estadístiques.ratioLZSS+','+Estadístiques.GratioLZSS+','+Estadístiques.QuantLZSS+"\n");
 
         // Save Stats LZ78
 
@@ -127,7 +138,7 @@ public class Cont_Est {
         Estadístiques.GratioLZ78 = E.getGlobRatioLZ78();
         Estadístiques.QuantLZ78 = E.getQuantLZ78();
 
-        pw.print(2+Estadístiques.timeLZ78+Estadístiques.GtimeLZ78+Estadístiques.ratioLZ78+Estadístiques.GratioLZ78+Estadístiques.QuantLZ78);
+        pw.print(2+Estadístiques.timeLZ78+','+Estadístiques.GtimeLZ78+','+Estadístiques.ratioLZ78+','+Estadístiques.GratioLZ78+','+Estadístiques.QuantLZ78+"\n");
 
 
         // Save Stats JPEG
@@ -138,14 +149,39 @@ public class Cont_Est {
         Estadístiques.GratioJPEG = E.getGlobRatioJPEG();
         Estadístiques.QuantJPEG = E.getQuantJPEG();
 
-        pw.print(3+Estadístiques.timeJPEG+Estadístiques.GtimeJPEG+Estadístiques.ratioJPEG+Estadístiques.GratioJPEG+Estadístiques.QuantJPEG);
+        pw.print(3+Estadístiques.timeJPEG+','+Estadístiques.GtimeJPEG+','+Estadístiques.ratioJPEG+','+Estadístiques.GratioJPEG+','+Estadístiques.QuantJPEG+ "\n" );
+
+        //Save Last Algorithm
+
+        Estadístiques.LastAlg = E.getLastAlg();
+
+        pw.print(4+Estadístiques.LastAlg);
 
     }
 
         public static void GetStats () throws IOException{ //Set stats from file to classes
 
 
-            File OldStats = new File("/home/clums/Escriptori/Estadisticas.txt");
+            File OldStats = new File("/home/clums/Escriptori/NuevasEstadisticas.txt");
+
+            //Creation of the file if needed
+
+            if (!OldStats.exists()) {
+                try {
+                    if (OldStats.createNewFile()) {
+                        PrintWriter pw = new PrintWriter(new FileWriter(OldStats));
+                        pw.print('0' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZW
+                        pw.print('1' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZSS
+                        pw.print('2' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZ78
+                        pw.print('3' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //JPEG
+                        pw.print('4' + ',' + "null");                               //LAST ALGORITHM USED
+                    }
+                }
+                catch (Exception FileAlreadyExists){
+                    System.err.print(FileAlreadyExists);
+                }
+            }
+
             BufferedReader file = new BufferedReader(new FileReader(OldStats));
 
             Estadístiques oldE = new Estadístiques();
@@ -154,7 +190,7 @@ public class Cont_Est {
             int flag;
             while ((act = file.read()) != -1) {
 
-                if (act == 0 | act == 1 | act == 2 | act == 3) {
+                if (act == 0 | act == 1 | act == 2 | act == 3 | act == 4) {
                     flag = act;
                     line = file.readLine();
 
@@ -165,6 +201,7 @@ public class Cont_Est {
                         String actnumber = "";
                             while (line.charAt(i) != ',') {
                                 actnumber += line.charAt(i);
+                                ++i;
                             }
                         values.add(Double.parseDouble(actnumber));
 
