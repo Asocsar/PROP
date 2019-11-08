@@ -92,9 +92,9 @@ public class Cont_Est {
 
         System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
 
-
         GetStats();
 
+        System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
 
 
 
