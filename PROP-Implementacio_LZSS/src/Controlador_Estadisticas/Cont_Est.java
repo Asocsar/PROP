@@ -25,7 +25,6 @@ public class Cont_Est {
         public static double getQuantLZW(){ return 4.0;}
 
 
-
         //LZ78
 
         private static double timeLZ78 = 0;
