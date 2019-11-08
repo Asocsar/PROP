@@ -187,26 +187,27 @@ public class Cont_Est {
             Estadístiques oldE = new Estadístiques();
             int act;
             String line = "";
-            int flag;
+            int id;
             while ((act = file.read()) != -1) {
 
                 if (act == 0 | act == 1 | act == 2 | act == 3 | act == 4) {
-                    flag = act;
+                    id = act;
                     line = file.readLine();
 
                 // Get numeric values from file : timelast,timeglob,ratelast,rateglob,quant
 
                      List<Double> values = new ArrayList<>(5);
                         for (int i = 0; i < line.length(); ++i) {
-                        String actnumber = "";
+                            String actnumber = "";
                             while (line.charAt(i) != ',') {
                                 actnumber += line.charAt(i);
                                 ++i;
                             }
-                        values.add(Double.parseDouble(actnumber));
+                            values.add(Double.parseDouble(actnumber));
+                        }
 
-                            // Set stats to algorithms
-                        switch (flag) {
+                // Set stats to algorithms
+                        switch (id) {
                             case 0: //LZW
 
                                 oldE.setLZW(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
@@ -238,4 +239,3 @@ public class Cont_Est {
             }
         }
     }
-}
