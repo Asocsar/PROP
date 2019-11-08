@@ -1,6 +1,7 @@
 package Estadístiques;
 
 public class Estadistiques {
+
     private static double gradeW;
     private static double timeW;
     private static double grade8;
