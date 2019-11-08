@@ -1,4 +1,4 @@
-package Controlador_Estadisticas;
+package Controlador_Estadistiques;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,6 @@ public class Cont_Est {
         public static double getRatioLZW(){ return 4.0;}
         public static double getGlobRatioLZW() { return 3.0;}
         public static double getQuantLZW(){ return 4.0;}
-
 
 
         //LZ78
@@ -92,9 +91,9 @@ public class Cont_Est {
 
         System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
 
-
         GetStats();
 
+        System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
 
 
 
@@ -159,81 +158,81 @@ public class Cont_Est {
 
     }
 
-        public static void GetStats () throws IOException{ //Set stats from file to classes
+    public static void GetStats () throws IOException{ //Set stats from file to classes
 
 
-            File OldStats = new File("/home/clums/Escriptori/NuevasEstadisticas.txt");
+        File OldStats = new File("/home/clums/Escriptori/NuevasEstadisticas.txt");
 
-            //Creation of the file if needed
+        //Creation of the file if needed
 
-            if (!OldStats.exists()) {
-                try {
-                    if (OldStats.createNewFile()) {
-                        PrintWriter pw = new PrintWriter(new FileWriter(OldStats));
-                        pw.print('0' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZW
-                        pw.print('1' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZSS
-                        pw.print('2' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZ78
-                        pw.print('3' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //JPEG
-                        pw.print('4' + ',' + "null");                               //LAST ALGORITHM USED
-                    }
-                }
-                catch (Exception FileAlreadyExists){
-                    System.err.print(FileAlreadyExists);
+        if (!OldStats.exists()) {
+            try {
+                if (OldStats.createNewFile()) {
+                    PrintWriter pw = new PrintWriter(new FileWriter(OldStats));
+                    pw.print('0' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZW
+                    pw.print('1' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZSS
+                    pw.print('2' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZ78
+                    pw.print('3' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //JPEG
+                    pw.print('4' + ',' + "null");                               //LAST ALGORITHM USED
                 }
             }
+            catch (Exception FileAlreadyExists){
+                System.err.print(FileAlreadyExists);
+            }
+        }
 
-            BufferedReader file = new BufferedReader(new FileReader(OldStats));
+        BufferedReader file = new BufferedReader(new FileReader(OldStats));
 
-            Estadístiques oldE = new Estadístiques();
-            int act;
-            String line = "";
-            int flag;
-            while ((act = file.read()) != -1) {
+        Estadístiques oldE = new Estadístiques();
+        int act;
+        String line = "";
+        int id;
+        while ((act = file.read()) != -1) {
 
-                if (act == 0 | act == 1 | act == 2 | act == 3 | act == 4) {
-                    flag = act;
-                    line = file.readLine();
+            if (act == 0 | act == 1 | act == 2 | act == 3 | act == 4) {
+                id = act;
+                line = file.readLine();
 
                 // Get numeric values from file : timelast,timeglob,ratelast,rateglob,quant
 
-                     List<Double> values = new ArrayList<>(5);
-                        for (int i = 0; i < line.length(); ++i) {
-                        String actnumber = "";
-                            while (line.charAt(i) != ',') {
-                                actnumber += line.charAt(i);
-                                ++i;
-                            }
-                        values.add(Double.parseDouble(actnumber));
-
-                            // Set stats to algorithms
-                        switch (flag) {
-                            case 0: //LZW
-
-                                oldE.setLZW(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
-                                break;
-
-                            case 1: //LZ78
-
-                                oldE.setLZ78(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
-                                break;
-
-                            case 2: //LZSS
-
-                                oldE.setLZSS(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
-                                break;
-
-                            case 3: //JPEG
-
-                                oldE.setJPEG(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
-                                break;
-
-                            case 4: //LastAlgorithmUsed
-
-                                oldE.setLastAlg(line);
-
-                            default:
-                                break;
+                List<Double> values = new ArrayList<>(5);
+                for (int i = 0; i < line.length(); ++i) {
+                    String actnumber = "";
+                    while (line.charAt(i) != ',') {
+                        actnumber += line.charAt(i);
+                        ++i;
                     }
+                    values.add(Double.parseDouble(actnumber));
+                }
+
+                // Set stats to algorithms
+                switch (id) {
+                    case 0: //LZW
+
+                        oldE.setLZW(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
+                        break;
+
+                    case 1: //LZ78
+
+                        oldE.setLZ78(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
+                        break;
+
+                    case 2: //LZSS
+
+                        oldE.setLZSS(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
+                        break;
+
+                    case 3: //JPEG
+
+                        oldE.setJPEG(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
+                        break;
+
+                    case 4: //LastAlgorithmUsed
+
+                        oldE.setLastAlg(line);
+
+                    default:
+                        break;
                 }
             }
         }
