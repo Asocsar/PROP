@@ -13,6 +13,11 @@ public class LZW {
     private static Map<String, Integer> Alfabet = new HashMap<String, Integer>();
     private static Map<Integer, String> Alfabet_inv = new HashMap<Integer, String>();
 
+    private double time;
+    private double ratio;
+
+    public double getTime () {return this.time;}
+    public double getRatio () {return this.ratio;}
 
     private static char[] EXTENDED = { 0x00C7, 0x00FC, 0x00E9, 0x00E2,
             0x00E4, 0x00E0, 0x00E5, 0x00E7, 0x00EA, 0x00EB, 0x00E8, 0x00EF,
@@ -76,7 +81,8 @@ public class LZW {
             }
         double n1 = cantidad*8;
         double n2 =  log(Alf_aux.size(), 2)*result.size();
-        System.out.println(n1/n2);
+        this.ratio = (n1/n2);
+        this.time = 30;
         return result;
     }
 

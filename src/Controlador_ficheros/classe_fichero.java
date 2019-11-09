@@ -79,7 +79,7 @@ public class classe_fichero {
 
     //Crea un fitxer per escriptura
     public static void crear_fichero (String path_dest){
-        
+
     }
 
 
@@ -105,7 +105,7 @@ public class classe_fichero {
 
     //Funcio d'excepcions compressió i transformacio(si es necessari)
     /*public static BufferedReader get_f_compressio(String path_og, String path_desti Integer id){
-         
+
         extension(id);
         BufferedReader br= buscar_leer_archivo(path_og);
 

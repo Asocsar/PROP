@@ -175,59 +175,6 @@ import java.lang.*;
            return result;
        }
 
-
-
-        public void print_status(List<List<Integer>> compressed, List<Integer> encoded, StringBuilder decompressed) {
-            for (int i = 0; i < compressed.size(); ++i) {
-                for (int j = 0; j < compressed.get(i).size(); ++j) {
-                    System.out.print(compressed.get(i).get(j));
-                    System.out.print(",");
-                }
-            }
-            System.out.println("\n");
-            for (int f = 0; f < flags.length(); f++) if (flags.get(f)) System.out.println(f);
-            System.out.println("\n");
-            for (Integer i : encoded) System.out.print(i + ",");
-            System.out.println("\n");
-            for (int d = 0; d < decompressed.length();++d) System.out.println(decompressed.charAt(d));
-            System.out.println("\n");
-            System.out.println(CompressRatio);
-            System.out.println("\n");
-            System.out.println(CompressTime);
-        }
-
-        public void WriteatFile (StringBuilder decompressed) throws IOException{
-                    File out = new File("/home/clums/Escriptori/Uncompressed.txt");
-                    FileWriter write = new FileWriter(out);
-                    PrintWriter pw = new PrintWriter(write);
-                    for (int i = 0; i < decompressed.length(); ++i) {
-                        pw.println(decompressed.charAt(i));
-                    }
-            }
-
-
-
-
-       /* public static void main(String[] args) throws IOException {
-
-            double startTime = System.currentTimeMillis();
-
-            File file = new File("/home/clums/Escriptori/Ejemplo.txt");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            List<List<Integer>> compressed = compress_mine2(br);
-            List<Integer> encoded = encode(compressed);
-
-
-            double endTime = System.currentTimeMillis();
-            CompressTime = (endTime - startTime);
-
-           List<String> voidl = Arrays.asList("118","105","115","116","97","32","-1","1","2","-1","4","5","99","-1","5","6","109","-1","3","6","114","101","32","112","97","115","116","-1","1","3","-1","1","6","108","-1","5","6","-1","2","5","100","-1","2","6","10");
-           Object o = voidl;*/
-          // StringBuilder decompressed = decompress(o/*,flags*/);
-           /* CompressRatio = CalcCompressRatio(filesize, encoded.size());
-            WriteatFile(decompressed);
-            print_status(compressed,encoded,decompressed);
-        }*/
     }
 
 

@@ -22,6 +22,7 @@ public class Cont_CD {
         Object L = null;
         double time = 0;
         double rate = 0;
+        Estadistiques E = new Estadistiques();
         File file = new File(path);
         BufferedReader br = new BufferedReader(new FileReader(file));
         switch (id) {
@@ -29,11 +30,12 @@ public class Cont_CD {
                 LZ78 L8 = new LZ78();
                 if (comprimir) {
                     L = L8.compresio(br);
-                    //time = L8.getTime();
+                    //time = L8.;
                     //rate = L8.getRate();
+                    E.act8(0,0);
                 }
                 else {
-                    //L = L8.descompresio(I.getcode());
+                    L = L8.descompresio();
                     //time = L8.getTime();
                     //rate = L8.getRate();
                 }
@@ -45,6 +47,7 @@ public class Cont_CD {
                     L = LS.compress_mine2(br);
                     time = LS.getTime();
                     rate = LS.getRate();
+                    E.actS(time,rate);
                 }
                 else {
                     L = LS.decompress(I.getcode());
@@ -56,8 +59,9 @@ public class Cont_CD {
                 LZW LW = new LZW();
                 if (comprimir) {
                     L = LW.compress(br);
-                    //time = LW.getTime();
-                    //rate = LW.getRate();
+                    time = LW.getTime();
+                    rate = LW.getRatio();
+                    E.actW(time,rate);
 
                 }
                 else {
@@ -81,8 +85,6 @@ public class Cont_CD {
                 }
                 break;*/
             }
-
-
 
         if (comprimir) {
             path1 = path;
