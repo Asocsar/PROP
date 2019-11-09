@@ -21,6 +21,7 @@ public class Estadistiques {
     private static int numS;
     private static int num8;
     private static int numG;
+    private static int last;
 
     public  Estadistiques () {}
 
@@ -65,6 +66,7 @@ public class Estadistiques {
         gradeW = gr;
         gradeWT += gr;
         numW += 1;
+        last = 0;
     }
 
     public void actS (double ti, double gr) {
@@ -73,6 +75,7 @@ public class Estadistiques {
         gradeS = gr;
         gradeST += gr;
         numS += 1;
+        last = 1;
     }
 
     public void act8 (double ti, double gr) {
@@ -81,6 +84,7 @@ public class Estadistiques {
         grade8 = gr;
         grade8T += gr;
         num8 += 1;
+        last = 2;
     }
 
     public void actG (double ti, double gr) {
@@ -89,7 +93,11 @@ public class Estadistiques {
         gradeG = gr;
         gradeGT += gr;
         numG += 1;
+        last = 3;
     }
+
+    public int getLastAlg () {return  last; }
+    public void setLastAlg (int id) {last = id;}
 
 
 
