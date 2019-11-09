@@ -99,6 +99,29 @@ public class Estadistiques {
     public int getLastAlg () {return  last; }
     public void setLastAlg (int id) {last = id;}
 
+    public void visualglob() {
+        System.out.println("Tiempos de ultimas compresiones");
+        System.out.println("LZ78 " + timeW);
+        System.out.println("LZSS " + timeS);
+        System.out.println("LZW " + timeW);
+        System.out.println("JPEG " + timeG);
+        System.out.println("Ratios de ultimas compresiones");
+        System.out.println("LZ78 " + grade8);
+        System.out.println("LZSS " + gradeS);
+        System.out.println("LZW " + gradeW);
+        System.out.println("JPEG " + gradeG);
+        System.out.println("Tiempos globales por cada algoritmo");
+        System.out.println("LZ78 " + timeWT);
+        System.out.println("LZSS " + timeST);
+        System.out.println("LZW " + timeWT);
+        System.out.println("JPEG " + timeGT);
+        System.out.println("Ratios globales por cada algoritmo");
+        System.out.println("LZ78 " + grade8T);
+        System.out.println("LZSS " + gradeST);
+        System.out.println("LZW " + gradeWT);
+        System.out.println("JPEG " + gradeGT);
+    }
+
 
 
 

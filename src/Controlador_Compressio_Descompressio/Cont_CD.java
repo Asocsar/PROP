@@ -19,8 +19,8 @@ public class Cont_CD {
 
     private  Object action (int id, boolean comprimir, classe_fichero I) {
         Object L = null;
-        double time;
-        double rate;
+        double time = 0;
+        double rate = 0;
         Estadistiques E = new Estadistiques();
         switch (id) {
             case 1:
@@ -62,7 +62,7 @@ public class Cont_CD {
 
                 }
                 break;
-            case 4:
+            default:
                 JPEG JG = new JPEG();
                 if (comprimir) {
                     L = JG.compress(I.getBuffer());
@@ -76,6 +76,8 @@ public class Cont_CD {
                 }
                 break;
         }
+        System.out.println("Time " + time);
+        System.out.println("Rate " + rate);
         return  L;
     }
 
