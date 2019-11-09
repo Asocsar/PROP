@@ -1,16 +1,21 @@
-package Algoritmes;
-
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.lang.Math;
 import java.lang.String;
 
 public class LZ78 {
 
-    public static String ajuntar_llistes(List<Integer> a, List<Character> b){
+    public long elapsed_time;
+    public int length_n;
+    public int length_c;
+    
+    public long get_time(){
+    
+        return elapsed_time;
+    }
+    
+
+    private String ajuntar_llistes(List<Integer> a, List<Character> b){
         int n= a.size();
         String aux="";
         int aux_num;
@@ -21,8 +26,9 @@ public class LZ78 {
         return aux;
     }
 
-    public static String compresio(BufferedReader file) throws IOException {
-        List<Integer> Indexs = new ArrayList<>();
+    public String compresio(BufferedReader file) throws IOException {
+        length_n=0;
+       List<Integer> Indexs = new ArrayList<>();
         List<Character> Coded_text = new ArrayList<>();
         List<String> Caracters = new ArrayList<>();
         Caracters.add(null);
@@ -41,14 +47,18 @@ public class LZ78 {
             else {
                 index=  Caracters.indexOf(aux_s);
             }
-
+            ++lenght_n;
             lletra = file.read();
         }
         String Coded= ajuntar_llistes(Indexs,Coded_text);
+        long endTime = System.currentTimeMillis();
+        elapsed_time= (endTime - startTime);
+        lenth_c= Coded.length();
         return Coded;
     }
 
-    public static String escriure_llistes(List<String> a){
+    private String escriure_llistes(Object b){
+       List<String> a= (List<String>)b;
         int n= a.size();
         String aux="";
         for (int i= 1; i < n; ++i){
@@ -59,7 +69,8 @@ public class LZ78 {
         return aux;
     }
 
-    public static String descompresio(BufferedReader file) throws IOException {
+    public String descompresio(BufferedReader file) throws IOException {
+        long startTime = System.currentTimeMillis();
         List<String> Caracters = new ArrayList<>();
         Caracters.add(null);
         int lletra = file.read();
@@ -104,28 +115,14 @@ public class LZ78 {
             }
         }
         String r= escriure_llistes(Caracters);
+        long endTime = System.currentTimeMillis();
+        elapsed_time= (endTime - startTime);
         return r;
 
     }
 
-    public static Double ratio_c(double a, double b){
-        return b/a;
+    public static Long get_ratio_c(){
+           return length_n/length_c;
     }
 
-
-    public static void main(String[] args) throws IOException {
-        long startTime = System.currentTimeMillis();
-        File file = new File ("D:\\Mis documentos\\PAU\\UPC\\19-20 QT\\PROP\\Projecte\\proves\\trycompressio.txt");
-        BufferedReader br = new BufferedReader(new FileReader (file));
-        File file2 = new File ("D:\\Mis documentos\\PAU\\UPC\\19-20 QT\\PROP\\Projecte\\proves\\trydescompressio.txt");
-        BufferedReader br2 = new BufferedReader(new FileReader (file2));
-        String s = compresio(br);
-        System.out.println(s);
-        System.out.println(ratio_c(s.length(), file.length()));
-        String t= descompresio(br2);
-        System.out.println(t);
-        long endTime = System.currentTimeMillis();
-        long durationInMilli = (endTime - startTime);
-        System.out.println(durationInNano);
-    }
 }
