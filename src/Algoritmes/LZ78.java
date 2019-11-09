@@ -1,3 +1,5 @@
+package Algoritmes;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -6,14 +8,14 @@ import java.lang.String;
 public class LZ78 {
 
     public long elapsed_time;
-    public int length_n;
-    public int length_c;
-    
+    public long length_n;
+    public long length_c;
+
     public long get_time(){
-    
+
         return elapsed_time;
     }
-    
+
 
     private String ajuntar_llistes(List<Integer> a, List<Character> b){
         int n= a.size();
@@ -27,8 +29,9 @@ public class LZ78 {
     }
 
     public String compresio(BufferedReader file) throws IOException {
+        long startTime = System.currentTimeMillis();
         length_n=0;
-       List<Integer> Indexs = new ArrayList<>();
+        List<Integer> Indexs = new ArrayList<>();
         List<Character> Coded_text = new ArrayList<>();
         List<String> Caracters = new ArrayList<>();
         Caracters.add(null);
@@ -47,18 +50,18 @@ public class LZ78 {
             else {
                 index=  Caracters.indexOf(aux_s);
             }
-            ++lenght_n;
+            ++length_n;
             lletra = file.read();
         }
         String Coded= ajuntar_llistes(Indexs,Coded_text);
         long endTime = System.currentTimeMillis();
         elapsed_time= (endTime - startTime);
-        lenth_c= Coded.length();
+        length_c= Coded.length();
         return Coded;
     }
 
-    private String escriure_llistes(Object b){
-       List<String> a= (List<String>)b;
+    public String escriure_llistes(Object b){
+        List<String> a= (List<String>)b;
         int n= a.size();
         String aux="";
         for (int i= 1; i < n; ++i){
@@ -121,8 +124,8 @@ public class LZ78 {
 
     }
 
-    public static Long get_ratio_c(){
-           return length_n/length_c;
+    public Long get_ratio_c(){
+        return length_n/length_c;
     }
 
-}
+
