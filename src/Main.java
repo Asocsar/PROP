@@ -1,12 +1,15 @@
 import Controlador_ficheros.classe_fichero;
 import Controlador_Compressio_Descompressio.Cont_CD;
 import Estadístiques.Estadistiques;
+import Controlador_Estadistiques.Cont_Est;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        Cont_Est CE = new Cont_Est();
+        CE.GetStats();
         Scanner S = new Scanner(System.in);
         while (S.hasNext()) {
             System.out.println("1:comprimir/descomprimir\n2:Estadisticas globales\n3:Comparar ultima compresión");
@@ -37,5 +40,6 @@ public class Main {
                 C.comparar();
             }
         }
+        CE.Stats_Update();
     }
 }

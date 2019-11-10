@@ -4,7 +4,7 @@ import Algoritmes.LZ78;
 import Algoritmes.LZSS;
 import Algoritmes.LZW;
 import Controlador_ficheros.classe_fichero;
-import Estadistiques.Estadistiques;
+import Estadístiques.Estadistiques;
 
 import java.io.*;
 

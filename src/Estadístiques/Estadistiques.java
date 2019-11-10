@@ -1,27 +1,27 @@
 package Estadístiques;
 
 public class Estadistiques {
-    private static double gradeW;
-    private static double timeW;
-    private static double grade8;
-    private static double time8;
-    private static double gradeS;
-    private static double timeS;
-    private static double gradeG;
-    private static double timeG;
-    private static double gradeWT;
-    private static double timeWT;
-    private static double grade8T;
-    private static double time8T;
-    private static double gradeST;
-    private static double timeST;
-    private static double gradeGT;
-    private static double timeGT;
-    private static int numW;
-    private static int numS;
-    private static int num8;
-    private static int numG;
-    private static int last;
+    private static double gradeW = 0;
+    private static double timeW = 0;
+    private static double grade8 = 0;
+    private static double time8 = 0;
+    private static double gradeS = 0;
+    private static double timeS = 0;
+    private static double gradeG = 0;
+    private static double timeG = 0;
+    private static double gradeWT = 0;
+    private static double timeWT = 0;
+    private static double grade8T = 0;
+    private static double time8T = 0;
+    private static double gradeST = 0;
+    private static double timeST = 0;
+    private static double gradeGT = 0;
+    private static double timeGT = 0;
+    private static int numW = 0;
+    private static int numS = 0;
+    private static int num8 = 0;
+    private static int numG = 0;
+    private static int last = 0;
 
     public  Estadistiques () {}
 
@@ -111,15 +111,20 @@ public class Estadistiques {
         System.out.println("LZW " + gradeW);
         System.out.println("JPEG " + gradeG);
         System.out.println("Tiempos globales por cada algoritmo");
-        System.out.println("LZ78 " + timeWT);
-        System.out.println("LZSS " + timeST);
-        System.out.println("LZW " + timeWT);
-        System.out.println("JPEG " + timeGT);
+        System.out.println("LZ78 " + timeWT/num8);
+        System.out.println("LZSS " + timeST/numS);
+        System.out.println("LZW " + timeWT/numW);
+        System.out.println("JPEG " + timeGT/numG);
         System.out.println("Ratios globales por cada algoritmo");
-        System.out.println("LZ78 " + grade8T);
-        System.out.println("LZSS " + gradeST);
-        System.out.println("LZW " + gradeWT);
-        System.out.println("JPEG " + gradeGT);
+        System.out.println("LZ78 " + grade8T/num8);
+        System.out.println("LZSS " + gradeST/numS);
+        System.out.println("LZW " + gradeWT/numW);
+        System.out.println("JPEG " + gradeGT/numG);
+        System.out.println("Numero de veces de ejecución");
+        System.out.println("LZ78 " + num8);
+        System.out.println("LZSS " + numS);
+        System.out.println("LZW " + numW);
+        System.out.println("JPEG " + numG);
     }
 
 
