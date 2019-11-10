@@ -25,7 +25,7 @@ public class Driver_LZW {
         /*COMPRESSIÓN */
         File file = new File ("C:\\Users\\Asocs\\Desktop\\test.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
-        List<Byte> s = A.compress(br);
+        List<String> s = A.compress(br);
         FileWriter file_o = new FileWriter("C:\\Users\\Asocs\\Desktop\\test_o");
         System.out.println(s.size());
         String SE = "";

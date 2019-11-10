@@ -1,11 +1,8 @@
-package Algoritmes;
+package Algoritmes.LZW;
 
 import java.io.*;
 import java.util.*;
 import java.lang.Math;
-import org.junit.*;
-
-import static org.junit.Assert.assertEquals;
 
 public class LZW {
 
@@ -32,7 +29,7 @@ public class LZW {
             0x2320, 0x2321, 0x00F7, 0x2248, 0x00B0, 0x2219, 0x00B7, 0x221A,
             0x207F, 0x00B2, 0x25A0, 0x00A0 };
 
-    private static void create_alfa() {
+    private void create_alfa() {
         int aux = 0;
         for (int i = 0; i < EXTENDED.length-1; ++i) {
             String s = Character.toString((char) i);
@@ -50,11 +47,11 @@ public class LZW {
     }
 
 
-    private static double log (int x, int base ) {
+    private double log (int x, int base ) {
         return (double) Math.round(Math.log(x) / Math.log(base));
     }
 
-    public static List<Integer> compress(BufferedReader file) throws IOException {
+    public List<String> compress(BufferedReader file) throws IOException {
         Map<String, Integer> Alf_aux = new HashMap<String, Integer>(Alfabet);
         int n = file.read();
         String w = "";
@@ -78,11 +75,15 @@ public class LZW {
         double n1 = cantidad*8;
         double n2 =  log(Alf_aux.size(), 2)*result.size();
         System.out.println(n1/n2);
-        return result;
+        List<String> retur = new ArrayList<>();
+        for (int i = 0; i < result.size(); ++i) {
+            retur.add(Integer.toBinaryString(result.get(i)));
+        }
+        return retur;
     }
 
 
-    public static String descomprimir (List<String> s) {
+    public  String descomprimir (List<String> s) {
         Map<Integer, String> Alf_aux = new HashMap<Integer, String>(Alfabet_inv);
         int i = 0;
         int cod_viejo = Integer.parseInt(s.get(i));
@@ -110,25 +111,5 @@ public class LZW {
             ++i;
         }
         return result;
-    }
-
-    @Test
-    public static void main(String[] args) throws Exception {
-        Scanner S = new Scanner(System.in);
-        String Ej = "";
-        while (S.hasNext()) Ej += S.nextLine() + '\n';
-        System.out.println(Ej);
-        FileWriter fw = new FileWriter("/home/asocar/Desktop/Ejemplo.txt");
-        fw.write(Ej);
-        fw.close();
-        File file = new File ("/home/asocar/Desktop/Ejemplo.txt");
-        BufferedReader br = new BufferedReader(new FileReader (file));
-        create_alfa();
-        List<Integer> s = compress(br);
-        System.out.println(s);
-        //String Ex = descomprimir(s);
-        //System.out.println(Ex);
-        //assertEquals ("Mensaje ?", Ex, Ej);
-
     }
 }
