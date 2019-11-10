@@ -11,18 +11,18 @@ public class LZ78 {
     public long length_n;
     public long length_c;
 
-    public long get_time(){
+    public long get_time() {
 
         return elapsed_time;
     }
 
 
-    private String ajuntar_llistes(List<Integer> a, List<Character> b){
-        int n= a.size();
-        String aux="";
+    private String ajuntar_llistes(List<Integer> a, List<Character> b) {
+        int n = a.size();
+        String aux = "";
         int aux_num;
-        for (int i= 0; i < n; ++i){
-            aux_num= a.get(i);
+        for (int i = 0; i < n; ++i) {
+            aux_num = a.get(i);
             aux = aux + aux_num + "/" + b.get(i);
         }
         return aux;
@@ -30,7 +30,7 @@ public class LZ78 {
 
     public String compresio(BufferedReader file) throws IOException {
         long startTime = System.currentTimeMillis();
-        length_n=0;
+        length_n = 0;
         List<Integer> Indexs = new ArrayList<>();
         List<Character> Coded_text = new ArrayList<>();
         List<String> Caracters = new ArrayList<>();
@@ -46,26 +46,25 @@ public class LZ78 {
                 Indexs.add(index);
                 aux_s = "";
                 index = 0;
-            }
-            else {
-                index=  Caracters.indexOf(aux_s);
+            } else {
+                index = Caracters.indexOf(aux_s);
             }
             ++length_n;
             lletra = file.read();
         }
-        String Coded= ajuntar_llistes(Indexs,Coded_text);
+        String Coded = ajuntar_llistes(Indexs, Coded_text);
         long endTime = System.currentTimeMillis();
-        elapsed_time= (endTime - startTime);
-        length_c= Coded.length();
+        elapsed_time = (endTime - startTime);
+        length_c = Coded.length();
         return Coded;
     }
 
-    public String escriure_llistes(Object b){
-        List<String> a= (List<String>)b;
-        int n= a.size();
-        String aux="";
-        for (int i= 1; i < n; ++i){
-            String r= a.get(i);
+    public String escriure_llistes(Object b) {
+        List<String> a = (List<String>) b;
+        int n = a.size();
+        String aux = "";
+        for (int i = 1; i < n; ++i) {
+            String r = a.get(i);
             aux = aux + r.substring(4);
 
         }
@@ -87,45 +86,40 @@ public class LZ78 {
                 Caracters.add(aux_c);
                 aux_lletra = 0;
                 aux_c = "";
-                lletra= file.read();
-                aux_in=0;
-            }
-
-            else {
+                lletra = file.read();
+                aux_in = 0;
+            } else {
                 if (aux_lletra == '/') {
                     aux_c = Caracters.get(aux_in) + (char) lletra;
                     Caracters.add(aux_c);
                     aux_lletra = 0;
-                    aux_c="";
-                    lletra=file.read();
-                    aux_in=0;
-                }
-                else {
-                    trobat=false;
-                    while (lletra != -1 && !trobat){
-                        if ((char)lletra == '/') {
+                    aux_c = "";
+                    lletra = file.read();
+                    aux_in = 0;
+                } else {
+                    trobat = false;
+                    while (lletra != -1 && !trobat) {
+                        if ((char) lletra == '/') {
                             trobat = true;
                             aux_lletra = '/';
-                            lletra= file.read();
-                        }
-                        else {
-                            aux_in= aux_in*10 + Character.getNumericValue((char)lletra);
-                            lletra= file.read();
+                            lletra = file.read();
+                        } else {
+                            aux_in = aux_in * 10 + Character.getNumericValue((char) lletra);
+                            lletra = file.read();
                         }
                     }
 
                 }
             }
         }
-        String r= escriure_llistes(Caracters);
+        String r = escriure_llistes(Caracters);
         long endTime = System.currentTimeMillis();
-        elapsed_time= (endTime - startTime);
+        elapsed_time = (endTime - startTime);
         return r;
 
     }
 
-    public Long get_ratio_c(){
-        return length_n/length_c;
+    public Long get_ratio_c() {
+        return length_n / length_c;
     }
-
-
+}
