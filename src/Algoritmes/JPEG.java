@@ -342,16 +342,21 @@ public class JPEG {
                     if(b == -1) b = 0;
                     //System.out.println("b: " + b);
 
+                    /*
                     Y[i][j] = (int) (0.299 * r + 0.587 * g + 0.114 * b);
                     Cb[i][j] = (int) (128 - 0.1687 * r - 0.3313 * g + 0.5 * b);
                     Cr[i][j] = (int) (128 + 0.5 * r - 0.4187 * g - 0.0813 * b);
+                    */
 
+                    Y[i][j] = r;
+                    Cb[i][j] = g;
+                    Cr[i][j] = b;
                 }
             }
 
             System.out.println("Finished reading");
 
-            decompress(compress(Y, Cb, Cr), height, width);
+            //decompress(compress(Y, Cb, Cr), height, width);
 
             FileOutputStream fos = new FileOutputStream(outfile);
 
@@ -364,7 +369,7 @@ public class JPEG {
 
             for (int i = 0; i < height; ++i) {
                 for (int j = 0; j < width; ++j) {
-
+                    /*
                     y = (int) (1.16438 * (Y[i][j] - 16));
                     cb = Cb[i][j];
                     cr = Cr[i][j];
@@ -373,6 +378,9 @@ public class JPEG {
                     b = (int) (-276.836 + y + (516.412 * cb) / 256);
 
                     fos.write((r + " " + g + " " + b + " ").getBytes());
+
+                     */
+                    fos.write((Y[i][j] + " " + Cb[i][j] + " " + Cr[i][j] + " ").getBytes());
                 }
                 fos.write(("\n").getBytes());
             }
