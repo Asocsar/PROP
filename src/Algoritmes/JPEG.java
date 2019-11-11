@@ -333,7 +333,7 @@ public class JPEG {
                     //r = bis.read();
                     //r = fis.read();
                     r =  bis.read();
-                    if(r == -1) r = 0;
+                    if(r == -1) r = 0 /*System.out.println("height "+ i + ",width "+ j)*/;
                     System.out.println("r: " + r);
                     g = bis.read();
                     if(g == -1) g = 0;
