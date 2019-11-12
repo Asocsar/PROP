@@ -88,15 +88,19 @@ public class LZW {
         int cantidad = 0;
         List<Integer> result = new ArrayList<>();
         boolean one_more = true;
-        int max = 0;
+        //int max = 0;
+        //boolean match = false;
         while (one_more) {
             one_more = (n != -1);
             ++cantidad;
             String k = "" + (char) n;
             String aux = w + k;
-            if (Alf_aux.containsKey(aux)) w = aux;
+            if (Alf_aux.containsKey(aux)) {
+                w = aux;
+                //match = w.length() >= 2;
+            }
             else {
-                max = Math.max(max, Alf_aux.get(w));
+                //max = Math.max(max, Alf_aux.get(w));
                 result.add(Alf_aux.get(w));
                 if (Alf_aux.size() < Integer.MAX_VALUE) Alf_aux.put(aux, Alf_aux.size());
                 w = k;
@@ -106,45 +110,47 @@ public class LZW {
         double n1 = cantidad*8;
         double n2 =  log(Alf_aux.size(), 2)*result.size();
         System.out.println(n1/n2);
-        String k = Integer.toBinaryString(max);
-        int base = 1;
-        List<Integer> numero = new ArrayList<>();
-        int aux = 0;
-        boolean zero = false;
-        for (int i = k.length()-1; i >= 0; --i) {
-            double s = Integer.parseInt(k.charAt(i)+"")*Math.pow(2,base);
-            zero = (s == 0.0);
-            if (aux + s > Integer.MAX_VALUE) {
-                numero.add(0,aux);
-                aux = 0;
-                base = 0;
+        /*if (match) {
+            String k = Integer.toBinaryString(max);
+            int base = 1;
+            List<Integer> numero = new ArrayList<>();
+            int aux = 0;
+            boolean zero = false;
+            for (int i = k.length() - 1; i >= 0; --i) {
+                double s = Integer.parseInt(k.charAt(i) + "") * Math.pow(2, base);
+                zero = (s == 0.0);
+                if (aux + s > Integer.MAX_VALUE) {
+                    numero.add(aux);
+                    aux = 0;
+                    base = 0;
+                }
+                aux += s;
+                ++base;
+                if (aux + Math.pow(2, base) > Integer.MAX_VALUE) {
+                    numero.add(aux);
+                    aux = 0;
+                    base = 0;
+                    if (zero) base = 1;
+                }
+                aux += Math.pow(2, base);
+                ++base;
+                zero = false;
             }
-            aux += s;
-            ++base;
-            if (aux + Math.pow(2,base) > Integer.MAX_VALUE) {
-                numero.add(0,aux);
-                aux = 0;
-                base = 0;
-                if (zero) base = 1;
+            numero.add(aux);
+            for (int i = 0; i < numero.size(); ++i) {
+                result.add(0, numero.get(i));
             }
-            aux += Math.pow(2,base);
-            ++base;
-            zero = false;
-        }
-        numero.add(0,aux);
-        for (int i = 0; i < result.size(); ++i) {
-            if (result.get(i) < Math.pow(2, log(max,2))) {
-                result.set(i, (int) (result.get(i)+Math.pow(2, log(max,2))));
+            for (int i = 0; i < result.size(); ++i) {
+                if (result.get(i) < Math.pow(2, log(max, 2))) {
+                    result.set(i, (int) (result.get(i) + Math.pow(2, log(max, 2))));
+                }
             }
-        }
-        for (int i = 0; i < numero.size(); ++i) {
-            result.add(0, numero.get(i));
-        }
-        System.out.println(result);
+        }*/
+       /* System.out.println(result);
         for (Integer lee: result
              ) {
             System.out.println(Integer.toBinaryString(lee));
-        }
+        }*/
         return result;
     }
     public  String descomprimir (List<String> s) {
