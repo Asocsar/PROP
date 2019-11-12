@@ -10,6 +10,17 @@ public class LZW {
     private static Map<String, Integer> Alfabet = new HashMap<String, Integer>();
     private static Map<Integer, String> Alfabet_inv = new HashMap<Integer, String>();
 
+    private double time;
+    private double rate;
+
+    public double getTime () {return  this.time;}
+    public double getRate () {return  this.rate;}
+
+    public LZW () {
+        create_alfa();
+        this.time = 0;
+        this.rate = 0;
+    }
 
     private static char[] EXTENDED = { 0x00C7, 0x00FC, 0x00E9, 0x00E2,
             0x00E4, 0x00E0, 0x00E5, 0x00E7, 0x00EA, 0x00EB, 0x00E8, 0x00EF,
@@ -31,17 +42,36 @@ public class LZW {
 
     private void create_alfa() {
         int aux = 0;
-        for (int i = 0; i < EXTENDED.length-1; ++i) {
-            String s = Character.toString((char) i);
+        for (int i = 97; i <= 122; ++i) {
+            String s = (char)i + "";
             Alfabet.put(s, aux);
             Alfabet_inv.put(aux, s);
             ++aux;
         }
-        for (char c : EXTENDED) {
-            String s = Character.toString(c);
+        Alfabet.put(""+((char)13), aux);
+        Alfabet_inv.put(aux, ""+((char)13));
+        ++aux;
+        for (int i = 65; i <= 90; ++i) {
+            String s = (char)i + "";
             Alfabet.put(s, aux);
             Alfabet_inv.put(aux, s);
             ++aux;
+        }
+        for (int i = 0; i < EXTENDED.length-1; ++i) {
+            String s = Character.toString((char) i);
+            if (!Alfabet.containsKey(s)) {
+                Alfabet.put(s, aux);
+                Alfabet_inv.put(aux, s);
+                ++aux;
+            }
+        }
+        for (char c : EXTENDED) {
+            String s = Character.toString(c);
+            if (!Alfabet.containsKey(s)) {
+                Alfabet.put(s, aux);
+                Alfabet_inv.put(aux, s);
+                ++aux;
+            }
         }
 
     }
@@ -51,38 +81,72 @@ public class LZW {
         return (double) Math.round(Math.log(x) / Math.log(base));
     }
 
-    public List<String> compress(BufferedReader file) throws IOException {
+    public List<Integer> compress(BufferedReader file) throws IOException {
         Map<String, Integer> Alf_aux = new HashMap<String, Integer>(Alfabet);
         int n = file.read();
         String w = "";
         int cantidad = 0;
         List<Integer> result = new ArrayList<>();
         boolean one_more = true;
-            while (one_more) {
-                one_more = (n != -1);
-                ++cantidad;
-                String k = "" + (char) n;
-                String aux = w + k;
-                if (Alf_aux.containsKey(aux)) w = aux;
-                else {
-                    result.add(Alf_aux.get(w));
-                    Alf_aux.put(aux, Alf_aux.size());
-                    w = k;
-                }
-                n = file.read();
-
+        int max = 0;
+        while (one_more) {
+            one_more = (n != -1);
+            ++cantidad;
+            String k = "" + (char) n;
+            String aux = w + k;
+            if (Alf_aux.containsKey(aux)) w = aux;
+            else {
+                max = Math.max(max, Alf_aux.get(w));
+                result.add(Alf_aux.get(w));
+                if (Alf_aux.size() < Integer.MAX_VALUE) Alf_aux.put(aux, Alf_aux.size());
+                w = k;
             }
+            n = file.read();
+        }
         double n1 = cantidad*8;
         double n2 =  log(Alf_aux.size(), 2)*result.size();
         System.out.println(n1/n2);
-        List<String> retur = new ArrayList<>();
-        for (int i = 0; i < result.size(); ++i) {
-            retur.add(Integer.toBinaryString(result.get(i)));
+        String k = Integer.toBinaryString(max);
+        int base = 1;
+        List<Integer> numero = new ArrayList<>();
+        int aux = 0;
+        boolean zero = false;
+        for (int i = k.length()-1; i >= 0; --i) {
+            double s = Integer.parseInt(k.charAt(i)+"")*Math.pow(2,base);
+            zero = (s == 0.0);
+            if (aux + s > Integer.MAX_VALUE) {
+                numero.add(0,aux);
+                aux = 0;
+                base = 0;
+            }
+            aux += s;
+            ++base;
+            if (aux + Math.pow(2,base) > Integer.MAX_VALUE) {
+                numero.add(0,aux);
+                aux = 0;
+                base = 0;
+                if (zero) base = 1;
+            }
+            aux += Math.pow(2,base);
+            ++base;
+            zero = false;
         }
-        return retur;
+        numero.add(0,aux);
+        for (int i = 0; i < result.size(); ++i) {
+            if (result.get(i) < Math.pow(2, log(max,2))) {
+                result.set(i, (int) (result.get(i)+Math.pow(2, log(max,2))));
+            }
+        }
+        for (int i = 0; i < numero.size(); ++i) {
+            result.add(0, numero.get(i));
+        }
+        System.out.println(result);
+        for (Integer lee: result
+             ) {
+            System.out.println(Integer.toBinaryString(lee));
+        }
+        return result;
     }
-
-
     public  String descomprimir (List<String> s) {
         Map<Integer, String> Alf_aux = new HashMap<Integer, String>(Alfabet_inv);
         int i = 0;
