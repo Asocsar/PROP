@@ -7,8 +7,8 @@ import java.lang.Math;
 public class LZW {
 
 
-    private static Map<String, Integer> Alfabet = new HashMap<String, Integer>();
-    private static Map<Integer, String> Alfabet_inv = new HashMap<Integer, String>();
+    private static Map<List<Byte>, Integer> Alfabet = new HashMap<List<Byte>, Integer>();
+    private static Map<Integer, List<Byte>> Alfabet_inv = new HashMap<Integer, List<Byte>>();
 
     private double time;
     private double rate;
@@ -42,36 +42,14 @@ public class LZW {
 
     private void create_alfa() {
         int aux = 0;
-        for (int i = 97; i <= 122; ++i) {
-            String s = (char)i + "";
-            Alfabet.put(s, aux);
-            Alfabet_inv.put(aux, s);
+        Byte [] j = new Byte[1];
+        byte n = 0;
+        for (int i = 0; i < 256; ++i) {
+            j[0] = n;
+            Alfabet.put(Collections.unmodifiableList(Arrays.asList(j)), aux);
+            Alfabet_inv.put(aux, Collections.unmodifiableList(Arrays.asList(j)));
             ++aux;
-        }
-        Alfabet.put(""+((char)13), aux);
-        Alfabet_inv.put(aux, ""+((char)13));
-        ++aux;
-        for (int i = 65; i <= 90; ++i) {
-            String s = (char)i + "";
-            Alfabet.put(s, aux);
-            Alfabet_inv.put(aux, s);
-            ++aux;
-        }
-        for (int i = 0; i < EXTENDED.length-1; ++i) {
-            String s = Character.toString((char) i);
-            if (!Alfabet.containsKey(s)) {
-                Alfabet.put(s, aux);
-                Alfabet_inv.put(aux, s);
-                ++aux;
-            }
-        }
-        for (char c : EXTENDED) {
-            String s = Character.toString(c);
-            if (!Alfabet.containsKey(s)) {
-                Alfabet.put(s, aux);
-                Alfabet_inv.put(aux, s);
-                ++aux;
-            }
+            ++n;
         }
 
     }
@@ -81,35 +59,39 @@ public class LZW {
         return (double) Math.round(Math.log(x) / Math.log(base));
     }
 
-    public List<Integer> compress(BufferedReader file) throws IOException {
-        Map<String, Integer> Alf_aux = new HashMap<String, Integer>(Alfabet);
-        int n = file.read();
-        String w = "";
+    public List<Integer> compress(byte [] file) throws IOException {
+        Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
         int cantidad = 0;
         List<Integer> result = new ArrayList<>();
-        boolean one_more = true;
-        //int max = 0;
-        //boolean match = false;
-        while (one_more) {
-            one_more = (n != -1);
+        Byte  [] w = new Byte[0];
+        for (byte b : file) {
             ++cantidad;
-            String k = "" + (char) n;
-            String aux = w + k;
-            if (Alf_aux.containsKey(aux)) {
+            Byte[] k = new Byte[1];
+            k[0] = b;
+            Byte[] aux = new Byte[k.length + w.length];
+            System.arraycopy(w, 0, aux, 0, w.length);
+            System.arraycopy(k, 0, aux, w.length, k.length);
+            if (Alf_aux.containsKey(Arrays.asList(aux))) {
+                w = new Byte[aux.length];
                 w = aux;
-                //match = w.length() >= 2;
-            }
-            else {
-                //max = Math.max(max, Alf_aux.get(w));
-                result.add(Alf_aux.get(w));
-                if (Alf_aux.size() < Integer.MAX_VALUE) Alf_aux.put(aux, Alf_aux.size());
+            } else {
+                Alf_aux.put(Collections.unmodifiableList(Arrays.asList(aux)), Alf_aux.size());
+                result.add(Alf_aux.get(Arrays.asList(w)));
+                w = new Byte[k.length];
                 w = k;
             }
-            n = file.read();
         }
         double n1 = cantidad*8;
         double n2 =  log(Alf_aux.size(), 2)*result.size();
-        System.out.println(n1/n2);
+
+        return result;
+    }
+
+
+
+
+
+    //System.out.println(n1/n2);
         /*if (match) {
             String k = Integer.toBinaryString(max);
             int base = 1;
@@ -151,35 +133,33 @@ public class LZW {
              ) {
             System.out.println(Integer.toBinaryString(lee));
         }*/
-        return result;
-    }
-    public  String descomprimir (List<String> s) {
-        Map<Integer, String> Alf_aux = new HashMap<Integer, String>(Alfabet_inv);
+
+    public  String descomprimir (List<Integer> s) {
+        Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
         int i = 0;
-        int cod_viejo = Integer.parseInt(s.get(i));
-        String caracter = Alf_aux.get(cod_viejo);
+        int cod_viejo = s.get(i);
+        List<Byte> caracter = Alf_aux.get(cod_viejo);
         int cod_nuevo;
-        String cadena;
-        String result = caracter;
+        List<Byte> cadena;
+        List<Byte> result = caracter;
         ++i;
         while (i < s.size()) {
-            cadena = "";
-            cod_nuevo = Integer.parseInt(s.get(i));
+            cod_nuevo = s.get(i); //Integer.parseInt(s.get(i));
             if (Alf_aux.containsKey(cod_nuevo)) {
                 cadena = Alf_aux.get(cod_nuevo);
             }
             else {
-
                 cadena = Alf_aux.get(cod_viejo);
-                cadena += caracter;
+                cadena.addAll(caracter);
+                //cadena += caracter;
             }
-            result += cadena;
-            caracter = "" + cadena.charAt(0);
-            String aderir = Alf_aux.get(cod_viejo) + caracter;
-            Alf_aux.put(Alf_aux.size(), aderir);
+            result.addAll(cadena);
+            caracter = cadena.subList(0,8);
+            //String aderir = Alf_aux.get(cod_viejo) + caracter;
+            //Alf_aux.put(Alf_aux.size(), aderir);
             cod_viejo = cod_nuevo;
             ++i;
         }
-        return result;
+        return "q";
     }
 }
