@@ -2,10 +2,7 @@ package Algoritmes;
 
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.Arrays;
 
 public class JPEG {
 
@@ -294,17 +291,15 @@ public class JPEG {
 
         try {
 
-            File infile = new File("/home/maller/Downloads/west_1.ppm");
+            File infile = new File("/home/maller/Downloads/west_2.ppm");
             File outfile = new File("/home/maller/Downloads/wested.ppm");
 
             FileInputStream fis = new FileInputStream(infile);
             BufferedInputStream bis = new BufferedInputStream(fis);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
-
 
             byte[] bb = new byte[50];
             char c;
-            int width, height = 0;
+            int width = 0, height;
 
             bis.read(bb, 0, 3);
             if((char)bb[0] == 'P' && (char)bb[1] == '6') System.out.println("Lectura de fitxer P6");
@@ -313,61 +308,37 @@ public class JPEG {
             c = (char) bis.read();
             while(c != '\n'){
                 if(c == ' ') {
-                    height = Integer.parseInt(str.toString());
+                    width = Integer.parseInt(str.toString());
                     str = new StringBuilder();
                 }
                 else str.append(c);
                 c = (char) bis.read();
             }
-            width = Integer.parseInt(str.toString());
 
-            bis.read(bb, 0, 3);
+            height = Integer.parseInt(str.toString());
+            System.out.println("Width: " + width);
+            System.out.println("Height: " + height);
 
-            System.out.println("char0: " + (char)bb[0]);
-            System.out.println("char1: " + (char)bb[1]);
-            System.out.println("char2: " + (char)bb[2]);
+            bis.read(bb, 0, 4);
 
-            /*
-            String line = reader.readLine(); //Check if filetype is P6
-            System.out.println(line);
-            if (!line.equals("P6")) System.out.println("Fitxer no acceptat, tipus diferent de P6");
+            System.out.println("Depth: " + (char) bb[0] + (char) bb[1] + (char) bb[2]);
 
-            //Skip comments and depth 255
-            while ((line = reader.readLine()) != null && line.charAt(0) == '#') {
-                System.out.println(line);
-            }
-
-
-            //Read width and height
-            String[] wh = line.split("\\s+");
-            int width = Integer.parseInt(wh[0]);
-            int height = Integer.parseInt(wh[1]);
-            System.out.println("Width and height: " + width + ",  " + height);
-
-            reader.readLine(); //Skip depth
-            */
 
             int[][] Y = new int[height][width];
             int[][] Cb = new int[height][width]; //height/factor_downsampling and width/FD
             int[][] Cr = new int[height][width]; //H/fd and w/fd ??
 
-
-
             //Read ints
             int r, g, b;
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
-                    //r = bis.read();
-                    //r = fis.read();
+
                     r = bis.read();
-                    //if(r == -1) r = 0 /*System.out.println("height "+ i + ",width "+ j)*/;
-                    //System.out.println("r: " + r);
+                    if(i == 0 && j == 0){
+                        System.out.println("First r: " + r);
+                    }
                     g = bis.read();
-                    //if(g == -1) g = 0;
-                    //System.out.println("g: " + g);
                     b = bis.read();
-                    //if(b == -1) b = 0;
-                    //System.out.println("b: " + b);
 
                     /*
                     Y[i][j] = (int) (0.299 * r + 0.587 * g + 0.114 * b);
@@ -382,8 +353,9 @@ public class JPEG {
             }
 
             for (int x = 0; x < height; x++) {
+                System.out.printf("Fila: " + x + " ");
                 for (int y = 0; y < width; y++) {
-                    System.out.printf("%d\t", Cr[x][y]);
+                    System.out.printf("%d\t", Y[x][y]);
                 }
                 System.out.println();
             }
@@ -412,30 +384,31 @@ public class JPEG {
             //decompress(compress(Y, Cb, Cr), height, width);
 
             FileOutputStream fos = new FileOutputStream(outfile);
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
 
-            fos.write(("P6" + "\n").getBytes());
-            fos.write((width + " " + height + "\n").getBytes());
-            fos.write(("255\n").getBytes());
+            bos.write(("P6" + "\n").getBytes());
+            bos.write((width + " " + height + "\n").getBytes());
+            bos.write(("255\n").getBytes());
 
             //YCbCr to RGB and write
+            /*
             int y, cb, cr;
+
+            y = (int) (1.16438 * (Y[i][j] - 16));
+            cb = Cb[i][j];
+            cr = Cr[i][j];
+            r = (int) (-222.921 + y + (408.583 * cr) / 256);
+            g = (int) (135.576 + y - (100.291 * cb) / 256 - (208.120 * cr) / 256);
+            b = (int) (-276.836 + y + (516.412 * cb) / 256);
+
+            */
 
             for (int i = 0; i < height; ++i) {
                 for (int j = 0; j < width; ++j) {
-                    /*
-                    y = (int) (1.16438 * (Y[i][j] - 16));
-                    cb = Cb[i][j];
-                    cr = Cr[i][j];
-                    r = (int) (-222.921 + y + (408.583 * cr) / 256);
-                    g = (int) (135.576 + y - (100.291 * cb) / 256 - (208.120 * cr) / 256);
-                    b = (int) (-276.836 + y + (516.412 * cb) / 256);
-
-                    fos.write((r + " " + g + " " + b + " ").getBytes());
-
-                     */
-                    fos.write((Y[i][j] + " " + Cb[i][j] + " " + Cr[i][j] + " ").getBytes());
+                    bos.write(Y[i][j]);
+                    bos.write(Cb[i][j]);
+                    bos.write(Cr[i][j]);
                 }
-                fos.write(("\n").getBytes());
             }
 
             fis.close();
