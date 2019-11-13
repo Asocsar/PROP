@@ -1,9 +1,8 @@
 package Algoritmes;
 
 
-import org.w3c.dom.ls.LSOutput;
-
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -302,8 +301,34 @@ public class JPEG {
             BufferedInputStream bis = new BufferedInputStream(fis);
             BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 
-            //Check if filetype is P6
-            String line = reader.readLine();
+
+            byte[] bb = new byte[50];
+            char c;
+            int width, height = 0;
+
+            bis.read(bb, 0, 3);
+            if((char)bb[0] == 'P' && (char)bb[1] == '6') System.out.println("Lectura de fitxer P6");
+
+            StringBuilder str = new StringBuilder();
+            c = (char) bis.read();
+            while(c != '\n'){
+                if(c == ' ') {
+                    height = Integer.parseInt(str.toString());
+                    str = new StringBuilder();
+                }
+                else str.append(c);
+                c = (char) bis.read();
+            }
+            width = Integer.parseInt(str.toString());
+
+            bis.read(bb, 0, 3);
+
+            System.out.println("char0: " + (char)bb[0]);
+            System.out.println("char1: " + (char)bb[1]);
+            System.out.println("char2: " + (char)bb[2]);
+
+            /*
+            String line = reader.readLine(); //Check if filetype is P6
             System.out.println(line);
             if (!line.equals("P6")) System.out.println("Fitxer no acceptat, tipus diferent de P6");
 
@@ -319,12 +344,14 @@ public class JPEG {
             int height = Integer.parseInt(wh[1]);
             System.out.println("Width and height: " + width + ",  " + height);
 
+            reader.readLine(); //Skip depth
+            */
+
             int[][] Y = new int[height][width];
             int[][] Cb = new int[height][width]; //height/factor_downsampling and width/FD
             int[][] Cr = new int[height][width]; //H/fd and w/fd ??
 
-            line = reader.readLine();//Skip depth -> 255
-            System.out.println(line);
+
 
             //Read ints
             int r, g, b;
@@ -332,14 +359,14 @@ public class JPEG {
                 for (int j = 0; j < width; j++) {
                     //r = bis.read();
                     //r = fis.read();
-                    r =  bis.read();
-                    if(r == -1) r = 0 /*System.out.println("height "+ i + ",width "+ j)*/;
-                    System.out.println("r: " + r);
+                    r = bis.read();
+                    //if(r == -1) r = 0 /*System.out.println("height "+ i + ",width "+ j)*/;
+                    //System.out.println("r: " + r);
                     g = bis.read();
-                    if(g == -1) g = 0;
+                    //if(g == -1) g = 0;
                     //System.out.println("g: " + g);
                     b = bis.read();
-                    if(b == -1) b = 0;
+                    //if(b == -1) b = 0;
                     //System.out.println("b: " + b);
 
                     /*
@@ -353,6 +380,32 @@ public class JPEG {
                     Cr[i][j] = b;
                 }
             }
+
+            for (int x = 0; x < height; x++) {
+                for (int y = 0; y < width; y++) {
+                    System.out.printf("%d\t", Cr[x][y]);
+                }
+                System.out.println();
+            }
+            System.out.println();
+
+            for (int x = 0; x < height; x++) {
+                for (int y = 0; y < width; y++) {
+                    System.out.printf("%d\t", Cb[x][y]);
+
+                }
+                System.out.println();
+            }
+            System.out.println();
+
+            for (int x = 0; x < height; x++) {
+                for (int y = 0; y < width; y++) {
+                    System.out.printf("%d\t", Cr[x][y]);
+
+                }
+                System.out.println();
+            }
+            System.out.println();
 
             System.out.println("Finished reading");
 
