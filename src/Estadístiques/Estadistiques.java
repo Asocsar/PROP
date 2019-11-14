@@ -21,43 +21,77 @@ public class Estadistiques {
     private static int numS = 0;
     private static int num8 = 0;
     private static int numG = 0;
-    private static int last = 0;
+    private static String last = "";
 
     public  Estadistiques () {}
 
-    public void setGradeW (double gr, double grT) {gradeW = gr;gradeWT = grT;}
-    public void setGrade8 (double gr, double grT) {grade8 = gr;gradeWT = grT;}
-    public void setGradeS (double gr, double grT) {gradeS = gr;gradeWT = grT;}
-    public void setGradeG (double gr, double grT) {gradeG = gr;gradeWT = grT;}
+    public int getQuantLZW () {
+        return numW;
+    }
+    public int getQuantLZSS () {
+        return numS;
+    }
+    public int getQuantLZ78 () {
+        return num8;
+    }
+    public int getQuantJPEG () {
+        return numG;
+    }
+
+    public void setLZW (double gr, double grT, double ti, double tiT, double q) {
+        gradeW = gr;
+        gradeWT = grT;
+        timeW = ti;
+        timeWT = tiT;
+        numW = (int)q;
+    }
+
+    public void setLZSS (double gr, double grT, double ti, double tiT, double q) {
+        gradeS = gr;
+        gradeST = grT;
+        timeS = ti;
+        timeST = tiT;
+        numS = (int)q;
+    }
+
+    public void setLZ78 (double gr, double grT, double ti, double tiT, double q) {
+        grade8 = gr;
+        grade8T = grT;
+        time8 = ti;
+        time8T = tiT;
+        num8 = (int)q;
+    }
+
+    public void setJPEG  (double gr, double grT, double ti, double tiT, double q) {
+        gradeG = gr;
+        gradeGT = grT;
+        timeG = ti;
+        timeGT = tiT;
+        numG = (int)q;
+    }
 
 
-    public void setTimeW (double ti, double tiT) {timeW = ti;timeWT = tiT;}
-    public void setTime8 (double ti, double tiT) {time8 = ti;timeWT = tiT;}
-    public void setTimeS (double ti, double tiT) {timeS = ti;timeWT = tiT;}
-    public void setTimeG (double ti, double tiT) {timeG = ti;timeWT = tiT;}
+    public double getRatioLZW () {return gradeW;}
+    public double getRatioLZSS () {return grade8;}
+    public double getRatioLZ78 () {return gradeS;}
+    public double getRatioJPEG () {return gradeG;}
 
 
-    public double getGradeW () {return gradeW;}
-    public double getGrade8 () {return grade8;}
-    public double getGradeS () {return gradeS;}
-    public double getGradeG () {return gradeG;}
+    public double getTimeLZW () {return timeW;}
+    public double getTimeLZSS () {return time8;}
+    public double getTimeLZ78 () {return timeS;}
+    public double getTimeJPEG () {return timeG;}
+
+    public double getGlobRatioLZW () {return gradeWT;}
+    public double getGlobRatioLZSS () {return grade8T;}
+    public double getGlobRatioLZ78 () {return gradeST;}
+    public double getGlobRatioJPEG () {return gradeGT;}
 
 
-    public double getTimeW () {return timeW;}
-    public double getTime8 () {return time8;}
-    public double getTimeS () {return timeS;}
-    public double getTimeG () {return timeG;}
-
-    public double getGradeWT () {return gradeWT;}
-    public double getGrade8T () {return grade8T;}
-    public double getGradeST () {return gradeST;}
-    public double getGradeGT () {return gradeGT;}
-
-
-    public double getTimeWT () {return timeWT;}
-    public double getTime8T () {return time8T;}
-    public double getTimeST () {return timeST;}
-    public double getTimeGT () {return timeGT;}
+    public double getGlobTimeLZW () {return timeWT;}
+    public double getGlobTimeLZSS () {return time8T;}
+    public double getGlobTimeLZ78 () {return timeST;}
+    public double getGlobTimeJPEG () {return timeGT;}
 
 
     public void actW (double ti, double gr) {
@@ -66,7 +100,7 @@ public class Estadistiques {
         gradeW = gr;
         gradeWT += gr;
         numW += 1;
-        last = 0;
+        last = "0";
     }
 
     public void actS (double ti, double gr) {
@@ -75,7 +109,7 @@ public class Estadistiques {
         gradeS = gr;
         gradeST += gr;
         numS += 1;
-        last = 1;
+        last = "1";
     }
 
     public void act8 (double ti, double gr) {
@@ -84,7 +118,7 @@ public class Estadistiques {
         grade8 = gr;
         grade8T += gr;
         num8 += 1;
-        last = 2;
+        last = "2";
     }
 
     public void actG (double ti, double gr) {
@@ -93,11 +127,11 @@ public class Estadistiques {
         gradeG = gr;
         gradeGT += gr;
         numG += 1;
-        last = 3;
+        last = "3";
     }
 
-    public int getLastAlg () {return  last; }
-    public void setLastAlg (int id) {last = id;}
+    public String getLastAlg () {return  last; }
+    public void setLastAlg (String id) {last = id;}
 
     public void visualglob() {
         System.out.println("Tiempos de ultimas compresiones");
