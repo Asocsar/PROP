@@ -53,7 +53,8 @@ public class LZW {
         }
 
         for (Map.Entry<List<Byte>, Integer> entry : Alfabet.entrySet()) {
-            System.out.println(entry.getKey() + ":" + entry.getValue().toString());
+            //entry.getValue().toString()
+            System.out.println(entry.getKey() + ":" + entry.getKey());
         }
 
     }
@@ -68,11 +69,14 @@ public class LZW {
         int cantidad = 0;
         List<Integer> result = new ArrayList<>();
         Byte  [] w = new Byte[0];
+        boolean add = false;
         for (byte b : file) {
-            if (Alf_aux.size() >= 0xFFFF) {
-                //result.add(Alf_aux.get(Arrays.asList(w)));
+            if (Alf_aux.size() >= 0xFFFE) {
                 Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
-                //w[0] = b;
+                /*if (add) {
+                    result.add(Alf_aux.get(Arrays.asList(w)));
+                    w[0] = b;
+                }*/
             }
             ++cantidad;
             Byte[] k = new Byte[1];
@@ -83,7 +87,9 @@ public class LZW {
             if (Alf_aux.containsKey(Arrays.asList(aux))) {
                 w = new Byte[aux.length];
                 w = aux;
+                add = true;
             } else {
+                add = false;
                 Alf_aux.put(Arrays.asList(aux), Alf_aux.size());
                 result.add(Alf_aux.get(Arrays.asList(w)));
                 w = new Byte[k.length];
@@ -97,52 +103,6 @@ public class LZW {
     }
 
 
-
-
-
-    //System.out.println(n1/n2);
-        /*if (match) {
-            String k = Integer.toBinaryString(max);
-            int base = 1;
-            List<Integer> numero = new ArrayList<>();
-            int aux = 0;
-            boolean zero = false;
-            for (int i = k.length() - 1; i >= 0; --i) {
-                double s = Integer.parseInt(k.charAt(i) + "") * Math.pow(2, base);
-                zero = (s == 0.0);
-                if (aux + s > Integer.MAX_VALUE) {
-                    numero.add(aux);
-                    aux = 0;
-                    base = 0;
-                }
-                aux += s;
-                ++base;
-                if (aux + Math.pow(2, base) > Integer.MAX_VALUE) {
-                    numero.add(aux);
-                    aux = 0;
-                    base = 0;
-                    if (zero) base = 1;
-                }
-                aux += Math.pow(2, base);
-                ++base;
-                zero = false;
-            }
-            numero.add(aux);
-            for (int i = 0; i < numero.size(); ++i) {
-                result.add(0, numero.get(i));
-            }
-            for (int i = 0; i < result.size(); ++i) {
-                if (result.get(i) < Math.pow(2, log(max, 2))) {
-                    result.set(i, (int) (result.get(i) + Math.pow(2, log(max, 2))));
-                }
-            }
-        }*/
-       /* System.out.println(result);
-        for (Integer lee: result
-             ) {
-            System.out.println(Integer.toBinaryString(lee));
-        }*/
-
     public byte[] descomprimir (List<Integer> s) {
         Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
         int i = 0;
@@ -154,13 +114,13 @@ public class LZW {
         result.addAll(caracter);
         ++i;
         while (i < s.size()) {
-            if (Alf_aux.size() >= 0xFFFF) {
+            if (Alf_aux.size() >= 0xFFFE) {
                 Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
-                cod_viejo = s.get(i);
+                /*cod_viejo = s.get(i);
                 caracter = Alf_aux.get(cod_viejo);
-                result.addAll(caracter);
+                result.addAll(caracter);*/
             }
-            cod_nuevo = s.get(i); //Integer.parseInt(s.get(i));
+            cod_nuevo = s.get(i);
             if (Alf_aux.containsKey(cod_nuevo)) {
                 cadena = Alf_aux.get(cod_nuevo);
             }

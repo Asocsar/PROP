@@ -8,7 +8,6 @@ import java.util.List;
 
 public class Driver_LZW {
     public static void main(String[] args) throws Exception {
-
         File file = new File("C:\\Users\\Asocs\\Desktop\\entrada.txt");
         byte[] b = Files.readAllBytes(file.toPath());
         /*EXTRA*/
