@@ -1,4 +1,6 @@
 package Controlador_Estadistiques;
+import Estadístiques.Estadistiques;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,85 +9,10 @@ import java.util.List;
 
 public class Cont_Est {
 
-    public static class Estadístiques{ //Stats Stub
-
-        //LZW
-
-        private static double timeLZW = 0;
-        private static double GtimeLZW = 0;
-        private static double ratioLZW = 0;
-        private static double GratioLZW = 0;
-        private static double QuantLZW = 0;
-
-        public static void setLZW(double tl,double tg,double rl,double rg, double quant){}
-        public static double getTimeLZW(){ return 4.0;}
-        public static double getGlobTimeLZW(){ return 4.0;}
-        public static double getRatioLZW(){ return 4.0;}
-        public static double getGlobRatioLZW() { return 3.0;}
-        public static double getQuantLZW(){ return 4.0;}
-
-
-        //LZ78
-
-        private static double timeLZ78 = 0;
-        private static double GtimeLZ78 = 0;
-        private static double ratioLZ78 = 0;
-        private static double GratioLZ78 = 0;
-        private static double QuantLZ78 = 0;
-
-        public static void setLZSS(double tl,double tg,double rl,double rg, double quant){}
-        public static double getTimeLZSS(){ return 4.0;}
-        public static double getGlobTimeLZSS(){ return 4.0;}
-        public static double getRatioLZSS(){ return 4.0;}
-        public static double getGlobRatioLZSS() { return 3.0;}
-        public static double getQuantLZSS(){ return 4.0;}
-
-
-        //LZSS
-
-        private static double timeLZSS = 0;
-        private static double GtimeLZSS = 0;
-        private static double ratioLZSS = 0;
-        private static double GratioLZSS = 0;
-        private static double QuantLZSS = 0;
-
-        public static void setLZ78(double tl,double tg,double rl,double rg, double quant){}
-        public static double getTimeLZ78(){ return 4.0;}
-        public static double getGlobTimeLZ78(){ return 4.0;}
-        public static double getRatioLZ78(){ return 4.0;}
-        public static double getGlobRatioLZ78() { return 3.0;}
-        public static double getQuantLZ78(){ return 4.0;}
-
-
-        //JPEG
-
-        private static double timeJPEG = 0;
-        private static double GtimeJPEG = 0;
-        private static double ratioJPEG = 0;
-        private static double GratioJPEG = 0;
-        private static double QuantJPEG = 0;
-
-
-        public static void setJPEG(double tl,double tg,double rl,double rg, double quant){}
-        public static double getTimeJPEG(){ return 4.0;}
-        public static double getGlobTimeJPEG(){ return 4.0;}
-        public static double getRatioJPEG(){ return 4.0;}
-        public static double getGlobRatioJPEG() { return 3.0;}
-        public static double getQuantJPEG(){ return 4.0;}
-
-        //LAST ALGORITHM USED
-
-        public static String LastAlg = "LZ78";
-
-        public static String getLastAlg(){ return "LZSS";}
-        public static void setLastAlg (String lAlg) {}
-
-
-    }
 
 
 
-    public static void main() throws  IOException{
+   /* public static void main() throws  IOException{
 
         Stats_Update();
 
@@ -97,64 +24,51 @@ public class Cont_Est {
 
 
 
-    }
+    }*/
 
 
     public static void Stats_Update() throws  IOException {
 
         //Update stats from last compression
 
-        Estadístiques E = new Estadístiques();
+        Stats_Stub E = new Stats_Stub();
         File out = new File("/home/clums/Escriptori/UpdateEstadisticas.txt");
         if (!out.exists()) out.createNewFile();
         PrintWriter pw = new PrintWriter(new FileWriter(out));
 
         // Save Stats LZW
 
-        Estadístiques.timeLZW = E.getTimeLZW();
-        Estadístiques.GtimeLZW = E.getGlobTimeLZW();
-        Estadístiques.ratioLZW = E.getRatioLZW();
-        Estadístiques.GratioLZW = E.getGlobRatioLZW();
-        Estadístiques.QuantLZW = E.getQuantLZW();
+        E.setLZW(E.getTimeLZW(),E.getGlobTimeLZW(),E.getRatioLZW(),E.getGlobRatioLZW(),E.getQuantLZW());
 
-        pw.print(0+Estadístiques.timeLZW+','+Estadístiques.GtimeLZW+','+Estadístiques.ratioLZW+','+Estadístiques.GratioLZW+','+Estadístiques.QuantLZW+"\n");
+
+        pw.print(0+E.getTimeLZW()+','+E.getGlobTimeLZW()+','+E.getRatioLZW()+','+E.getGlobRatioLZW()+','+E.getQuantLZW()+"\n");
 
         // Save Stats LZSS
 
-        Estadístiques.timeLZSS = E.getTimeLZSS();
-        Estadístiques.GtimeLZSS = E.getGlobTimeLZSS();
-        Estadístiques.ratioLZSS = E.getRatioLZSS();
-        Estadístiques.GratioLZSS = E.getGlobRatioLZSS();
-        Estadístiques.QuantLZSS = E.getQuantLZSS();
+        E.setLZSS(E.getTimeLZSS(),E.getGlobTimeLZSS(),E.getRatioLZSS(),E.getGlobRatioLZSS(),E.getQuantLZSS());
 
-        pw.print(1+Estadístiques.timeLZSS+','+Estadístiques.GtimeLZSS+','+Estadístiques.ratioLZSS+','+Estadístiques.GratioLZSS+','+Estadístiques.QuantLZSS+"\n");
+
+        pw.print(1+E.getTimeLZSS()+','+E.getGlobTimeLZSS()+','+E.getRatioLZSS()+','+E.getGlobRatioLZSS()+','+E.getQuantLZSS()+"\n");
+
 
         // Save Stats LZ78
 
-        Estadístiques.timeLZ78 = E.getTimeLZ78();
-        Estadístiques.GtimeLZ78 = E.getGlobTimeLZ78();
-        Estadístiques.ratioLZ78 = E.getRatioLZ78();
-        Estadístiques.GratioLZ78 = E.getGlobRatioLZ78();
-        Estadístiques.QuantLZ78 = E.getQuantLZ78();
+        E.setLZ78(E.getTimeLZ78(),E.getGlobTimeLZ78(),E.getRatioLZ78(),E.getGlobRatioLZ78(),E.getQuantLZ78());
 
-        pw.print(2+Estadístiques.timeLZ78+','+Estadístiques.GtimeLZ78+','+Estadístiques.ratioLZ78+','+Estadístiques.GratioLZ78+','+Estadístiques.QuantLZ78+"\n");
+        pw.print(2+E.getTimeLZ78()+','+E.getGlobTimeLZ78()+','+E.getRatioLZ78()+','+E.getGlobRatioLZ78()+','+E.getQuantLZ78()+"\n");
 
 
         // Save Stats JPEG
 
-        Estadístiques.timeJPEG = E.getTimeJPEG();
-        Estadístiques.GtimeJPEG = E.getGlobTimeJPEG();
-        Estadístiques.ratioJPEG = E.getRatioJPEG();
-        Estadístiques.GratioJPEG = E.getGlobRatioJPEG();
-        Estadístiques.QuantJPEG = E.getQuantJPEG();
+        E.setJPEG(E.getTimeJPEG(),E.getGlobTimeJPEG(),E.getRatioJPEG(),E.getGlobRatioJPEG(),E.getQuantJPEG());
 
-        pw.print(3+Estadístiques.timeJPEG+','+Estadístiques.GtimeJPEG+','+Estadístiques.ratioJPEG+','+Estadístiques.GratioJPEG+','+Estadístiques.QuantJPEG+ "\n" );
+        pw.print(3+E.getTimeJPEG()+','+E.getGlobTimeJPEG()+','+E.getRatioJPEG()+','+E.getGlobRatioJPEG()+','+E.getQuantJPEG()+"\n");
 
         //Save Last Algorithm
 
-        Estadístiques.LastAlg = E.getLastAlg();
+        E.setLastAlg(E.getLastAlg());
 
-        pw.print(4+Estadístiques.LastAlg);
+        pw.print(4+E.getLastAlg());
 
     }
 
@@ -183,7 +97,7 @@ public class Cont_Est {
 
         BufferedReader file = new BufferedReader(new FileReader(OldStats));
 
-        Estadístiques oldE = new Estadístiques();
+        Stats_Stub oldE = new Stats_Stub();
         int act;
         String line = "";
         int id;

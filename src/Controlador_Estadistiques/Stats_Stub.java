@@ -73,7 +73,7 @@ public  class Stats_Stub{ //Stats Stub
 
     public static String LastAlg = "LZ78";
 
-    public static String getLastAlg(){ return "LZSS";}
+    public static String getLastAlg(){ return LastAlg;}
     public static void setLastAlg (String lAlg) {}
 
 
