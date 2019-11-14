@@ -95,7 +95,7 @@ public class Cont_CD {
     }
 
     public void comparar() throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
-        controlador_gestor_fitxer I = new controlador_gestor_fitxer(path2, "", 0, false);
+        controlador_gestor_fitxer I = new controlador_gestor_fitxer(path2, "", 3, false);
         System.out.println(path1);
         File file1 = new File(path1);
         BufferedReader br = new BufferedReader(new FileReader(file1));

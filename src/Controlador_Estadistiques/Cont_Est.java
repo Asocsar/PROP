@@ -10,16 +10,6 @@ import java.util.List;
 public class Cont_Est {
 
 
-
-
-   /* public static void main() throws  IOException{
-        Stats_Update();
-        System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
-        GetStats();
-        System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
-    }*/
-
-
     public void Stats_Update() throws  IOException {
 
         //Update stats from last compression
