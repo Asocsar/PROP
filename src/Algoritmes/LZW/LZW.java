@@ -42,14 +42,18 @@ public class LZW {
 
     private void create_alfa() {
         int aux = 0;
-        Byte [] j = new Byte[1];
         byte n = 0;
         for (int i = 0; i < 256; ++i) {
+            Byte [] j = new Byte[1];
             j[0] = n;
-            Alfabet.put(Collections.unmodifiableList(Arrays.asList(j)), aux);
-            Alfabet_inv.put(aux, Collections.unmodifiableList(Arrays.asList(j)));
+            Alfabet.put(Arrays.asList(j), aux);
+            Alfabet_inv.put(aux, Arrays.asList(j));
             ++aux;
             ++n;
+        }
+
+        for (Map.Entry<List<Byte>, Integer> entry : Alfabet.entrySet()) {
+            System.out.println(entry.getKey() + ":" + entry.getValue().toString());
         }
 
     }
@@ -65,6 +69,11 @@ public class LZW {
         List<Integer> result = new ArrayList<>();
         Byte  [] w = new Byte[0];
         for (byte b : file) {
+            if (Alf_aux.size() >= 0xFFFF) {
+                //result.add(Alf_aux.get(Arrays.asList(w)));
+                Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
+                //w[0] = b;
+            }
             ++cantidad;
             Byte[] k = new Byte[1];
             k[0] = b;
@@ -75,7 +84,7 @@ public class LZW {
                 w = new Byte[aux.length];
                 w = aux;
             } else {
-                Alf_aux.put(Collections.unmodifiableList(Arrays.asList(aux)), Alf_aux.size());
+                Alf_aux.put(Arrays.asList(aux), Alf_aux.size());
                 result.add(Alf_aux.get(Arrays.asList(w)));
                 w = new Byte[k.length];
                 w = k;
@@ -141,21 +150,30 @@ public class LZW {
         List<Byte> caracter = Alf_aux.get(cod_viejo);
         int cod_nuevo;
         List<Byte> cadena;
-        List<Byte> result = caracter;
+        List<Byte> result =  new ArrayList<>();
+        result.addAll(caracter);
         ++i;
         while (i < s.size()) {
+            if (Alf_aux.size() >= 0xFFFF) {
+                Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
+                cod_viejo = s.get(i);
+                caracter = Alf_aux.get(cod_viejo);
+                result.addAll(caracter);
+            }
             cod_nuevo = s.get(i); //Integer.parseInt(s.get(i));
             if (Alf_aux.containsKey(cod_nuevo)) {
                 cadena = Alf_aux.get(cod_nuevo);
             }
             else {
-                cadena = Alf_aux.get(cod_viejo);
+                cadena = new ArrayList<>();
+                cadena.addAll(Alf_aux.get(cod_viejo));
                 cadena.addAll(caracter);
                 //cadena += caracter;
             }
             result.addAll(cadena);
             caracter = Collections.singletonList(cadena.get(0));
-            List<Byte> aderir = Alf_aux.get(cod_viejo);
+            List<Byte> aderir = new ArrayList<>();
+            aderir.addAll(Alf_aux.get(cod_viejo));
             aderir.addAll(caracter);
             Alf_aux.put(Alf_aux.size(), aderir);
             cod_viejo = cod_nuevo;
