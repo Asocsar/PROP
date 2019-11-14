@@ -134,7 +134,7 @@ public class LZW {
             System.out.println(Integer.toBinaryString(lee));
         }*/
 
-    public  String descomprimir (List<Integer> s) {
+    public byte[] descomprimir (List<Integer> s) {
         Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
         int i = 0;
         int cod_viejo = s.get(i);
@@ -154,12 +154,18 @@ public class LZW {
                 //cadena += caracter;
             }
             result.addAll(cadena);
-            caracter = cadena.subList(0,8);
-            //String aderir = Alf_aux.get(cod_viejo) + caracter;
-            //Alf_aux.put(Alf_aux.size(), aderir);
+            caracter = Collections.singletonList(cadena.get(0));
+            List<Byte> aderir = Alf_aux.get(cod_viejo);
+            aderir.addAll(caracter);
+            Alf_aux.put(Alf_aux.size(), aderir);
             cod_viejo = cod_nuevo;
             ++i;
         }
-        return "q";
+        byte [] fin = new byte[result.size()];
+        int k = 0;
+        for (Byte b: result) {
+            fin[k++] = b;
+        }
+        return fin;
     }
 }

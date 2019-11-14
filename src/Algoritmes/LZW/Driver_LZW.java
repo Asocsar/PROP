@@ -1,46 +1,36 @@
 package Algoritmes.LZW;
 
+import java.io.*;
 import java.nio.file.Files;
 import java.lang.Object;
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Driver_LZW {
     public static void main(String[] args) throws Exception {
-        /*COMPRESSIÓN */
-        File file = new File("C:\\Users\\Asocs\\Desktop\\mgemgmeg.txt");
-        byte [] b = Files.readAllBytes(file.toPath());
+
+        File file = new File("C:\\Users\\Asocs\\Desktop\\entrada.txt");
+        byte[] b = Files.readAllBytes(file.toPath());
         LZW A = new LZW();
         List<Integer> s = A.compress(b);
-
-        /*
-
-        System.out.println(s.subList(40,100));
         FileWriter file_o = new FileWriter("C:\\Users\\Asocs\\Desktop\\test.LZW");
-        String SE = "";
-         n = 0;
-        for (int i = 0; i < s.size(); ++i) {
-            if (s.get(i) != null)
-                file_o.write(s.get(i));
-
+        for (int n : s) {
+            file_o.write(n);
         }
         file_o.close();
-        FileReader fr = new FileReader("C:\\Users\\Asocs\\Desktop\\test.LZW");
-        int num;
-        List<Integer> L = new ArrayList<>();
-        while ((num = fr.read()) != -1) {
-            L.add(num);
+
+        FileReader file_r = new FileReader("C:\\Users\\Asocs\\Desktop\\test.LZW");
+        List<Integer> g = new ArrayList<>();
+        int n = 0;
+        while ((n = file_r.read()) != -1) {
+            g.add(n);
         }
-        System.out.println(num);
-        System.out.println(L.subList(40,100));
+        file_r.close();
+        byte[] out = A.descomprimir(g);
+        File file2 = new File("C:\\Users\\Asocs\\Desktop\\test_salida.txt");
+        Files.write(file2.toPath(), out);
 
-        /*-----------------------*/
-        /*String Ex = A.descomprimir(L);
-        FileWriter fw2 = new FileWriter("C:\\Users\\Asocs\\Desktop\\salida.txt");
-        fw2.write(Ex);
-        fw2.close();
-        //assertEquals ("Mensaje ?", Ex, Ej);
 
-    */}
+    }
 }
 
