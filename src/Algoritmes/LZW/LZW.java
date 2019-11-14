@@ -96,7 +96,7 @@ public class LZW {
                 w = k;
             }
         }
-        double n1 = cantidad*8;
+        double n1 = cantidad;
         double n2 =  log(Alf_aux.size(), 2)*result.size();
 
         return result;
