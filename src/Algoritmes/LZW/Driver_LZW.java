@@ -2,7 +2,6 @@ package Algoritmes.LZW;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.lang.Object;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +15,8 @@ public class Driver_LZW {
         /*-------*/
         LZW A = new LZW();
         List<Integer> s = A.compress(b);
+        System.out.println("Ratio " + A.getRate());
+        System.out.println("Tiempo " + A.getTime());
         FileWriter file_o = new FileWriter("C:\\Users\\Asocs\\Desktop\\test.LZW");
         for (int i = 0; i < s.size(); ++i) {
             int n = s.get(i);
@@ -31,6 +32,7 @@ public class Driver_LZW {
         }
         file_r.close();
         byte[] out = A.descomprimir(g);
+        System.out.println("Tiempo " + A.getTime());
         File file2 = new File("C:\\Users\\Asocs\\Desktop\\test_salida.txt");
         Files.write(file2.toPath(), out);
     }
