@@ -1,167 +1,203 @@
 package Estadístiques;
 
 public class Estadistiques {
-    private static double gradeW = 0;
-    private static double timeW = 0;
-    private static double grade8 = 0;
-    private static double time8 = 0;
-    private static double gradeS = 0;
-    private static double timeS = 0;
-    private static double gradeG = 0;
-    private static double timeG = 0;
-    private static double gradeWT = 0;
-    private static double timeWT = 0;
-    private static double grade8T = 0;
-    private static double time8T = 0;
-    private static double gradeST = 0;
-    private static double timeST = 0;
-    private static double gradeGT = 0;
-    private static double timeGT = 0;
-    private static int numW = 0;
-    private static int numS = 0;
-    private static int num8 = 0;
-    private static int numG = 0;
-    private static String last = "";
 
-    public  Estadistiques () {}
 
-    public int getQuantLZW () {
-        return numW;
-    }
-    public int getQuantLZSS () {
-        return numS;
-    }
-    public int getQuantLZ78 () {
-        return num8;
-    }
-    public int getQuantJPEG () {
-        return numG;
+    //LZW
+
+    private static double timeLZW;
+    private static double GtimeLZW;
+    private static double ratioLZW;
+    private static double GratioLZW;
+    private static double QuantLZW;
+
+    public static void setLZW(double tl, double tg, double rl, double rg, double quant) {
+        timeLZW = tl;
+        GtimeLZW = tg;
+        ratioLZW = rl;
+        GratioLZW = rg;
+        QuantLZW = quant;
     }
 
-    public void setLZW (double gr, double grT, double ti, double tiT, double q) {
-        gradeW = gr;
-        gradeWT = grT;
-        timeW = ti;
-        timeWT = tiT;
-        numW = (int)q;
+    public static double getTimeLZW() {
+        return timeLZW;
     }
 
-    public void setLZSS (double gr, double grT, double ti, double tiT, double q) {
-        gradeS = gr;
-        gradeST = grT;
-        timeS = ti;
-        timeST = tiT;
-        numS = (int)q;
+    public static double getGlobTimeLZW() {
+        return GtimeLZW;
     }
 
-    public void setLZ78 (double gr, double grT, double ti, double tiT, double q) {
-        grade8 = gr;
-        grade8T = grT;
-        time8 = ti;
-        time8T = tiT;
-        num8 = (int)q;
+    public static double getRatioLZW() {
+        return ratioLZW;
     }
 
-    public void setJPEG  (double gr, double grT, double ti, double tiT, double q) {
-        gradeG = gr;
-        gradeGT = grT;
-        timeG = ti;
-        timeGT = tiT;
-        numG = (int)q;
+    public static double getGlobRatioLZW() {
+        return GratioLZW;
+    }
+
+    public static double getQuantLZW() {
+        return QuantLZW;
     }
 
 
-    public double getRatioLZW () {return gradeW;}
-    public double getRatioLZSS () {return grade8;}
-    public double getRatioLZ78 () {return gradeS;}
-    public double getRatioJPEG () {return gradeG;}
+    //LZ78
 
+    private static double timeLZ78;
+    private static double GtimeLZ78;
+    private static double ratioLZ78;
+    private static double GratioLZ78;
+    private static double QuantLZ78;
 
-    public double getTimeLZW () {return timeW;}
-    public double getTimeLZSS () {return time8;}
-    public double getTimeLZ78 () {return timeS;}
-    public double getTimeJPEG () {return timeG;}
-
-    public double getGlobRatioLZW () {return gradeWT;}
-    public double getGlobRatioLZSS () {return grade8T;}
-    public double getGlobRatioLZ78 () {return gradeST;}
-    public double getGlobRatioJPEG () {return gradeGT;}
-
-
-    public double getGlobTimeLZW () {return timeWT;}
-    public double getGlobTimeLZSS () {return time8T;}
-    public double getGlobTimeLZ78 () {return timeST;}
-    public double getGlobTimeJPEG () {return timeGT;}
-
-
-    public void actW (double ti, double gr) {
-        timeW = ti;
-        timeWT += ti;
-        gradeW = gr;
-        gradeWT += gr;
-        numW += 1;
-        last = "0";
+    public static void setLZ78(double tl, double tg, double rl, double rg, double quant) {
+        timeLZ78 = tl;
+        GtimeLZ78 = tg;
+        ratioLZ78 = rl;
+        GratioLZ78 = rg;
+        QuantLZ78 = quant;
     }
 
-    public void actS (double ti, double gr) {
-        timeS = ti;
-        timeST += ti;
-        gradeS = gr;
-        gradeST += gr;
-        numS += 1;
-        last = "1";
+    public static double getTimeLZ78() {
+        return timeLZ78;
     }
 
-    public void act8 (double ti, double gr) {
-        time8 = ti;
-        time8T += ti;
-        grade8 = gr;
-        grade8T += gr;
-        num8 += 1;
-        last = "2";
+    public static double getGlobTimeLZ78() {
+        return GtimeLZ78;
     }
 
-    public void actG (double ti, double gr) {
-        timeG = ti;
-        timeGT += ti;
-        gradeG = gr;
-        gradeGT += gr;
-        numG += 1;
-        last = "3";
+    public static double getRatioLZ78() {
+        return ratioLZ78;
     }
 
-    public String getLastAlg () {return  last; }
-    public void setLastAlg (String id) {last = id;}
+    public static double getGlobRatioLZ78() {
+        return GratioLZ78;
+    }
 
-    public void visualglob() {
-        System.out.println("Tiempos de ultimas compresiones");
-        System.out.println("LZ78 " + timeW);
-        System.out.println("LZSS " + timeS);
-        System.out.println("LZW " + timeW);
-        System.out.println("JPEG " + timeG);
-        System.out.println("Ratios de ultimas compresiones");
-        System.out.println("LZ78 " + grade8);
-        System.out.println("LZSS " + gradeS);
-        System.out.println("LZW " + gradeW);
-        System.out.println("JPEG " + gradeG);
-        System.out.println("Tiempos globales por cada algoritmo");
-        System.out.println("LZ78 " + timeWT/num8);
-        System.out.println("LZSS " + timeST/numS);
-        System.out.println("LZW " + timeWT/numW);
-        System.out.println("JPEG " + timeGT/numG);
-        System.out.println("Ratios globales por cada algoritmo");
-        System.out.println("LZ78 " + grade8T/num8);
-        System.out.println("LZSS " + gradeST/numS);
-        System.out.println("LZW " + gradeWT/numW);
-        System.out.println("JPEG " + gradeGT/numG);
-        System.out.println("Numero de veces de ejecución");
-        System.out.println("LZ78 " + num8);
-        System.out.println("LZSS " + numS);
-        System.out.println("LZW " + numW);
-        System.out.println("JPEG " + numG);
+    public static double getQuantLZ78() {
+        return QuantLZ78;
     }
 
 
+    //LZSS
+
+    private static double timeLZSS;
+    private static double GtimeLZSS;
+    private static double ratioLZSS;
+    private static double GratioLZSS;
+    private static double QuantLZSS;
+
+    public static void setLZSS(double tl, double tg, double rl, double rg, double quant) {
+        timeLZSS = tl;
+        GtimeLZSS = tg;
+        ratioLZSS = rl;
+        GratioLZSS = rg;
+        QuantLZSS = quant;
+    }
+
+    public static double getTimeLZSS() {
+        return timeLZSS;
+    }
+
+    public static double getGlobTimeLZSS() {
+        return GtimeLZSS;
+    }
+
+    public static double getRatioLZSS() {
+        return ratioLZSS;
+    }
+
+    public static double getGlobRatioLZSS() {
+        return GratioLZSS;
+    }
+
+    public static double getQuantLZSS() {
+        return QuantLZSS;
+    }
 
 
+    //JPEG
+
+    private static double timeJPEG;
+    private static double GtimeJPEG;
+    private static double ratioJPEG;
+    private static double GratioJPEG;
+    private static double QuantJPEG;
+
+
+    public static void setJPEG(double tl, double tg, double rl, double rg, double quant) {
+        timeJPEG = tl;
+        GtimeJPEG = tg;
+        ratioJPEG = rl;
+        GratioJPEG = rg;
+        QuantJPEG = quant;
+    }
+
+    public static double getTimeJPEG() {
+        return timeJPEG;
+    }
+
+    public static double getGlobTimeJPEG() {
+        return GtimeJPEG;
+    }
+
+    public static double getRatioJPEG() {
+        return ratioJPEG;
+    }
+
+    public static double getGlobRatioJPEG() {
+        return GratioJPEG;
+    }
+
+    public static double getQuantJPEG() {
+        return QuantJPEG;
+    }
+
+    //LAST ALGORITHM USED
+
+    public static String LastAlg = "LZ78";
+
+    public static String getLastAlg() {
+        return LastAlg;
+    }
+
+    public static void setLastAlg(String lAlg) {
+        LastAlg = lAlg;
+    }
+
+    //ALGORITHM STATS UPDATE
+
+    public static void actW(double ti, double gr) {
+        timeLZW = ti;
+        GtimeLZW += ti;
+        ratioLZW = gr;
+        GratioLZW += gr;
+        QuantLZW++;
+    }
+
+    public static void actS(double ti, double gr) {
+        timeLZSS = ti;
+        GtimeLZSS += ti;
+        ratioLZSS = gr;
+        GratioLZSS += gr;
+        QuantLZSS++;
+    }
+
+    public static void act8(double ti, double gr) {
+        timeLZ78 = ti;
+        GtimeLZ78 += ti;
+        ratioLZ78 = gr;
+        GratioLZ78 += gr;
+        QuantLZ78++;
+    }
+
+    public static void actG(double ti, double gr) {
+        timeJPEG = ti;
+        GtimeJPEG += ti;
+        ratioJPEG = gr;
+        GratioJPEG += gr;
+        QuantJPEG++;
+    }
 }
+
+
+
+
