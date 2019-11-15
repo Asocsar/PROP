@@ -2,12 +2,47 @@ package Algoritmes;
 
 
 import java.io.*;
-import java.util.Arrays;
+
 
 public class JPEG {
 
+    private static int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
+            {12, 12, 14, 19, 26, 58, 60, 55},
+            {14, 13, 16, 24, 40, 57, 69, 56},
+            {14, 17, 22, 29, 51, 87, 80, 62},
+            {18, 22, 37, 56, 68, 109, 103, 77},
+            {24, 35, 55, 64, 81, 104, 113, 92},
+            {49, 64, 78, 87, 103, 121, 120, 101},
+            {72, 92, 95, 98, 112, 110, 103, 99}};
 
-    public static double[][] dct(int[][] m) {
+    private static int[][] QC = {{17, 18, 24, 47, 99, 99, 99, 99},
+            {18, 21, 26, 66, 99, 99, 99, 99},
+            {24, 26, 56, 99, 99, 99, 99, 99},
+            {47, 66, 99, 99, 99, 99, 99, 99},
+            {99, 99, 99, 99, 99, 99, 99, 99},
+            {99, 99, 99, 99, 99, 99, 99, 99},
+            {99, 99, 99, 99, 99, 99, 99, 99},
+            {99, 99, 99, 99, 99, 99, 99, 99}};
+
+    private static int[][] ZigZag = {
+            {0, 0},
+            {0, 1}, {1, 0},
+            {2, 0}, {1, 1}, {0, 2},
+            {0, 3}, {1, 2}, {2, 1}, {3, 0},
+            {4, 0}, {3, 1}, {2, 2}, {1, 3}, {0, 4},
+            {0, 5}, {1, 4}, {2, 3}, {3, 2}, {4, 1}, {5, 0},
+            {6, 0}, {5, 1}, {4, 2}, {3, 3}, {2, 4}, {1, 5}, {0, 6},
+            {0, 7}, {1, 6}, {2, 5}, {3, 4}, {4, 3}, {5, 2}, {6, 1}, {7, 0},
+            {7, 1}, {6, 2}, {5, 3}, {4, 4}, {3, 5}, {2, 6}, {1, 7},
+            {2, 7}, {3, 6}, {4, 5}, {5, 4}, {6, 3}, {7, 2},
+            {7, 3}, {6, 4}, {5, 5}, {4, 6}, {3, 7},
+            {4, 7}, {5, 6}, {6, 5}, {7, 4},
+            {7, 5}, {6, 6}, {5, 7},
+            {6, 7}, {7, 6},
+            {7, 7}};
+
+
+    private static double[][] dct(int[][] m) {
 
         double[][] dct = new double[8][8];
         double au, av, sum;
@@ -26,7 +61,6 @@ public class JPEG {
                         sum += val * Math.cos(((2 * x + 1) * u * Math.PI) / 16) * Math.cos(((2 * y + 1) * v * Math.PI) / 16);
                     }
                 }
-
                 dct[u][v] = 0.25 * au * av * sum;
             }
         }
@@ -37,82 +71,10 @@ public class JPEG {
             System.out.println();
         }
         */
-
         return dct;
     }
 
-
-    public static int[] compress8(int[][] m, boolean chroma) {
-
-        //DCT Transform
-        double[][] D = dct(m);
-
-        //Quantitzation
-        int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
-                {12, 12, 14, 19, 26, 58, 60, 55},
-                {14, 13, 16, 24, 40, 57, 69, 56},
-                {14, 17, 22, 29, 51, 87, 80, 62},
-                {18, 22, 37, 56, 68, 109, 103, 77},
-                {24, 35, 55, 64, 81, 104, 113, 92},
-                {49, 64, 78, 87, 103, 121, 120, 101},
-                {72, 92, 95, 98, 112, 110, 103, 99}};
-
-        int[][] QC = {{17, 18, 24, 47, 99, 99, 99, 99},
-                {18, 21, 26, 66, 99, 99, 99, 99},
-                {24, 26, 56, 99, 99, 99, 99, 99},
-                {47, 66, 99, 99, 99, 99, 99, 99},
-                {99, 99, 99, 99, 99, 99, 99, 99},
-                {99, 99, 99, 99, 99, 99, 99, 99},
-                {99, 99, 99, 99, 99, 99, 99, 99},
-                {99, 99, 99, 99, 99, 99, 99, 99}};
-
-        if (chroma) Q = QC; //Si el boolean chroma es true aplicar el quantitzation de chrominance
-
-        //System.out.println();
-        int[][] B = new int[8][8];
-        for (int i = 0; i < 8; ++i) {
-            for (int j = 0; j < 8; ++j) {
-                B[i][j] = (int) Math.round(D[i][j] / Q[i][j]);
-                //System.out.printf("%d\t", B[i][j]);
-            }
-            //System.out.println();
-        }
-
-        //Encoding ZigZag (RLE)
-        int[][] ZigZag = {
-                {0, 0},
-                {0, 1}, {1, 0},
-                {2, 0}, {1, 1}, {0, 2},
-                {0, 3}, {1, 2}, {2, 1}, {3, 0},
-                {4, 0}, {3, 1}, {2, 2}, {1, 3}, {0, 4},
-                {0, 5}, {1, 4}, {2, 3}, {3, 2}, {4, 1}, {5, 0},
-                {6, 0}, {5, 1}, {4, 2}, {3, 3}, {2, 4}, {1, 5}, {0, 6},
-                {0, 7}, {1, 6}, {2, 5}, {3, 4}, {4, 3}, {5, 2}, {6, 1}, {7, 0},
-                {7, 1}, {6, 2}, {5, 3}, {4, 4}, {3, 5}, {2, 6}, {1, 7},
-                {2, 7}, {3, 6}, {4, 5}, {5, 4}, {6, 3}, {7, 2},
-                {7, 3}, {6, 4}, {5, 5}, {4, 6}, {3, 7},
-                {4, 7}, {5, 6}, {6, 5}, {7, 4},
-                {7, 5}, {6, 6}, {5, 7},
-                {6, 7}, {7, 6},
-                {7, 7}};
-
-
-        //System.out.println();
-        int[] buff = new int[64];
-        for (int i = 0; i < 64; ++i) {
-            buff[i] = B[ZigZag[i][0]][ZigZag[i][1]];
-            //System.out.printf("%d\t", buff[i]);
-        }
-        //System.out.println();
-
-        return buff;
-
-        //We have to add the DC coefficient and the 63 other values
-        //With RLE and Hufmann (RUNLENGTH, SIZE) (AMPLITUDE)
-    }
-
-
-    public static int[][] idct(int[][] m) {
+    private static int[][] idct(int[][] m) {
 
         int[][] idct = new int[8][8];
         double au, av, sum;
@@ -151,26 +113,57 @@ public class JPEG {
     }
 
 
-    public static int[][] decompress8(int[] buff, boolean chroma) {
+
+
+    private static int[] compress8(int[][] m, boolean chroma) {
+
+        //DCT Transform
+        double[][] D = dct(m);
+
+        //Quantitzation
+
+        //Si el boolean chroma es true aplicar el quantitzation de chrominance
+        //System.out.println();
+        int[][] B = new int[8][8];
+        if(chroma) {
+            for (int i = 0; i < 8; ++i) {
+                for (int j = 0; j < 8; ++j) {
+                    B[i][j] = (int) Math.round(D[i][j] / QC[i][j]);
+                    //System.out.printf("%d\t", B[i][j]);
+                }
+                //System.out.println();
+            }
+        }else{
+            for (int i = 0; i < 8; ++i) {
+                for (int j = 0; j < 8; ++j) {
+                    B[i][j] = (int) Math.round(D[i][j] / Q[i][j]);
+                    //System.out.printf("%d\t", B[i][j]);
+                }
+                //System.out.println();
+            }
+        }
+
+        //Encoding ZigZag (RLE)
+        //System.out.println();
+        int[] buff = new int[64];
+        for (int i = 0; i < 64; ++i) {
+            buff[i] = B[ZigZag[i][0]][ZigZag[i][1]];
+            //System.out.printf("%d\t", buff[i]);
+        }
+        //System.out.println();
+
+        return buff;
+
+        //We have to add the DC coefficient and the 63 other values
+        //With RLE and Hufmann (RUNLENGTH, SIZE) (AMPLITUDE)
+    }
+
+
+
+
+   private static int[][] decompress8(int[] buff, boolean chroma) {
 
         //Decoding ZigZag (RLE)
-        int[][] ZigZag = {
-                {0, 0},
-                {0, 1}, {1, 0},
-                {2, 0}, {1, 1}, {0, 2},
-                {0, 3}, {1, 2}, {2, 1}, {3, 0},
-                {4, 0}, {3, 1}, {2, 2}, {1, 3}, {0, 4},
-                {0, 5}, {1, 4}, {2, 3}, {3, 2}, {4, 1}, {5, 0},
-                {6, 0}, {5, 1}, {4, 2}, {3, 3}, {2, 4}, {1, 5}, {0, 6},
-                {0, 7}, {1, 6}, {2, 5}, {3, 4}, {4, 3}, {5, 2}, {6, 1}, {7, 0},
-                {7, 1}, {6, 2}, {5, 3}, {4, 4}, {3, 5}, {2, 6}, {1, 7},
-                {2, 7}, {3, 6}, {4, 5}, {5, 4}, {6, 3}, {7, 2},
-                {7, 3}, {6, 4}, {5, 5}, {4, 6}, {3, 7},
-                {4, 7}, {5, 6}, {6, 5}, {7, 4},
-                {7, 5}, {6, 6}, {5, 7},
-                {6, 7}, {7, 6},
-                {7, 7}};
-
         //System.out.println("Comença la descompressió de 8x8");
         int[][] B = new int[8][8];
         for (int i = 0; i < 64; ++i) {
@@ -185,38 +178,29 @@ public class JPEG {
             }
             //System.out.println();
         }
-        //Quantitzation
-        int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
-                {12, 12, 14, 19, 26, 58, 60, 55},
-                {14, 13, 16, 24, 40, 57, 69, 56},
-                {14, 17, 22, 29, 51, 87, 80, 62},
-                {18, 22, 37, 56, 68, 109, 103, 77},
-                {24, 35, 55, 64, 81, 104, 113, 92},
-                {49, 64, 78, 87, 103, 121, 120, 101},
-                {72, 92, 95, 98, 112, 110, 103, 99}};
 
-        int[][] QC =
-                {{17, 18, 24, 47, 99, 99, 99, 99},
-                        {18, 21, 26, 66, 99, 99, 99, 99},
-                        {24, 26, 56, 99, 99, 99, 99, 99},
-                        {47, 66, 99, 99, 99, 99, 99, 99},
-                        {99, 99, 99, 99, 99, 99, 99, 99},
-                        {99, 99, 99, 99, 99, 99, 99, 99},
-                        {99, 99, 99, 99, 99, 99, 99, 99},
-                        {99, 99, 99, 99, 99, 99, 99, 99}};
-
-        if (chroma) Q = QC; //Si el boolean chroma es true aplicar el quantitzation de chrominance
         int[][] D = new int[8][8];
+        if (chroma) {
 
-        System.out.println();
-        for (int i = 0; i < 8; ++i) {
-            for (int j = 0; j < 8; ++j) {
-                D[i][j] = B[i][j] * Q[i][j];
-                //System.out.printf("%d\t", D[i][j]);
-            }
+
             //System.out.println();
+            for (int i = 0; i < 8; ++i) {
+                for (int j = 0; j < 8; ++j) {
+                    D[i][j] = B[i][j] * QC[i][j];
+                    //System.out.printf("%d\t", D[i][j]);
+                }
+                //System.out.println();
+            }
+        }else{
+            //System.out.println();
+            for (int i = 0; i < 8; ++i) {
+                for (int j = 0; j < 8; ++j) {
+                    D[i][j] = B[i][j] * Q[i][j];
+                    //System.out.printf("%d\t", D[i][j]);
+                }
+                //System.out.println();
+            }
         }
-
 
         //DCT Transform
         return idct(D);
@@ -230,14 +214,17 @@ public class JPEG {
         int length = height * width;
         int[][] buff = new int[length][];
 
-        for (int i = 0; i < length; ++i) {
-            int[][] m = new int[8][8];
-            for (int x = 0; x < 8; ++x) {
-                for (int y = 0; y < 8; ++y) {
-                    m[x][y] = Y[i / length * 8][i % width * 8];
+        for (int i = 0; i < height; ++i) {
+            for(int j = 0; j < width; ++j) {
+
+                int[][] m = new int[8][8];
+                for (int x = 0; x < 8; ++x) {
+                    for (int y = 0; y < 8; ++y) {
+                        m[x][y] = Y[+x][+y];
+                    }
                 }
+                buff[i] = compress8(m, false);
             }
-            buff[i] = compress8(m, false);
         }
         return buff;
     }
@@ -278,7 +265,7 @@ public class JPEG {
                 { 87, 79, 69, 68, 65, 76, 78, 94 }};
 
 
-        int[][]m2 = decompress8(compress8(m, false), false);  //Returns array of ints of Y
+        int[][]m2 = this.decompress8(this.compress8(m, false), false);  //Returns array of ints of Y
 
 
         for(int i = 0; i < 8; ++i){
@@ -292,7 +279,7 @@ public class JPEG {
         try {
 
             File infile = new File("/home/maller/Downloads/west_2.ppm");
-            File outfile = new File("/home/maller/Downloads/wested.ppm");
+            File outfile = new File("/home/maller/Downloads/wested2.ppm");
 
             FileInputStream fis = new FileInputStream(infile);
             BufferedInputStream bis = new BufferedInputStream(fis);
@@ -334,55 +321,21 @@ public class JPEG {
                 for (int j = 0; j < width; j++) {
 
                     r = bis.read();
-                    if(i == 0 && j == 0){
-                        System.out.println("First r: " + r);
-                    }
                     g = bis.read();
                     b = bis.read();
 
-                    /*
                     Y[i][j] = (int) (0.299 * r + 0.587 * g + 0.114 * b);
                     Cb[i][j] = (int) (128 - 0.1687 * r - 0.3313 * g + 0.5 * b);
                     Cr[i][j] = (int) (128 + 0.5 * r - 0.4187 * g - 0.0813 * b);
-                    */
-
-                    Y[i][j] = r;
-                    Cb[i][j] = g;
-                    Cr[i][j] = b;
-                }
-            }
-
-            for (int x = 0; x < height; x++) {
-                System.out.printf("Fila: " + x + " ");
-                for (int y = 0; y < width; y++) {
-                    System.out.printf("%d\t", Y[x][y]);
-                }
-                System.out.println();
-            }
-            System.out.println();
-
-            for (int x = 0; x < height; x++) {
-                for (int y = 0; y < width; y++) {
-                    System.out.printf("%d\t", Cb[x][y]);
 
                 }
-                System.out.println();
             }
-            System.out.println();
-
-            for (int x = 0; x < height; x++) {
-                for (int y = 0; y < width; y++) {
-                    System.out.printf("%d\t", Cr[x][y]);
-
-                }
-                System.out.println();
-            }
-            System.out.println();
-
+            bis.close();
             System.out.println("Finished reading");
 
-            //decompress(compress(Y, Cb, Cr), height, width);
+            decompress(compress(Y, Cb, Cr), height, width);
 
+            System.out.println("Start writing");
             FileOutputStream fos = new FileOutputStream(outfile);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
 
@@ -390,29 +343,37 @@ public class JPEG {
             bos.write((width + " " + height + "\n").getBytes());
             bos.write(("255\n").getBytes());
 
-            //YCbCr to RGB and write
-            /*
-            int y, cb, cr;
 
-            y = (int) (1.16438 * (Y[i][j] - 16));
-            cb = Cb[i][j];
-            cr = Cr[i][j];
-            r = (int) (-222.921 + y + (408.583 * cr) / 256);
-            g = (int) (135.576 + y - (100.291 * cb) / 256 - (208.120 * cr) / 256);
-            b = (int) (-276.836 + y + (516.412 * cb) / 256);
 
-            */
+
 
             for (int i = 0; i < height; ++i) {
                 for (int j = 0; j < width; ++j) {
-                    bos.write(Y[i][j]);
-                    bos.write(Cb[i][j]);
-                    bos.write(Cr[i][j]);
+                    //YCbCr to RGB and write
+
+                double y, cb, cr;
+
+
+                y = (Y[i][j]*298.082) / 256;
+                cb = Cb[i][j];
+                cr = Cr[i][j];
+
+                r = (int) (y + 1.40200 * (cr - 0x80));
+                g = (int) (y - 0.34414 * (cb - 0x80) - 0.71414 * (cr - 0x80));;
+                b = (int) (y + 1.77200 * (cb - 0x80));
+
+                r = Math.max(Math.min(r, 255), 0);
+                g = Math.max(Math.min(g, 255), 0);
+                b = Math.max(Math.min(b, 255), 0);
+
+
+                bos.write(r);
+                bos.write(g);
+                bos.write(b);
+
                 }
             }
-
-            fis.close();
-            fos.close();
+            bos.close();
 
             System.out.println("JPEG acabat amb èxit.");
 
