@@ -13,7 +13,7 @@ public class LZSS {
 
     public static int flags = 0b00000000;
 
-    public static int flagindex = 0;
+    public static int flagindex = 1;
 
     //public static int uconst = 128;
 
@@ -88,11 +88,11 @@ public class LZSS {
     }
 
     public static Byte[] compress_mine2 (byte[] file) throws IOException {
-        int match, offset, LA, rec;
+        int match, offset, SB, LAB;
         match = 0;
         offset = 0;
-        LA = 0;
-        rec = 1;
+        SB = 0;
+        LAB = 1;
         boolean found = false;
         Byte mask = 0b00000000;
 
@@ -105,7 +105,7 @@ public class LZSS {
 
         if (filesize < 4095) search_buffer = 0;
         else search_buffer = 4095;
-        while (LA < rec & rec < file.length) {
+        while (SB < LAB & LAB < file.length) {
 
             if (flagindex == 8) {
 
@@ -115,11 +115,11 @@ public class LZSS {
 
             }
 
-            if (found & (match == 255 | (file[rec]) != file[LA] & match > 2)) {
+            if (found && (match == 127 || ((file[LAB]) != file[SB] & match > 2))) {
 
                 int offsetl = offset & 0xFF;
                 int offseth = offset & 0x0F00;
-                if (match > 127) match = (0 - (match-128));
+                //if (match > 127) match = (0 - (match-128));
                 if (offsetl > 127)  offsetl = (0 - (offset-128));
 
                 byte binmatch = (byte) (match);
@@ -136,38 +136,41 @@ public class LZSS {
                 offset = 0;
                 found = false;
 
-                if (rec >= 4095) LA = rec - search_buffer;
-                else LA = 0;
+                if (LAB >= 4095) SB = LAB - search_buffer;
+                else SB = 0;
             }
-            else if (file[rec] == file[LA]) {
+            else if (file[LAB] == file[SB]) {
                 if (!found) {
-                    offset = rec - LA;
+                    offset = LAB - SB;
                     found = true;
                 }
                 match++;
-                LA++;
-                rec++;
+                SB++;
+                LAB++;
             }
-            else if (file[rec] != file[LA] & found & match < 3 | LA == rec - 1 & !found) {
+
+            else if (file[LAB] != file[SB] & found & match < 3 || SB == LAB - 1 & !found) {
                 byte notmatched;
                 if (found) {
-                    notmatched = file[rec - match];
+                    notmatched = file[LAB - match];
                     found = false;
-                    rec -= match;
+                    LAB -= match;
                 }
-                else notmatched = file[rec];
+                else notmatched = file[LAB];
 
                 result.add(notmatched);
                 flagindex++;
 
 
-                rec++;
+                LAB++;
                 offset = 0;
                 match = 0;
-                if (rec >= 4095) LA = rec - search_buffer;
-                else LA = 0;
+                if (LAB >= 4095) SB = LAB - search_buffer;
+                else SB = 0;
             }
-            else ++LA;
+
+
+            else ++SB;
         }
         Byte[] byteencoding = encoded.toArray(new Byte[encoded.size()]);
         return byteencoding;
@@ -186,7 +189,7 @@ public class LZSS {
 
 
 
-    public static BitSet current_mask(Byte Bmask){
+    /*public static BitSet current_mask(Byte Bmask){
         BitSet bitmask = new BitSet(8);
         String binmask =  Integer.toBinaryString(((int) Bmask) & 0xFF);
         boolean act = false;
@@ -196,7 +199,7 @@ public class LZSS {
             bitmask.set((7-i),act);
         }
         return bitmask;
-    }
+    }*/
 
 
     public static StringBuilder decompress (Object o) {
@@ -204,21 +207,22 @@ public class LZSS {
         List<Byte> encoded = Arrays.asList(byteencoded);
         StringBuilder result = new StringBuilder();
         int resultindex = 0;
-        for (int i = 0; i < encoded.size();){
-            BitSet mask =  current_mask(encoded.get(i++));
-            for(int maskind = 0; maskind < mask.length(); ++maskind)
-            if (!mask.get(maskind)){
-                result.append((char) (encoded.get(i++)).intValue());
-                resultindex++;
-            }
-            else {
-                int offset;
-                offset = (encoded.get(i+2).intValue() + (encoded.get(i+1).intValue() << 8));
-                for (int match = 0; match < encoded.get(i).intValue(); ++match) {
-                    result.append((result.charAt(resultindex - offset)));
+        for (int i = 0; i < encoded.size();) {
+            String mask = Integer.toBinaryString((int)encoded.get(i++));
+            for (int maskind = 7; maskind > 0; --maskind) {
+                if ((maskind >= mask.length()) || mask.charAt(maskind) == '0') {
+                    result.append((char) (encoded.get(i++)).intValue());
                     resultindex++;
                 }
-                i += 3;
+                else if(mask.charAt(maskind) == '1') {
+                    int offset;
+                    offset = (encoded.get(i + 2).intValue() + (encoded.get(i + 1).intValue() << 8));
+                    for (int match = 0; match < encoded.get(i).intValue(); ++match) {
+                        result.append((result.charAt(resultindex - offset)));
+                        resultindex++;
+                    }
+                    i += 3;
+                }
             }
         }
         return result;
@@ -264,6 +268,7 @@ public class LZSS {
         //BufferedReader br = new BufferedReader(new FileReader(file));
 
         Byte[] compressed = compress_mine2(bytefile);
+        Object oc = compressed;
 
         /*for(int i = 0; i< compressed.length; ++i) {
             System.out.print(compressed[i]);
