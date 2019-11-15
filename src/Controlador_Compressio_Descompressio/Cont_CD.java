@@ -1,134 +1,112 @@
 package Controlador_Compressio_Descompressio;
+
 import Controlador_Compressio_Descompressio.Algoritmes_Stub.*;
-import Controlador_Compressio_Descompressio.Controlador_fitxers_stub.Item;
+import Controlador_Compressio_Descompressio.Controlador_fitxers_stub.controlador_gestor_fitxer;
+import Controlador_Compressio_Descompressio.Estadisticas.Estadisticas_Stub;
 
 import java.io.*;
-import java.util.*;
 
 public class Cont_CD {
 
     private static String path1 = "";
     private static String path2 = "";
+    private  double time;
+    private  double rate;
 
     public Cont_CD (){
     }
 
 
-    public static void compressio_descompressio(String path, int id, String path_dest, boolean comprimir) throws IOException {
-        Item I = new Item(path);
-        if (path_dest == "") path_dest = path;
-        if (id == 0) {
-            I.setPath(path);
-            I.analize();
-            id = I.best_metod;
-        }
-        List<Integer> L = new ArrayList<>();
-        String S = "";
+    private  Object action (int id, boolean comprimir, controlador_gestor_fitxer I)  {
+        Object L = null;
         double time = 0;
         double rate = 0;
-        File file = new File(path);
-        BufferedReader br = new BufferedReader(new FileReader(file));
+        Estadisticas_Stub E = new Estadisticas_Stub();
         switch (id) {
             case 1:
                 LZ78 L8 = new LZ78();
                 if (comprimir) {
-                    L = L8.compress(br);
+                    L = L8.compress(I.get_buffer());
                     time = L8.getTime();
                     rate = L8.getRate();
+                    E.act8(time,rate);
                 }
                 else {
-                    S = L8.descomprimir(I.getcode());
-                    time = L8.getTime();
-                    rate = L8.getRate();
+                    L = L8.descomprimir( I.get_buffer());
                 }
 
                 break;
             case 2:
                 LZSS LS = new LZSS();
                 if (comprimir) {
-                    L = LS.compress(br);
+                    L = LS.compress(I.get_buffer());
                     time = LS.getTime();
                     rate = LS.getRate();
+                    E.actS(time,rate);
                 }
                 else {
-                    S = LS.descomprimir(I.getcode());
-                    time = LS.getTime();
-                    rate = LS.getRate();
+                    L = LS.descomprimir(I.get_buffer());
                 }
                 break;
             case 3:
                 LZW LW = new LZW();
                 if (comprimir) {
-                    L = LW.compress(br);
+                    L = LW.compress(I.get_buffer());
                     time = LW.getTime();
                     rate = LW.getRate();
+                    E.actW(time,rate);
 
                 }
                 else {
-                    S = LW.descomprimir(I.getcode());
-                    time = LW.getTime();
-                    rate = LW.getRate();
+                    L = LW.descomprimir(I.get_buffer());
 
                 }
+
                 break;
-            case 4:
+            default:
+
                 JPEG JG = new JPEG();
                 if (comprimir) {
-                    L = JG.compress(br);
+                    L = JG.compress(I.get_buffer());
                     time = JG.getTime();
                     rate = JG.getRate();
+                    E.actG(time,rate);
                 }
                 else {
-                    S = JG.descomprimir(I.getcode());
+                    L = JG.descomprimir(I.get_buffer());
                     time = JG.getTime();
-                    rate = JG.getRate();
                 }
                 break;
-            }
-
-        /*BufferedWriter F = new BufferedWriter(new FileWriter(path_dest));
-        if (comprimir) {
-            for (int i = 0; i < L.size(); ++i) {
-                F.write(L.get(i) + ",");
-            }
         }
-        else
-            F.write(S);
-
-        F.flush();
-        F.close();*/
-
-        if (comprimir) {
-            path1 = path;
-            path2 = path_dest;
-        }
-
-        System.out.println("Tiempo " + time);
-        System.out.println("Ratio " + rate);
-
+        this.time = time;
+        this.rate = rate;
+        return  L;
     }
 
-    public static void comparar() throws IOException {
-        System.out.println(path1);
-        File file1 = new File(path1);
-        BufferedReader br = new BufferedReader(new FileReader(file1));
-        int n = br.read();
-        String S = "";
-        boolean one_more = true;
-        while (n != -1) {
-            S = S + (char)n;
-            n = br.read();
+    public void compressio_descompressio(controlador_gestor_fitxer I) {
+        Object L = null;
+        Estadisticas_Stub E = new Estadisticas_Stub();
+        int id = I.getid();
+        boolean comprimir = I.getcompress();
+        L = action(id, comprimir, I);
+        System.out.println("Time " + this.time);
+        System.out.println("Rate " + this.rate);
+        if (comprimir) {
+            path1 = I.getPath_original();
+            path2 = I.getPath_desti();
         }
+        I.writeFile(L);
+    }
+
+    public void comparar() throws IOException {
+        controlador_gestor_fitxer I = new controlador_gestor_fitxer(path2, "", 3, false);
+        System.out.println(path1);
+        String S = I.Read1();
         System.out.println(S);
         System.out.println();
-        File file2 = new File(path2);
-        BufferedReader gr = new BufferedReader(new FileReader(file2));
-        n = gr.read();
-        S = "";
-        while (n != -1) {
-            S = S + (char)n;
-            n = gr.read();
-        }
-        System.out.println(S);
+        int id = I.getid();
+        Object L = action(id, false, I);
+        System.out.println(path2);
+        System.out.println((String)L);
     }
 }

@@ -19,13 +19,13 @@ public class LZSS {
         return rate;
     }
 
-    public List<Integer> compress (BufferedReader file) {
+    public List<Integer> compress (Object o) {
         List<Integer> L = Arrays.asList(76,111,114,101);
         return L;
     }
 
-    public String descomprimir (List<Integer> s) {
-        String S = "Hola";
+    public String descomprimir (Object o) {
+        String S = "Hola Mundo!";
         return S;
     }
 }
