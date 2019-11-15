@@ -10,10 +10,10 @@ public class LZ78 {
     public static long length_n;
     public static long length_c;
 
-    /*public long get_time() {
+    public long get_time() {
 
         return elapsed_time;
-    }*/
+    }
 
     public static byte[] transform(List<Byte>a){
         byte[] n = new byte[a.size()];
