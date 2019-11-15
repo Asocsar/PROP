@@ -74,52 +74,31 @@ public class LZW {
         int cantidad = 0;
         List<Integer> result = new ArrayList<>();
         Byte  [] w = new Byte[0];
-        boolean add = false;
+        Byte[] k = new Byte[1];
+        Byte[] aux = new Byte[k.length + w.length];
         double n2 = 0;
         for (byte b : file) {
-            if (Alf_aux.size() >= 0xFFFE) {
-                Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
-                /*if (add) {
-                    result.add(Alf_aux.get(Arrays.asList(w)));
-                    w[0] = b;
-                }*/
-            }
             ++cantidad;
-            Byte[] k = new Byte[1];
+            k = new Byte[1];
             k[0] = b;
-            Byte[] aux = new Byte[k.length + w.length];
-            System.arraycopy(w, 0, aux, 0, w.length);
+            aux = new Byte[k.length + w.length];System.arraycopy(w, 0, aux, 0, w.length);
             System.arraycopy(k, 0, aux, w.length, k.length);
             if (Alf_aux.containsKey(Arrays.asList(aux))) {
                 w = new Byte[aux.length];
                 w = aux;
-                add = true;
             } else {
-                add = false;
-                Alf_aux.put(Arrays.asList(aux), Alf_aux.size());
-                Integer l = Alf_aux.get(Arrays.asList(w));
-                if (l < 0x10000) {
-                    if (l < 0x100)
-                        n2 += 8;// 8 bit
-                    else
-                        n2 += 2;// 16 bit
-                } else {
-                    if (l < 0x100000000L)
-                        n2 += 4;// 32 bit
-                    else
-                        n2 += 8;// 64 bit
-                }
+                if (Alf_aux.size() < 0x0FFF) Alf_aux.put(Arrays.asList(aux), Alf_aux.size());
+                int l = Alf_aux.get(Arrays.asList(w));
                 //n2 += bytesCount(l);
                 result.add(l);
                 w = new Byte[k.length];
                 w = k;
             }
         }
+        result.add(Alf_aux.get(Arrays.asList(w)));
         long end = System.currentTimeMillis();
         this.time = (end - start) / 1000F;
         this.rate = cantidad/n2;
-        //System.out.println(this.time);
-        //System.out.println(this.rate);
         return result;
     }
 
@@ -131,17 +110,11 @@ public class LZW {
         int cod_viejo = s.get(i);
         List<Byte> caracter = Alf_aux.get(cod_viejo);
         int cod_nuevo;
-        List<Byte> cadena;
+        List<Byte> cadena = null;
         List<Byte> result =  new ArrayList<>();
         result.addAll(caracter);
         ++i;
         while (i < s.size()) {
-            if (Alf_aux.size() >= 0xFFFE) {
-                Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
-                /*cod_viejo = s.get(i);
-                caracter = Alf_aux.get(cod_viejo);
-                result.addAll(caracter);*/
-            }
             cod_nuevo = s.get(i);
             if (Alf_aux.containsKey(cod_nuevo)) {
                 cadena = Alf_aux.get(cod_nuevo);
@@ -161,6 +134,7 @@ public class LZW {
             cod_viejo = cod_nuevo;
             ++i;
         }
+        //result.addAll(cadena);
         byte [] fin = new byte[result.size()];
         int k = 0;
         for (Byte b: result) {
