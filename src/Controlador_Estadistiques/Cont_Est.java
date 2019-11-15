@@ -41,28 +41,28 @@ public class Cont_Est {
         E.setLZW(E.getTimeLZW(),E.getGlobTimeLZW(),E.getRatioLZW(),E.getGlobRatioLZW(),E.getQuantLZW());
 
 
-        pw.print(0+E.getTimeLZW()+','+E.getGlobTimeLZW()+','+E.getRatioLZW()+','+E.getGlobRatioLZW()+','+E.getQuantLZW()+"\n");
+        pw.print(0+E.getTimeLZW()+","+E.getGlobTimeLZW()+","+E.getRatioLZW()+","+E.getGlobRatioLZW()+","+E.getQuantLZW()+"\n");
 
         // Save Stats LZSS
 
         E.setLZSS(E.getTimeLZSS(),E.getGlobTimeLZSS(),E.getRatioLZSS(),E.getGlobRatioLZSS(),E.getQuantLZSS());
 
 
-        pw.print(1+E.getTimeLZSS()+','+E.getGlobTimeLZSS()+','+E.getRatioLZSS()+','+E.getGlobRatioLZSS()+','+E.getQuantLZSS()+"\n");
+        pw.print(1+E.getTimeLZSS()+","+E.getGlobTimeLZSS()+","+E.getRatioLZSS()+","+E.getGlobRatioLZSS()+","+E.getQuantLZSS()+"\n");
 
 
         // Save Stats LZ78
 
         E.setLZ78(E.getTimeLZ78(),E.getGlobTimeLZ78(),E.getRatioLZ78(),E.getGlobRatioLZ78(),E.getQuantLZ78());
 
-        pw.print(2+E.getTimeLZ78()+','+E.getGlobTimeLZ78()+','+E.getRatioLZ78()+','+E.getGlobRatioLZ78()+','+E.getQuantLZ78()+"\n");
+        pw.print(2+E.getTimeLZ78()+","+E.getGlobTimeLZ78()+","+E.getRatioLZ78()+","+E.getGlobRatioLZ78()+","+E.getQuantLZ78()+"\n");
 
 
         // Save Stats JPEG
 
         E.setJPEG(E.getTimeJPEG(),E.getGlobTimeJPEG(),E.getRatioJPEG(),E.getGlobRatioJPEG(),E.getQuantJPEG());
 
-        pw.print(3+E.getTimeJPEG()+','+E.getGlobTimeJPEG()+','+E.getRatioJPEG()+','+E.getGlobRatioJPEG()+','+E.getQuantJPEG()+"\n");
+        pw.print(3+E.getTimeJPEG()+","+E.getGlobTimeJPEG()+","+E.getRatioJPEG()+","+E.getGlobRatioJPEG()+","+E.getQuantJPEG()+"\n");
 
         //Save Last Algorithm
 
@@ -83,11 +83,11 @@ public class Cont_Est {
             try {
                 if (OldStats.createNewFile()) {
                     PrintWriter pw = new PrintWriter(new FileWriter(OldStats));
-                    pw.print('0' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZW
-                    pw.print('1' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZSS
-                    pw.print('2' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //LZ78
-                    pw.print('3' + ',' + '0' + ',' + '0' + ',' + '0' + ',' + '0' + '0' + "\n"); //JPEG
-                    pw.print('4' + ',' + "null");                               //LAST ALGORITHM USED
+                    pw.print("0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZW
+                    pw.print("1" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZSS
+                    pw.print("2" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZ78
+                    pw.print('3' + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //JPEG
+                    pw.print('4' + "," + "null");                                                       //LAST ALGORITHM USED
                 }
             }
             catch (Exception FileAlreadyExists){
@@ -98,13 +98,13 @@ public class Cont_Est {
         BufferedReader file = new BufferedReader(new FileReader(OldStats));
 
         Stats_Stub oldE = new Stats_Stub();
-        int act;
+        double act;
         String line = "";
         int id;
         while ((act = file.read()) != -1) {
 
             if (act == 0 | act == 1 | act == 2 | act == 3 | act == 4) {
-                id = act;
+                id = (int)act;
                 line = file.readLine();
 
                 // Get numeric values from file : timelast,timeglob,ratelast,rateglob,quant
