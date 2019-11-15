@@ -34,11 +34,6 @@ public class LZW {
             ++n;
         }
 
-        /*for (Map.Entry<List<Byte>, Integer> entry : Alfabet.entrySet()) {
-            //entry.getValue().toString()
-            System.out.println(entry.getKey() + ":" + entry.getKey());
-        }*/
-
     }
 
 
