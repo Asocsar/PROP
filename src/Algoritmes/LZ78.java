@@ -9,6 +9,9 @@ public class LZ78 {
     public static long elapsed_time;
     public static long length_n;
     public static long length_c;
+    
+    public LZ78(){
+    }
 
     public long get_time() {
 
