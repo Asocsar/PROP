@@ -18,7 +18,7 @@ public class LZ78 {
         return elapsed_time;
     }
 
-    public static byte[] transform(List<Byte>a){
+    private byte[] transform(List<Byte>a){
         byte[] n = new byte[a.size()];
         for(int i=0; i < a.size(); ++i){
             n[i]= a.get(i);
@@ -26,7 +26,7 @@ public class LZ78 {
         return n;
     }
 
-    public static byte[] compresio(byte[] fole) throws IOException {
+    public byte[] compresio(byte[] fole) throws IOException {
         long startTime = System.currentTimeMillis();
         int x=0;
         Byte[] file = new Byte[fole.length];
@@ -70,7 +70,7 @@ public class LZ78 {
         return transform(aux_byte);
     }
 
-    public static String listtostring(List<String> a) {
+    private String listtostring(List<String> a) {
         int n = a.size();
         String aux = "";
         for (int i = 0; i < n; ++i) {
@@ -80,7 +80,7 @@ public class LZ78 {
         return aux;
     }
 
-    public static String descompresio(byte[] aux) throws IOException {
+    public String descompresio(byte[] aux) throws IOException {
         long startTime = System.currentTimeMillis();
         List<String> Caracters = new ArrayList<>();
         List<String> Caracters_aux = new ArrayList<>();
@@ -122,7 +122,7 @@ public class LZ78 {
         return listtostring(Caracters_aux);
     }
 
-    public static Long get_ratio_c() {
+    public Long get_ratio_c() {
         return length_n / length_c;
     }
 
