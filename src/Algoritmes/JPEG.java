@@ -207,46 +207,77 @@ public class JPEG {
     }
 
 
-    public static int[][] compress(int[][] Y, int[][] Cb, int[][] Cr) {
+    public static int[][][] compress(int[][][] YCbCr) {
 
-        int height = (Y.length % 8 == 0) ? Y.length / 8 : Y.length / 8 + 1;
-        int width = (Y[0].length % 8 == 0) ? Y[0].length / 8 : Y[0].length / 8 + 1;
-        int length = height * width;
-        int[][] buff = new int[length][];
+        int height, width, Bheight, Bwidth, length, posx, posy;
+        int[][][] buff = new int[3][1242][];
+        //Buffer with 3dimensions
+        /*
+        b[0] = NBlocks compressed which every on contains
+        a String(RLE) or a Bitset(Hufmann)
+         */
 
-        for (int i = 0; i < height; ++i) {
-            for(int j = 0; j < width; ++j) {
+        for(int a = 0; a < 3; ++a) {
 
-                int[][] m = new int[8][8];
-                for (int x = 0; x < 8; ++x) {
+
+            height = YCbCr[a].length;
+            width = YCbCr[a][0].length;
+            Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
+            Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
+            System.out.println( "Blocs d'alçada: " + Bheight);
+            System.out.println( "Blocs d'amplada: " + Bwidth);
+
+            for (int i = 0; i < Bheight; ++i) {
+                System.out.println( "Bi: " + i);
+                for (int j = 0; j < Bwidth; ++j) {
+                    System.out.println("Bj: "  + j);
+                    int[][] m = new int[8][8];
                     for (int y = 0; y < 8; ++y) {
-                        m[x][y] = Y[+x][+y];
+                        for (int x = 0; x < 8; ++x) {
+                            posx = j*8 + x;
+                            posy = i*8 + y;
+                            if (posx >= width) m[y][x] = m[y][x-1];
+                            else if(posy >= height) m[y][x] = m[y-1][x];
+                            else m[x][y] = YCbCr[a][posy][posx];
+                        }
                     }
+                    buff[a][i*8 +j] = compress8(m, a==0);
                 }
-                buff[i] = compress8(m, false);
             }
+
         }
         return buff;
     }
 
 
-    public static int[][] decompress(int[][] buff, int height, int width) {
+    public static int[][][] decompress(int[][][] buff, int height, int width) {
 
 
-        int length = height * width / 64;
-        int[][] m = new int[8][8];
-        int[][] Y = new int[height][width];
-        for (int i = 0; i < length; ++i) {
-            m = decompress8(buff[i], false);
-            for (int x = 0; x < 8; ++x) {
-                for (int y = 0; y < 8; ++y) {
-                    Y[i / length * 8][i % width * 8] = m[x][y];
+        int[][][] YCbCr = new int[3][height][width];
+        int Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
+        int Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
+        int posx, posy;
+        int[][] m;
+        for(int a = 0; a < 3; a++) {
+            for (int i = 0; i < Bheight; ++i) {
+                for(int j = 0; j < Bwidth; ++j) {
+
+                    m = decompress8(buff[a][i], false);
+                    for (int y = 0; y < 8; ++y) {
+                        for (int x = 0; x < 8; ++x) {
+                            posx = j*8 + x;
+                            posy = i*8 + y;
+                            if (posx >= width) m[y][x] = m[y][x-1];
+                            else if(posy >= height) m[y][x] = m[y-1][x];
+                            else m[x][y] = YCbCr[a][posy][posx];
+                        }
+                    }
+
                 }
             }
-
         }
 
-        return buff;
+        return YCbCr;
 
     }
 
@@ -333,7 +364,8 @@ public class JPEG {
             bis.close();
             System.out.println("Finished reading");
 
-            decompress(compress(Y, Cb, Cr), height, width);
+            int[][][] YCbCr = new int[][][] {Y, Cb, Cr};
+            YCbCr = decompress(compress(YCbCr), height, width);
 
             System.out.println("Start writing");
             FileOutputStream fos = new FileOutputStream(outfile);
@@ -354,9 +386,9 @@ public class JPEG {
                 double y, cb, cr;
 
 
-                y = (Y[i][j]*298.082) / 256;
-                cb = Cb[i][j];
-                cr = Cr[i][j];
+                y = (YCbCr[0][i][j]*298.082) / 256;
+                cb = YCbCr[1][i][j];
+                cr = YCbCr[2][i][j];
 
                 r = (int) (y + 1.40200 * (cr - 0x80));
                 g = (int) (y - 0.34414 * (cb - 0x80) - 0.71414 * (cr - 0x80));;
