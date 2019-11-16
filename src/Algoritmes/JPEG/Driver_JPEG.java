@@ -1,10 +1,10 @@
-package Algoritmes;
+package Algoritmes.JPEG;
 
 
 import java.io.*;
 
 
-public class JPEG {
+public class Driver_JPEG {
 
     private static int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
             {12, 12, 14, 19, 26, 58, 60, 55},
@@ -241,7 +241,7 @@ public class JPEG {
                             else m[x][y] = YCbCr[a][posy][posx];
                         }
                     }
-                    buff[a][i*8 +j] = compress8(m, a==0);
+                    buff[a][i*j +j] = compress8(m, a==0);
                 }
             }
 
@@ -262,18 +262,27 @@ public class JPEG {
             for (int i = 0; i < Bheight; ++i) {
                 for(int j = 0; j < Bwidth; ++j) {
 
-                    m = decompress8(buff[a][i], false);
+                    m = decompress8(buff[a][i*j + j], false);
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
                             posx = j*8 + x;
                             posy = i*8 + y;
-                            if (posx >= width) m[y][x] = m[y][x-1];
-                            else if(posy >= height) m[y][x] = m[y-1][x];
-                            else m[x][y] = YCbCr[a][posy][posx];
+                            if (posx < width && posy < height) YCbCr[a][posy][posx] = m[y][x];
                         }
                     }
 
                 }
+            }
+        }
+
+        for(int a = 0; a < 3; ++a) {
+            System.out.println();
+            for (int i = 0; i < height; ++i) {
+                for (int j = 0; j < width; ++j) {
+
+                    System.out.printf("%d\t", YCbCr[a][i][j]);
+                }
+                System.out.println();
             }
         }
 
@@ -364,8 +373,22 @@ public class JPEG {
             bis.close();
             System.out.println("Finished reading");
 
-            int[][][] YCbCr = new int[][][] {Y, Cb, Cr};
-            YCbCr = decompress(compress(YCbCr), height, width);
+            /*
+            for (int i = 0; i < height; ++i) {
+                for (int j = 0; j < width; ++j) {
+
+                    System.out.printf("%d\t", Y[i][j]);
+                }
+                System.out.println();
+            }
+            */
+
+            int[][][] AUX = new int[][][] {Y, Cb, Cr};
+            int[][][] YCbCr = decompress(compress(AUX), height, width);
+
+
+
+
 
             System.out.println("Start writing");
             FileOutputStream fos = new FileOutputStream(outfile);
