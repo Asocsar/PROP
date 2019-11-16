@@ -56,7 +56,7 @@ public class LZSS {
 
 
 
-    public static Byte[] compress_mine2(byte[] file) throws IOException {
+    public static Byte[] compress(byte[] file) throws IOException {
         int match, offset, SB, LAB,LABini;
         match = 0;
         offset = 0;
@@ -75,7 +75,7 @@ public class LZSS {
         else search_buffer = 4095;
         while (SB < LAB & LAB < file.length) {
 
-            if (mask.length() == 8) {
+            if (mask.length() == 7) {
                 encoded.addAll((encode(mask, result)));
                 mask = "";
                 result.clear();
@@ -160,21 +160,21 @@ public class LZSS {
     //POST:
     //EXCEPCIONES
 
-    public static StringBuilder decompress (Object o) {
-        Byte[] byteencoded = (Byte[]) o;
-        List<Byte> encoded = Arrays.asList(byteencoded);
+    public static StringBuilder decompress (Byte[] Bencoded) {
+        List<Byte> encoded = Arrays.asList(Bencoded);
         StringBuilder result = new StringBuilder();
         int resultindex = 0;
         for (int i = 0; i < encoded.size();) {
             String binmask = Integer.toBinaryString(((int) encoded.get(i++)) & 0xFF);
-            while (binmask.length() < 8) binmask = "0" + binmask;
+            while (binmask.length() < 7) binmask = "0" + binmask;
             for (int maskind = 0; maskind < binmask.length(); ++maskind) {
                 if (binmask.charAt(maskind) == '0') {
                     result.append((char) (encoded.get(i++)).intValue());
                     resultindex++;
-                } else {
+                }
+                else {
                     int offset;
-                    offset = (encoded.get(i + 2).intValue() + (encoded.get(i + 1).intValue() << 8));
+                    offset = (encoded.get(i + 2).intValue() + (encoded.get(i + 1).intValue() >> 8));
                     for (int match = 0; match < encoded.get(i).intValue(); ++match) {
                         result.append((result.charAt(resultindex - offset)));
                         resultindex++;
@@ -221,21 +221,21 @@ public class LZSS {
 
         double startTime = System.currentTimeMillis();
 
-        File file = new File("/home/clums/Escriptori/Ejemplo.txt");
+        File file = new File("/home/clums/Escriptori/JOCS_DE_PROVA/Non_Extended_ASCII/UnMundoFeliz-Non_extended.txt");
         byte[] bytefile = Files.readAllBytes(file.toPath());
         filesize = bytefile.length*8;
 
 
-        Byte[] compressed = compress_mine2(bytefile);
+        Byte[] compressed = compress(bytefile);
         Object oc = compressed;
 
 
         double endTime = System.currentTimeMillis();
         CompressTime = (endTime - startTime);
 
-        Byte[] voidl = {(byte) 10, (byte) 112,(byte) 97,(byte) 97,(byte) 112,(byte) 2,(byte) 0,(byte) 4,(byte) 112,(byte) 3,(byte) 0,(byte) 4,(byte) 98};
-        Object o = voidl;
-        StringBuilder decompressed = decompress(oc);
+        // Byte[] voidl = {(byte) 10, (byte) 112,(byte) 97,(byte) 97,(byte) 112,(byte) 2,(byte) 0,(byte) 4,(byte) 112,(byte) 3,(byte) 0,(byte) 4,(byte) 98};
+        //Object o = voidl;
+        StringBuilder decompressed = decompress(compressed);
         CompressRatio = CalcCompressRatio(filesize, compressed.length*8);
         //WriteatFile(decompressed);
         print_status(compressed,decompressed);
