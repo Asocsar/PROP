@@ -84,7 +84,7 @@ public class LZSS {
             if (found && (match == 127 || ((SB == LABini - 1 || file[LAB] != file[SB]) && match > 2))) {
 
                 byte binmatch = (byte) (match);
-                byte binoffsetl = (byte) (offset);
+                byte binoffsetl = ((byte) (offset));
                 byte binoffseth = (byte) (offset >> 8);
 
                 result.add(binmatch);
@@ -168,15 +168,24 @@ public class LZSS {
             String binmask = Integer.toBinaryString(((int) encoded.get(i++)) & 0xFF);
             while (binmask.length() < 7) binmask = "0" + binmask;
             for (int maskind = 0; maskind < binmask.length(); ++maskind) {
+
                 if (binmask.charAt(maskind) == '0') {
                     result.append((char) (encoded.get(i++)).intValue());
                     resultindex++;
                 }
+
                 else {
-                    int offset;
-                    offset = (encoded.get(i + 2).intValue() + (encoded.get(i + 1).intValue() >> 8));
+
+                    String offset,offsetl,offseth;
+
+                    offsetl = Integer.toBinaryString(encoded.get(i+2).intValue()&0xFF);
+                    offseth = Integer.toBinaryString(encoded.get(i+1).intValue()&0xFF);
+                    offset = offseth+offsetl;
+
+                    int offsetint = Integer.parseInt(offset,2);
+
                     for (int match = 0; match < encoded.get(i).intValue(); ++match) {
-                        result.append((result.charAt(resultindex - offset)));
+                        result.append((result.charAt(resultindex - offsetint)));
                         resultindex++;
                     }
                     i += 3;
@@ -198,7 +207,7 @@ public class LZSS {
         System.out.println("\n");
         //for (int f = 0; f < flags.length(); f++) if (flags.get(f)) System.out.println(f);
         System.out.println("\n");
-        for (int d = 0; d < decompressed.length();++d) System.out.println(decompressed.charAt(d));
+        for (int d = 0; d < decompressed.length();++d) System.out.print(decompressed.charAt(d));
         System.out.println("\n");
         System.out.println(CompressRatio);
         System.out.println("\n");
@@ -210,7 +219,7 @@ public class LZSS {
         FileWriter write = new FileWriter(out);
         PrintWriter pw = new PrintWriter(write);
         for (int i = 0; i < decompressed.length(); ++i) {
-            pw.println(decompressed.charAt(i));
+            pw.print(decompressed.charAt(i));
         }
     }
 
