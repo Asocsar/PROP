@@ -67,7 +67,7 @@ public class Driver_JPEG {
         /*
         for (x = 0; x < 8; x++) {
             for (y = 0; y < 8; y++)
-                System.out.printf("%f\t", dct[x][y]);
+                System.out.printf("%f\t", dct[x][y]);+ compress
             System.out.println();
         }
         */
@@ -234,14 +234,17 @@ public class Driver_JPEG {
                     int[][] m = new int[8][8];
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
+
                             posx = j*8 + x;
                             posy = i*8 + y;
                             if (posx >= width) m[y][x] = m[y][x-1];
+
                             else if(posy >= height) m[y][x] = m[y-1][x];
-                            else m[x][y] = YCbCr[a][posy][posx];
+                            else m[y][x] = YCbCr[a][posy][posx];
                         }
+
                     }
-                    buff[a][i*j +j] = compress8(m, a==0);
+                    buff[a][i*Bwidth +j] = compress8(m, a==0);
                 }
             }
 
@@ -262,11 +265,11 @@ public class Driver_JPEG {
             for (int i = 0; i < Bheight; ++i) {
                 for(int j = 0; j < Bwidth; ++j) {
 
-                    m = decompress8(buff[a][i*j + j], false);
+                    m = decompress8(buff[a][i * Bwidth + j], false);
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
-                            posx = j*8 + x;
-                            posy = i*8 + y;
+                            posx = j * 8 + x;
+                            posy = i * 8 + y;
                             if (posx < width && posy < height) YCbCr[a][posy][posx] = m[y][x];
                         }
                     }
@@ -385,9 +388,6 @@ public class Driver_JPEG {
 
             int[][][] AUX = new int[][][] {Y, Cb, Cr};
             int[][][] YCbCr = decompress(compress(AUX), height, width);
-
-
-
 
 
             System.out.println("Start writing");
