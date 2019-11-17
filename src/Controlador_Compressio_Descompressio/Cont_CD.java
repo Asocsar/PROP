@@ -1,5 +1,7 @@
 package Controlador_Compressio_Descompressio;
 
+import org.omg.CORBA.INTERNAL;
+
 import java.io.*;
 import java.util.*;
 
