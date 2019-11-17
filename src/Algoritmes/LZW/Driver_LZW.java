@@ -7,17 +7,18 @@ import java.util.List;
 
 public class Driver_LZW {
     public static void main(String[] args) throws Exception {
-        //Leemos el fichero a comprimir
-        File file = new File("C:\\Users\\Asocs\\Desktop\\Juegos de prueba\\quijote_entero.txt");
-        //Leemos los bytes del fichero
+        //Escollim el fitxer a comprimir
+        File file = new File("C:\\Users\\Asocs\\Desktop\\Juegos de prueba\\dos_letras.txt");
+        //Llegim tots els bytes del fitxer
         byte[] b = Files.readAllBytes(file.toPath());
         LZW A = new LZW();
         long r = 3;
-        //Comprimimos el fichero objetivo
+        //Comprimim el contingut
         List<Integer> s = A.compress(b);
-        //Mostramos el ratio de compresión y tiempo tardado
+        //Mostrem el rati de compressió assolit
         System.out.println("Ratio " + A.getRate());
         System.out.println("Tiempo " + A.getTime());
+        // escribim el contingut en un fitxer codificat
         FileWriter file_o = new FileWriter("Salida.LZW");
         for (int i = 0; i < s.size(); ++i) {
             if (s.get(i) != null) {
@@ -26,6 +27,7 @@ public class Driver_LZW {
             }
         }
         file_o.close();
+        //Llegim el contingut d'aquest fitxer
         FileReader file_r = new FileReader("Salida.LZW");
         List<Integer> g = new ArrayList<>();
         int n = 0;
@@ -33,9 +35,11 @@ public class Driver_LZW {
             g.add(n);
         }
         file_r.close();
+        // descomprimir el contingut del fitxer
         byte[] out = A.descomprimir(g);
         System.out.println("Tiempo " + A.getTime());
         File file2 = new File("salida_test.txt");
+        //tornem a escriure el seu contingut
         Files.write(file2.toPath(), out);
     }
 }
