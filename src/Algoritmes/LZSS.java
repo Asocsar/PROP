@@ -81,7 +81,7 @@ public class LZSS {
         //Recorrem l'arxiu
         while ( LAB < file.length) {
             //Si la mascara te mida 7, codifiquem en la llista definitiva mask+llista temporal
-            if (mask.length() == 7 ) {
+            if (mask.length() == 7 || (LAB == file.length-1 & !mask.equals(""))) {
                 encoded.addAll((encode(mask, result)));
                 mask = "";
                 result.clear();
@@ -149,7 +149,7 @@ public class LZSS {
     //POST: Es retorna una llista composta per un byte de màscara i els elements als qui fa referència
     //EXCEPCIONS:
 
-    public static List<Byte> encode(String mask, List<Byte> current) {
+    private static List<Byte> encode(String mask, List<Byte> current) {
         //Codifiquem en una sola llista la màscara actual i els elements corresponents a aquesta màscara
         List<Byte> encoded = new ArrayList<>();
         Byte Bmask = Byte.parseByte(mask,2);
@@ -160,9 +160,6 @@ public class LZSS {
         }
         return encoded;
     }
-
-
-
 
 
 
@@ -182,7 +179,8 @@ public class LZSS {
             //Obtenim la màscara i la posem en 7 bits
 
             String binmask = Integer.toBinaryString(((int) encoded.get(i++)) & 0xFF);
-            while (binmask.length() < 7) binmask = "0" + binmask;
+            while (binmask.length() < 7 &&  i+binmask.length() < encoded.size()) binmask = "0" + binmask;
+
 
             //Recorrem la màscara de bits per identificar què són caràcters (0) i què són parelles <match,offset> (1)
 
@@ -212,7 +210,6 @@ public class LZSS {
         }
         return result;
         }
-
 
 
 
@@ -247,7 +244,7 @@ public class LZSS {
 
         double startTime = System.currentTimeMillis();
 
-        File file = new File("/home/clums/Escriptori/Ejemplo.txt");
+        File file = new File("/home/clums/Escriptori/JOCS_DE_PROVA/EnglishTalmud.txt");
         byte[] bytefile = Files.readAllBytes(file.toPath());
         filesize = bytefile.length;
 
