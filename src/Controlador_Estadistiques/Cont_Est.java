@@ -2,6 +2,7 @@ package Controlador_Estadistiques;
 import Estadístiques.Estadistiques;
 
 import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class Cont_Est {
 
 
     }*/
+
 
 
     public static void Stats_Update() throws  IOException {
@@ -91,7 +93,7 @@ public class Cont_Est {
                 }
             }
             catch (Exception FileAlreadyExists){
-                System.err.print(FileAlreadyExists);
+                throw FileAlreadyExists;
             }
         }
 
