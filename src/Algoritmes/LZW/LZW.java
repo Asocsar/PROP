@@ -7,8 +7,8 @@ import java.lang.Math;
 public class LZW {
 
 
-    private static Map<List<Byte>, Integer> Alfabet = new HashMap<List<Byte>, Integer>();
-    private static Map<Integer, List<Byte>> Alfabet_inv = new HashMap<Integer, List<Byte>>();
+    private Map<List<Byte>, Integer> Alfabet = new HashMap<List<Byte>, Integer>();
+    private Map<Integer, List<Byte>> Alfabet_inv = new HashMap<Integer, List<Byte>>();
 
     private double time;
     private double rate;
@@ -45,7 +45,7 @@ public class LZW {
         return n < 0 ? 4 : (32 - Integer.numberOfLeadingZeros(n)) / 8 + 1;
     }
 
-    public List<Integer> compress(byte [] file) throws IOException {
+    public List<Integer> compress(byte [] file)  {
         long start = System.currentTimeMillis();
         Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
         int cantidad = 0;
@@ -64,9 +64,9 @@ public class LZW {
                 w = new Byte[aux.length];
                 w = aux;
             } else {
-                if (Alf_aux.size() < 0x0FFF) Alf_aux.put(Arrays.asList(aux), Alf_aux.size());
+                if (Alf_aux.size() < 53248) Alf_aux.put(Arrays.asList(aux), Alf_aux.size());
                 int l = Alf_aux.get(Arrays.asList(w));
-                //n2 += bytesCount(l);
+                n2 += 2;
                 result.add(l);
                 w = new Byte[k.length];
                 w = k;
@@ -75,12 +75,18 @@ public class LZW {
         result.add(Alf_aux.get(Arrays.asList(w)));
         long end = System.currentTimeMillis();
         this.time = (end - start) / 1000F;
-        this.rate = cantidad/n2;
+        if (file.length > 0)
+            this.rate = cantidad/n2;
+        else
+            this.rate = 0;
         return result;
     }
 
 
     public byte[] descomprimir (List<Integer> s) {
+        if (s.size() == 0) {
+            return new byte[0];
+        }
         long start = System.currentTimeMillis();
         Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
         int i = 0;

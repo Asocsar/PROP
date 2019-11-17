@@ -8,10 +8,11 @@ import java.util.List;
 public class Driver_LZW {
     public static void main(String[] args) throws Exception {
         //Leemos el fichero a comprimir
-        File file = new File("C:\\Users\\Asocs\\Desktop\\Juegos de prueba\\llibre.pdf");
+        File file = new File("C:\\Users\\Asocs\\Desktop\\Juegos de prueba\\quijote_entero.txt");
         //Leemos los bytes del fichero
         byte[] b = Files.readAllBytes(file.toPath());
         LZW A = new LZW();
+        long r = 3;
         //Comprimimos el fichero objetivo
         List<Integer> s = A.compress(b);
         //Mostramos el ratio de compresión y tiempo tardado
@@ -34,7 +35,7 @@ public class Driver_LZW {
         file_r.close();
         byte[] out = A.descomprimir(g);
         System.out.println("Tiempo " + A.getTime());
-        File file2 = new File("llibre.pdf");
+        File file2 = new File("salida_test.txt");
         Files.write(file2.toPath(), out);
     }
 }
