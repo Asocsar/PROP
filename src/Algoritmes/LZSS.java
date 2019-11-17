@@ -80,8 +80,8 @@ public class LZSS {
         else search_buffer = 4095;
         //Recorrem l'arxiu
         while ( LAB < file.length) {
-            //Si la mascara te mida 7, codifiquem en la llista definitiva mask+llista temporal
-            if (mask.length() == 7 || (LAB == file.length-1 & !mask.equals(""))) {
+            //Si la mascara te mida 7, o hem reccorregut tota la sequûència codifiquem en la llista definitiva mask+llista temporal
+            if (mask.length() == 7 ) {
                 encoded.addAll((encode(mask, result)));
                 mask = "";
                 result.clear();
@@ -139,6 +139,10 @@ public class LZSS {
                 else SB = 0;
             }
             else ++SB;
+            if (LAB == file.length && !mask.equals("")) {
+                while(mask.length() < 7) mask = mask +"0";
+                encoded.addAll((encode(mask, result)));
+            }
         }
         Byte[] byteencoding = encoded.toArray(new Byte[encoded.size()]); //Convertim la llista a un byte[}
         return byteencoding;
@@ -152,6 +156,7 @@ public class LZSS {
     private static List<Byte> encode(String mask, List<Byte> current) {
         //Codifiquem en una sola llista la màscara actual i els elements corresponents a aquesta màscara
         List<Byte> encoded = new ArrayList<>();
+
         Byte Bmask = Byte.parseByte(mask,2);
         encoded.add(Bmask);
         for (byte bin : current) {
@@ -179,23 +184,23 @@ public class LZSS {
             //Obtenim la màscara i la posem en 7 bits
 
             String binmask = Integer.toBinaryString(((int) encoded.get(i++)) & 0xFF);
-            while (binmask.length() < 7 &&  i+binmask.length() < encoded.size()) binmask = "0" + binmask;
+            while (binmask.length() < 7 ) binmask = "0" + binmask;
 
 
             //Recorrem la màscara de bits per identificar què són caràcters (0) i què són parelles <match,offset> (1)
 
-            for (int maskind = 0; maskind < binmask.length(); ++maskind) {
+            for (int maskind = 0; maskind < binmask.length() && i+2 < encoded.size(); ++maskind) {
                 //Obtenim caràcters
                 if (binmask.charAt(maskind) == '0') {
                     result.append((char) (encoded.get(i++)).intValue());
                     resultindex++;
                 }
                 //Decsodifiquem parelles
-                else {
+                else if (i+2 < encoded.size()){
                     String offset,offsetl,offseth;
 
                     offsetl = Integer.toBinaryString(encoded.get(i+2).intValue()&0xFF);
-                    offseth = Integer.toBinaryString(encoded.get(i+1).intValue()&0xFF);
+                    offseth = Integer.toBinaryString(encoded.get(i+1).intValue()&0x0F);
                     offset = offseth+offsetl;
 
                     int offsetint = Integer.parseInt(offset,2);
@@ -209,16 +214,16 @@ public class LZSS {
             }
         }
         return result;
-        }
+    }
 
 
 
 
     public static void print_status(Byte[] compressed, StringBuilder decompressed) {
         for (int i = 0; i < compressed.length; ++i) {
-                System.out.print(compressed[i]);
-                System.out.print(",");
-            }
+            System.out.print(compressed[i]);
+            System.out.print(",");
+        }
         System.out.println("\n");
         //for (int f = 0; f < flags.length(); f++) if (flags.get(f)) System.out.println(f);
         System.out.println("\n");
@@ -262,4 +267,3 @@ public class LZSS {
         print_status(compressed,decompressed);
     }
 }
-
