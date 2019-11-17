@@ -48,17 +48,17 @@ public class LZSS {
     public static double CalcCompressRatio(double srcsize, double compressedsize) {
         try {
             if (srcsize <= 0) throw new ArithmeticException();
-            return compressedsize / srcsize;
 
         } catch (ArithmeticException a) {
             System.out.print("Mida de l'arxiu font invàlida");
         }
+        return compressedsize/srcsize;
     }
 
-    //DESCRIPCIÓ DEL MÈTODE : Càlcul del ratio de compressió
-    //PRE: srcsize > 0
-    //POST: Es retorna el quocient entre la mida de l'arxiu comprimit i la mida de l'arxiu original, en bytes
-    //EXCEPCIONS: La mida de l'arxiu font és 0 -> quocient indeterminat
+    //DESCRIPCIÓ DEL MÈTODE : Codifiació de l'arxiu font en un array de bytes amb l'algorisme LZSS
+    //PRE: file.size() > 3
+    //POST: Es retorna un array de bytes amb els elements codificats
+    //EXCEPCIONS: file.size() <= 3
 
 
     public static Byte[] compress(byte[] file) throws IOException {
@@ -144,6 +144,10 @@ public class LZSS {
         return byteencoding;
     }
 
+    //DESCRIPCIÓ DEL MÈTODE : Codificació en una sola llista d'una màscara i els elements corresponents als bits d'aquesta
+    //PRE: Cert
+    //POST: Es retorna una llista composta per un byte de màscara i els elements als qui fa referència
+    //EXCEPCIONS:
 
     public static List<Byte> encode(String mask, List<Byte> current) {
         //Codifiquem en una sola llista la màscara actual i els elements corresponents a aquesta màscara
@@ -163,9 +167,9 @@ public class LZSS {
 
 
 
-    //DESCRIPCIÓ DEL MÈTODE:
-    //PRE:
-    //POST:
+    //DESCRIPCIÓ DEL MÈTODE: Descodifiquem en un string l'array de bytes de l'arxiu comprimit
+    //PRE: Bencoded és un arxiu codificat segons LZSS
+    //POST: És retorna la cadena de caracters corresponent a la descodificació de Bencoded
     //EXCEPCIONES:
 
     public static StringBuilder decompress (Byte[] Bencoded)  {
