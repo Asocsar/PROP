@@ -1,16 +1,16 @@
-package Algoritmes;
+package Algorisme_LZ78;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.String;
 
 public class LZ78 {
-    private static long elapsed_time;
-    private static long length_n;
-    private static long length_c;
+    private long elapsed_time;
+    private long length_n;
+    private long length_c;
 
     //PRE: Cert
-    //POST: Crea una instància de la classe LZ78
+    //POST: Crea una instància de la classe Algorisme_LZ78.LZ78
     public LZ78(){
 
     }
@@ -24,7 +24,7 @@ public class LZ78 {
 
     //PRE: Cert
     //POST: Retorna un byte[] amb tots els valors de a ajuntats
-    public static byte[] transform(List<Byte>a){
+    public  byte[] transform(List<Byte>a){
         byte[] n = new byte[a.size()];
         for(int i=0; i < a.size(); ++i){
             n[i]= a.get(i);
@@ -34,7 +34,7 @@ public class LZ78 {
 
     //PRE: Cert
     //POST: Retorna una llista de Integers que representa el fitxer comprimit
-    public static byte[] compresio(byte[] fole)  {
+    public byte[] compresio(byte[] fole)  {
         long startTime = System.currentTimeMillis();
         length_n = fole.length;
         int x=0;
@@ -78,7 +78,7 @@ public class LZ78 {
 
     //PRE: Cert
     //POST: Retorna un string amb tots els valors de a ajuntats
-    public static String listtostring(List<String> a) {
+    public String listtostring(List<String> a) {
         int n = a.size();
         String aux = "";
         for (int i = 0; i < n; ++i) {
@@ -90,7 +90,7 @@ public class LZ78 {
 
     //PRE: Cert
     //POST: Retorna un String amb el text original
-    public static String descompresio(byte[] aux){
+    public String descompresio(byte[] aux){
         long startTime = System.currentTimeMillis();
         List<String> Caracters = new ArrayList<>();
         List<String> Caracters_aux = new ArrayList<>();
@@ -136,7 +136,7 @@ public class LZ78 {
 
     //PRE: Cert
     //POST: Retorna el rati assolit en la ultima compressió
-    public static Long get_ratio() {
+    public Long get_ratio() {
         return length_n / length_c;
     }
 
