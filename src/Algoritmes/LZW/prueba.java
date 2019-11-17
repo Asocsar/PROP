@@ -1,6 +1,6 @@
 package Algoritmes.LZW;
 
-import javafx.util.converter.ByteStringConverter;
+
 
 import java.io.FileReader;
 import java.io.FileWriter;
