@@ -1,24 +1,30 @@
 package Algoritmes;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.String;
 
 public class LZ78 {
-    public static long elapsed_time;
-    public static long length_n;
-    public static long length_c;
-    
+    private static long elapsed_time;
+    private static long length_n;
+    private static long length_c;
+
+    //PRE: Cert
+    //POST: Crea una instància de la classe LZ78
     public LZ78(){
+
     }
 
+    //PRE: Cert
+    //POST: Retorna el temps trigat en la ultima compressió / descompressió
     public long get_time() {
 
         return elapsed_time;
     }
 
-    private byte[] transform(List<Byte>a){
+    //PRE: Cert
+    //POST: Retorna un byte[] amb tots els valors de a ajuntats
+    public static byte[] transform(List<Byte>a){
         byte[] n = new byte[a.size()];
         for(int i=0; i < a.size(); ++i){
             n[i]= a.get(i);
@@ -26,36 +32,36 @@ public class LZ78 {
         return n;
     }
 
-    public byte[] compresio(byte[] fole) throws IOException {
+    //PRE: Cert
+    //POST: Retorna una llista de Integers que representa el fitxer comprimit
+    public static byte[] compresio(byte[] fole)  {
         long startTime = System.currentTimeMillis();
+        length_n = fole.length;
         int x=0;
         Byte[] file = new Byte[fole.length];
         for(byte a : fole){
             file[x++] = a;
         }
-        length_n = fole.length;
         List<String> Caracters = new ArrayList<>();
         Caracters.add(null);
         List<Byte> aux_byte = new ArrayList<>();
-        Byte lletra = file[0];
         byte index = 0;
-        int i = 1;
+        int i = 0;
         String aux_s= "";
         while (i < file.length) {
 
             if (Caracters.size()-1 < 127) {
-                aux_s = aux_s + (char)(lletra.byteValue());
+                aux_s = aux_s + (char)(file[i].byteValue());
                 if (!Caracters.contains(aux_s)) {
                     Caracters.add(aux_s);
                     aux_byte.add(index);
-                    aux_byte.add(lletra);
+                    aux_byte.add(file[i]);
                     index = 0;
                     aux_s="";
                 } else {
                     index = (byte)Caracters.indexOf(aux_s);
                 }
                 ++length_n;
-                lletra = file[i];
                 ++i;
 
             } else {
@@ -70,7 +76,9 @@ public class LZ78 {
         return transform(aux_byte);
     }
 
-    private String listtostring(List<String> a) {
+    //PRE: Cert
+    //POST: Retorna un string amb tots els valors de a ajuntats
+    public static String listtostring(List<String> a) {
         int n = a.size();
         String aux = "";
         for (int i = 0; i < n; ++i) {
@@ -80,14 +88,17 @@ public class LZ78 {
         return aux;
     }
 
-    public String descompresio(byte[] aux) throws IOException {
+    //PRE: Cert
+    //POST: Retorna un String amb el text original
+    public static String descompresio(byte[] aux){
         long startTime = System.currentTimeMillis();
         List<String> Caracters = new ArrayList<>();
         List<String> Caracters_aux = new ArrayList<>();
         Caracters.add(null);
         String aux_c = "";
         int index=0;
-        for(int i = 0; i < aux.length; ++i){
+        int i = 0;
+        while( i < aux.length){
             if(Caracters.size() != 128) {
                 if (i % 2 == 0 | i == 0) index = aux[i];
 
@@ -104,6 +115,7 @@ public class LZ78 {
                         aux_c = "";
                     }
                 }
+                ++i;
             }
            else {
                 Caracters.remove(0);
@@ -122,9 +134,10 @@ public class LZ78 {
         return listtostring(Caracters_aux);
     }
 
-    public Long get_ratio_c() {
+    //PRE: Cert
+    //POST: Retorna el rati assolit en la ultima compressió
+    public static Long get_ratio() {
         return length_n / length_c;
     }
 
 }
-
