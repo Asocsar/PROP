@@ -244,7 +244,7 @@ public class LZSS {
 
         double startTime = System.currentTimeMillis();
 
-        File file = new File("/home/clums/Escriptori/JOCS_DE_PROVA/EnglishTalmud.txt");
+        File file = new File("/home/clums/Escriptori/Ejemplo.txt");
         byte[] bytefile = Files.readAllBytes(file.toPath());
         filesize = bytefile.length;
 
