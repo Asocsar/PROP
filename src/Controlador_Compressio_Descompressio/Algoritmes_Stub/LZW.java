@@ -27,7 +27,7 @@ public class LZW {
     }
 
     public String descomprimir (List<Integer> s) {
-        String S = "Hola Mundo!";
+        String S = "Contingut de descomprimir amb LZSS";
         return S;
     }
 }

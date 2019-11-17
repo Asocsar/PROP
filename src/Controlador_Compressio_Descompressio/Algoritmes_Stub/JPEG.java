@@ -25,7 +25,7 @@ public class JPEG {
     }
 
     public String descomprimir (Object o) {
-        String S = "Hola Mundo!";
+        String S = "Contingut de descomprimir amb JPEG";
         return S;
     }
 }

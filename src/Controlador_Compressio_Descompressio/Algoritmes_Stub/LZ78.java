@@ -25,7 +25,7 @@ public class LZ78 {
     }
 
     public String descomprimir (Object o) {
-        String S = "Hola Mundo!";
+        String S = "Contingut de descomprimir amb LZ78";
         return S;
     }
 }
