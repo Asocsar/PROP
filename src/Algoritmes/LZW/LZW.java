@@ -47,14 +47,9 @@ public class LZW {
 
     }
 
-
-    private double log (int x, int base ) {
-        return (double) Math.round(Math.log(x) / Math.log(base));
-    }
-
-    public int bytesCount(int n) {
+    /*public int bytesCount(int n) {
         return n < 0 ? 4 : (32 - Integer.numberOfLeadingZeros(n)) / 8 + 1;
-    }
+    }*/
 
     // Pre : Cert
     // Post: Retorna una llista de Integers que representa el fitxer comprimit
