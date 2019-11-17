@@ -47,8 +47,12 @@ public class LZW {
 
     public List<Integer> compress(byte [] file)  {
         long start = System.currentTimeMillis();
+        ArrayList <Map<List<Byte>, Integer>> L = new ArrayList();
         Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
+        L.add(Alf_aux);
         int cantidad = 0;
+        int m = 0;
+        int last = 0;
         List<Integer> result = new ArrayList<>();
         Byte  [] w = new Byte[0];
         Byte[] k = new Byte[1];
@@ -60,12 +64,30 @@ public class LZW {
             k[0] = b;
             aux = new Byte[k.length + w.length];System.arraycopy(w, 0, aux, 0, w.length);
             System.arraycopy(k, 0, aux, w.length, k.length);
-            if (Alf_aux.containsKey(Arrays.asList(aux))) {
+            boolean finded = false;
+            List <Byte> AUX = Arrays.asList(aux);
+            for (int i = 0; i < L.size() && !finded; ++i) {
+                finded = L.get(i).containsKey(AUX);
+            }
+            if (finded) {
                 w = new Byte[aux.length];
                 w = aux;
             } else {
-                if (Alf_aux.size() < 53248) Alf_aux.put(Arrays.asList(aux), Alf_aux.size());
-                int l = Alf_aux.get(Arrays.asList(w));
+                if (L.get(last).size() >= 53248) {
+                    //Alf_aux.put(Arrays.asList(aux), Alf_aux.size());
+                    Map<List<Byte>, Integer> Alfi = new HashMap<List<Byte>, Integer>(Alfabet);
+                    L.add(Alfi);
+                    result.add(-1);
+                    ++last;
+                }
+                L.get(L.size()-1).put(AUX, L.get(L.size()-1).size());
+                AUX = Arrays.asList(w);
+                finded = false;
+                int i = 0;
+                for (; i < L.size() && !finded; ++i) {
+                    finded = L.get(i).containsKey(AUX);
+                }
+                int l = L.get(i).get(Arrays.asList(w));
                 n2 += 2;
                 result.add(l);
                 w = new Byte[k.length];
@@ -89,6 +111,8 @@ public class LZW {
         }
         long start = System.currentTimeMillis();
         Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
+        ArrayList <Map<Integer, List<Byte>>> L = new ArrayList();
+        L.add(Alf_aux);
         int i = 0;
         int cod_viejo = s.get(i);
         List<Byte> caracter = Alf_aux.get(cod_viejo);
@@ -99,6 +123,11 @@ public class LZW {
         ++i;
         while (i < s.size()) {
             cod_nuevo = s.get(i);
+            if (cod_nuevo == -1) {
+                Map<Integer, List<Byte>> Alfi = new HashMap<Integer, List<Byte>>(Alfabet_inv);
+                L.add(Alfi);
+            }
+            for ()
             if (Alf_aux.containsKey(cod_nuevo)) {
                 cadena = Alf_aux.get(cod_nuevo);
             }
