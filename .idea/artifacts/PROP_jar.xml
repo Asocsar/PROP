@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PROP:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PROP_jar</output-path>
+    <root id="archive" name="PROP.jar">
+      <element id="module-output" name="PROP" />
+      <element id="library" level="project" name="R User Library" />
+      <element id="library" level="project" name="jdk1.8" />
+    </root>
+  </artifact>
+</component>
