@@ -4,7 +4,7 @@ package Algoritmes.JPEG;
 import java.io.*;
 
 
-public class JPEG {
+public class JPEG_main {
 
     private static int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
             {12, 12, 14, 19, 26, 58, 60, 55},
@@ -41,17 +41,7 @@ public class JPEG {
             {6, 7}, {7, 6},
             {7, 7}};
 
-    //temps de l'ultima compressió / descompressió
-    private double time;
-    //rati de compressió assolit en la última compressió
-    private double rate;
 
-    // Pre : Cert
-    // Post: Retorna el temps de l'última compressió/descompressió
-    public double getTime () {return  this.time;}
-    // Pre : Certs
-    // Post: Retorna el rati assolit de l'última compressió
-    public double getRate () {return  this.rate;}
 
     private static double[][] dct(int[][] m) {
 
@@ -126,7 +116,7 @@ public class JPEG {
 
 
 
-    private static int[] compress8(int[][] m, boolean chroma) {
+    private static String compress8(int[][] m, boolean chroma) {
 
         //DCT Transform
         double[][] D = dct(m);
@@ -156,9 +146,9 @@ public class JPEG {
 
         //Encoding ZigZag (RLE)
         //System.out.println();
-        int[] buff = new int[64];
+        String str = new StringBuilder();
         for (int i = 0; i < 64; ++i) {
-            buff[i] = B[ZigZag[i][0]][ZigZag[i][1]];
+            i B[ZigZag[i][0]][ZigZag[i][1]];
             //System.out.printf("%d\t", buff[i]);
         }
         //System.out.println();
@@ -172,14 +162,16 @@ public class JPEG {
 
 
 
-    private static int[][] decompress8(int[] buff, boolean chroma) {
+    private static int[][] decompress8(String buff, boolean chroma) {
 
         //Decoding ZigZag (RLE)
         //System.out.println("Comença la descompressió de 8x8");
         int[][] B = new int[8][8];
-        for (int i = 0; i < 64; ++i) {
-            B[ZigZag[i][0]][ZigZag[i][1]] = buff[i];
-        }
+        int i = 0;
+
+        B[ZigZag[i][0]][ZigZag[i][1]] = buff[i];
+
+
         //System.out.println();
 
         //System.out.println();
@@ -214,17 +206,21 @@ public class JPEG {
         }
 
         //DCT Transform
-        return idct(D);
+        idct(D);
+
+        //RLE
+
+
     }
 
 
     public static int[][][] compress(int[][][] YCbCr) {
-        thi
+
         int height, width, Bheight, Bwidth, length, posx, posy;
-        int[][][] buff = new int[3][1242][];
+        String[][] buff = new String[3][1242];
         //Buffer with 3dimensions
         /*
-        b[0] = NBlocks compressed which every on contains
+        b[1] = NBlocks compressed which every on contains
         a String(RLE) or a Bitset(Hufmann)
          */
 
@@ -264,7 +260,7 @@ public class JPEG {
     }
 
 
-    public static int[][][] decompress(int[][][] buff, int height, int width) {
+    public static int[][][] decompress(String[][] buff, int height, int width) {
 
 
         int[][][] YCbCr = new int[3][height][width];
