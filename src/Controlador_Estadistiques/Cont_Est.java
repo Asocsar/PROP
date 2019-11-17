@@ -27,7 +27,10 @@ public class Cont_Est {
 
     }*/
 
-
+    //DESCRIPCIÓ DEL MÈTODE : S'actualitza l'arxiu de text d'estadístiques amb les últimes generades.
+    //PRE: Cert
+    //POST: L'arxiu d'stats ha estat actualitzat
+    //EXCEPCIONS: IOException
 
     public static void Stats_Update() throws  IOException {
 
@@ -73,6 +76,12 @@ public class Cont_Est {
         pw.print(4+E.getLastAlg());
 
     }
+
+
+    //DESCRIPCIÓ DEL MÈTODE : Obtenim les estadístiques de l'arxiu i inicialitzem els valors d'aquestes en la classe Estadistiques
+    //PRE: Cert
+    //POST: La classe estadístiques ha estat inicialitzada amb els valors que ja teniem, si no en teníem, s'ha creat l'arxiu inicialitzat tot a "null"
+    //EXCEPCIONS: IOException i FileAlreadyExists(no s'ha pogut crear perquè ja existia)
 
     public static void GetStats () throws IOException{ //Set stats from file to classes
 
