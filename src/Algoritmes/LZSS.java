@@ -129,10 +129,12 @@ public class LZSS {
                 encoded.addAll((encode(mask, result)));
             }
         }
+        if (encoded.size() > 1) encoded = encoded.subList(0,encoded.size()-2);
         Byte[] byteencoding = encoded.toArray(new Byte[encoded.size()]); //Convertim la llista a un byte[]
+
         double endTime = System.currentTimeMillis();
-        CompressTime = (endTime - startTime);
-        CompressRatio = (double)encoded.size()/(double)file.length;
+        CompressTime = (endTime - startTime);                       //Càlcul del temps de compressió i assignació a variable global
+        CompressRatio = (double)encoded.size()/(double)file.length; //Càlcul del ratio de compressió i assignació a variable global
         return byteencoding;
     }
 
