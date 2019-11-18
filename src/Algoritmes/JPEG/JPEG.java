@@ -219,9 +219,9 @@ public class JPEG {
 
 
     public static int[][][] compress(int[][][] YCbCr) {
-        thi
+
         int height, width, Bheight, Bwidth, length, posx, posy;
-        int[][][] buff = new int[3][1242][];
+        int[][][] buff = new int[3][][];
         //Buffer with 3dimensions
         /*
         b[0] = NBlocks compressed which every on contains
