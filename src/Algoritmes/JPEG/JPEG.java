@@ -259,7 +259,7 @@ public class JPEG {
         }
         long end = System.currentTimeMillis();
         this.time = (end - start) / 1000F;
-        this.rate = 1 - midafinal / (height * width + 3);
+        this.rate = 1 - (double) midafinal /(double) (height * width + 3);
         return buff;
     }
 

@@ -73,7 +73,7 @@ public class Driver_JPEG {
             System.out.println("Ratio " + J.getRate());
             System.out.println("Temps " + J.getTime());
             //Escriptura a fitxer .fG
-            System.out.println("Introdueix path de destí i nom del fitxer (no fa falta especificar la extensio)");
+            System.out.println("Introdueix path de destí i nom del fitxer sense extensió");
             System.out.println("Exemple \\home\\usr\\fitxer");
 
             path = S.next();
@@ -93,6 +93,7 @@ public class Driver_JPEG {
 
 
             System.out.println("Introdueix el path desti del fitxer descomprimit");
+            path = S.next();
             File outfile = new File(path);
             FileOutputStream fos = new FileOutputStream(outfile);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
