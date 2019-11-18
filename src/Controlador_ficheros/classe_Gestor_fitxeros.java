@@ -159,6 +159,26 @@ public class gestor_fitxers {
         else return buscar_leer_archivo(path_og,0);
     }
 
+    //PRE: Cert
+    //POST: Retorna el contingut del fitxer en el path "path" en un string
+    public String read_file(String path) throws IOException {
+        try {
+            Path path1 = Paths.get(path);
+            File file = new File(path);
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String aux = "";
+            String aux2;
+            while ((aux2 = br.readLine()) != null) {
+                aux = aux + aux2 + "/n";
+            }
+            return aux;
+        }
+        catch (InvalidPathException ex){
+            System.out.println("El directorio destino no és valido");
+        }
+        return null;
+    }
+
     //FUNCIONS AUXILIARS (PRIVADES)
 
     //PRE: path_og és un path vàlid
