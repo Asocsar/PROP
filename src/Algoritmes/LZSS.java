@@ -54,8 +54,11 @@ public class LZSS {
 
         List<Byte> result = new ArrayList<>(); //Llista temporal
         List<Byte> encoded = new ArrayList<>(); // Llista definitiva
-        result.add(file[0]);
-
+        if (file.length > 0) result.add(file[0]);
+        else {
+            Byte[] nosize = new Byte[0];
+            return nosize;
+        }
 
         if (file.length < 4095) search_buffer = 0;
         else search_buffer = 4095;
@@ -71,7 +74,7 @@ public class LZSS {
             if (found && (match == 127 || ((SB == LABini || file[LAB] != file[SB]) && match > 3))) {
 
                 byte binmatch = (byte) (match);
-                byte binoffsetl = ((byte) (offset));  // 3<offset<4096 --> s'ha de codificar en 2 bytes
+                byte binoffsetl = (byte) (offset);  // 3<offset<4096 --> s'ha de codificar en 2 bytes
                 byte binoffseth = (byte) (offset >> 8);
 
                 result.add(binmatch);

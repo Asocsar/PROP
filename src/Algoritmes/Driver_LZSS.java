@@ -12,15 +12,15 @@ public class Driver_LZSS {
     public static void main(String[] args) throws Exception {
         //Leemos el fichero a comprimir
         String dir = "Unextended";
-        File file_aux = new File("/home/clums/Escriptori/JOCS_DE_PROVES/" + dir);
+        File file_aux = new File("/home/clums/Escriptori/JOCS_DE_PROVA/" + dir);
         String[] tests = file_aux.list((current, name) -> new File(current, name).isFile());
 
         //Leemos los bytes del fichero
 
         assert tests != null;
         for (String test : tests) {
-            System.out.println(test + "es comprimirà i descodificarà");
-            String path = "/home/clums/Escriptori/JOCS_DE_PROVES/" + "/" + dir + "/" + test + ".txt";
+            System.out.println(test + " es comprimirà i descodificarà");
+            String path = "/home/clums/Escriptori/JOCS_DE_PROVA/" + "/" + dir + "/" + test;
             File file = new File(path);
             byte[] c = Files.readAllBytes(file.toPath());
 
@@ -32,13 +32,16 @@ public class Driver_LZSS {
             System.out.println("El ratio de compressió ha estat" + ": " + A.getRate() + "\n");
             System.out.println("El temps de compressió ha estat" + ": " + A.getTime() + "\n");
 
-            path = "/home/clums/Escriptori/JOCS_DE_PROVES/" + "/" + dir + "/" + test + ".fS";
-            FileWriter file_out = new FileWriter(path);
+            path = "/home/clums/Escriptori/JOCS_DE_PROVA/" + "/" + dir + "/" + test.substring(0, test.length()-4) + ".fS";
+            File file_out = new File(path);
 
-            for (Byte b : compressed) {
-                file_out.write(b + ',');
+            byte[] towrite = new byte[compressed.length];
+            int writeind = 0;
+            for (Byte comp : compressed) {
+                towrite[writeind++]= comp;
             }
-            file_out.close();
+
+            Files.write(file_out.toPath(),towrite);
 
             File filed = new File(path);
             byte[] d = Files.readAllBytes(filed.toPath());
@@ -49,7 +52,7 @@ public class Driver_LZSS {
                 todecod[decodindex++] = b;
             }
 
-            path = "/home/clums/Escriptori/JOCS_DE_PROVES/" + "/" + dir + "/" + test + ".txt";
+            path = "/home/clums/Escriptori/JOCS_DE_PROVA/" + "/" + dir + "/" + test.substring(0,test.length()-3) + "S" + ".txt";
             StringBuilder decompressed = A.decompress(todecod);
 
             File file2 = new File(path);
