@@ -9,18 +9,18 @@ public class LZSS {
     public LZSS() { }
 
 
-    public static double CompressTime;
+    private  double CompressTime;
 
-    public static double CompressRatio;
+    private double CompressRatio;
 
-    public static int search_buffer;
+    private int search_buffer;
 
     //DESCRIPCIÓ DEL MÈTODE : Obtenim el ratio de compressió
     //PRE: Cert
     //POST: Es retorna el ratio de compressió.
     //EXCEPCIONS:
 
-    public static double getRate() {
+    public  double getRate() {
         return CompressRatio;
     }
 
@@ -30,25 +30,10 @@ public class LZSS {
     //POST: Es retorna el temps de compressió.
     //EXCEPCIONS:
 
-    public static double getTime() {
+    public  double getTime() {
         return CompressTime;
     }
 
-    //DESCRIPCIÓ DEL MÈTODE : Càlcul del ratio de compressió
-    //PRE: srcsize > 0
-    //POST: Es retorna el quocient entre la mida de l'arxiu comprimit i la mida de l'arxiu original, en bytes
-    //EXCEPCIONS: La mida de l'arxiu font és 0 -> quocient indeterminat
-
-
-    public static double CalcCompressRatio(double srcsize, double compressedsize) {
-        try {
-            if (srcsize <= 0) throw new ArithmeticException();
-
-        } catch (ArithmeticException a) {
-            System.out.print("Mida de l'arxiu font invàlida");
-        }
-        return compressedsize/srcsize;
-    }
 
     //DESCRIPCIÓ DEL MÈTODE : Codifiació de l'arxiu font en un array de bytes amb l'algorisme LZSS
     //PRE: file.size() > 3
@@ -56,7 +41,7 @@ public class LZSS {
     //EXCEPCIONS: file.size() <= 3
 
 
-    public static Byte[] compress(byte[] file) throws IOException {
+    public  Byte[] compress(byte[] file)  {
         double startTime = System.currentTimeMillis();
         int match, offset, SB, LAB,LABini;
         match = 0;
@@ -144,6 +129,7 @@ public class LZSS {
         Byte[] byteencoding = encoded.toArray(new Byte[encoded.size()]); //Convertim la llista a un byte[]
         double endTime = System.currentTimeMillis();
         CompressTime = (endTime - startTime);
+        CompressRatio = (double)encoded.size()/(double)file.length;
         return byteencoding;
     }
 
@@ -152,7 +138,7 @@ public class LZSS {
     //POST: Es retorna una llista composta per un byte de màscara i els elements als qui fa referència
     //EXCEPCIONS:
 
-    private static List<Byte> encode(String mask, List<Byte> current) {
+    private  List<Byte> encode(String mask, List<Byte> current) {
         //Codifiquem en una sola llista la màscara actual i els elements corresponents a aquesta màscara
         List<Byte> encoded = new ArrayList<>();
 
@@ -173,7 +159,7 @@ public class LZSS {
     //POST: És retorna la cadena de caràcters corresponent a la descodificació de Bencoded
     //EXCEPCIONES:
 
-    public static StringBuilder decompress (Byte[] Bencoded)  {
+    public  StringBuilder decompress (Byte[] Bencoded)  {
         List<Byte> encoded = Arrays.asList(Bencoded);
         StringBuilder result = new StringBuilder();
         int resultindex = 0;
@@ -216,40 +202,4 @@ public class LZSS {
     }
 
 
-
-
-    public static void print_status(Byte[] compressed, StringBuilder decompressed) {
-        for (int i = 0; i < compressed.length; ++i) {
-            System.out.print(compressed[i]);
-            System.out.print(",");
-        }
-        System.out.println("\n");
-        //for (int f = 0; f < flags.length(); f++) if (flags.get(f)) System.out.println(f
-        for (int d = 0; d < decompressed.length();++d) System.out.print(decompressed.charAt(d));
-        System.out.println("\n");
-        System.out.println(CompressRatio);
-        System.out.println("\n");
-        System.out.println(CompressTime);
-    }
-
-
-
-
-    public static void main(String[] args) throws IOException {
-
-
-        File file = new File("/home/clums/Escriptori/Ejemplo.txt");
-        byte[] bytefile = Files.readAllBytes(file.toPath());
-
-
-        Byte[] compressed = compress(bytefile);
-
-
-
-
-        StringBuilder decompressed = decompress(compressed);
-        CompressRatio = CalcCompressRatio(bytefile.length, compressed.length);
-        //WriteatFile(decompressed);
-        print_status(compressed,decompressed);
-    }
 }
