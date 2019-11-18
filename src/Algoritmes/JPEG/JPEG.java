@@ -34,6 +34,15 @@ public class JPEG {
             {49, 64, 78, 87, 103, 121, 120, 101},
             {72, 92, 95, 98, 112, 110, 103, 99}};
 
+    private int[][] QC = {{17, 18, 24, 47, 99, 99, 99, 99},
+            {18, 21, 26, 66, 99, 99, 99, 99},
+            {24, 26, 56, 99, 99, 99, 99, 99},
+            {47, 66, 99, 99, 99, 99, 99, 99},
+            {99, 99, 99, 99, 99, 99, 99, 99},
+            {99, 99, 99, 99, 99, 99, 99, 99},
+            {99, 99, 99, 99, 99, 99, 99, 99},
+            {99, 99, 99, 99, 99, 99, 99, 99}};
+
 
     private int[][] ZigZag = {
             {0, 0},
@@ -127,7 +136,7 @@ public class JPEG {
 
 
 
-    private int[] compress8(int[][] m) {
+    private int[] compress8(int[][] m, boolean chroma) {
 
 
         //DCT Transform
@@ -135,16 +144,20 @@ public class JPEG {
 
         //Quantitzation
 
-        //Si el boolean chroma es true aplicar el quantitzation de chrominance
-        //System.out.println();
         int[][] B = new int[8][8];
-
-        for (int i = 0; i < 8; ++i) {
-            for (int j = 0; j < 8; ++j) {
-                B[i][j] = (int) Math.round(D[i][j] / Q[i][j]);
-                //System.out.printf("%d\t", B[i][j]);
+        if(chroma){
+            for (int i = 0; i < 8; ++i) {
+                for (int j = 0; j < 8; ++j) {
+                    B[i][j] = (int) Math.round(D[i][j] / QC[i][j]);
+                }
             }
-            //System.out.println();
+
+        }else{
+            for (int i = 0; i < 8; ++i) {
+                for (int j = 0; j < 8; ++j) {
+                    B[i][j] = (int) Math.round(D[i][j] / Q[i][j]);
+                }
+            }
         }
 
 
@@ -172,7 +185,7 @@ public class JPEG {
     }
 
 
-    private int[][] decompress8(int[] buff) {
+    private int[][] decompress8(int[] buff, boolean chroma) {
 
         //Decoding ZigZag (RLE)
         //System.out.println("Comença la descompressió de 8x8");
@@ -187,24 +200,22 @@ public class JPEG {
             }
             c+=count;
         }
-        //System.out.println();
-
-        //System.out.println();
-        for (int i = 0; i < 8; ++i) {
-            for (int j = 0; j < 8; ++j) {
-                //System.out.printf("%d\t", B[i][j]);
-            }
-            //System.out.println();
-        }
 
         int[][] D = new int[8][8];
-        //System.out.println();
-        for (int i = 0; i < 8; ++i) {
-            for (int j = 0; j < 8; ++j) {
-                D[i][j] = B[i][j] * Q[i][j];
-                //System.out.printf("%d\t", D[i][j]);
+        if(chroma){
+            for (int i = 0; i < 8; ++i) {
+                for (int j = 0; j < 8; ++j) {
+                    D[i][j] = B[i][j] * QC[i][j];
+                }
             }
-            //System.out.println();
+
+        }else {
+
+            for (int i = 0; i < 8; ++i) {
+                for (int j = 0; j < 8; ++j) {
+                    D[i][j] = B[i][j] * Q[i][j];
+                }
+            }
         }
 
         //DCT Transform
@@ -232,8 +243,6 @@ public class JPEG {
             Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
             Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
             buff[a] = new int[Bheight * Bwidth][];
-            //System.out.println( "Blocs d'alçada: " + Bheight);
-            //System.out.println( "Blocs d'amplada: " + Bwidth);
             midafinal = 3;
 
             for (int i = 0; i < Bheight; ++i) {
@@ -250,7 +259,7 @@ public class JPEG {
                         }
 
                     }
-                    buff[a][i * Bwidth + j] = compress8(m);
+                    buff[a][i * Bwidth + j] = compress8(m, a != 0);
                     midafinal = midafinal + buff[a][i * Bwidth + j].length;
 
                 }
@@ -276,7 +285,7 @@ public class JPEG {
             for (int i = 0; i < Bheight; ++i) {
                 for(int j = 0; j < Bwidth; ++j) {
 
-                    m = decompress8(buff[a][i * Bwidth + j]);
+                    m = decompress8(buff[a][i * Bwidth + j], a != 0);
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
                             posx = j * 8 + x;
@@ -287,18 +296,6 @@ public class JPEG {
                 }
             }
         }
-
-        /*
-        for(int a = 0; a < 3; ++a) {
-            System.out.println();
-            for (int i = 0; i < height; ++i) {
-                for (int j = 0; j < width; ++j) {
-                    System.out.printf("%d\t", YCbCr[a][i][j]);
-                }
-                System.out.println();
-            }
-        }
-         */
 
         return YCbCr;
 

@@ -8,10 +8,19 @@ import java.util.Scanner;
 
 public class Driver_JPEG {
 
+    /*
+    El driver de l'algorisme JPEG prova la funcionalitat de l'algorisme de compressió i descompressió.
+    Et demana 3 paràmetres:
+        1. El path d'origen del fitxer PPM
+        2. El path destí del fitxer comprimit .fG, sense extensió.
+        3. El path destí del fitxer descomprimit PPM, per comparar-lo amb l'original.
+
+     */
     public static void main(String[] args) {
         try {
             Scanner S = new Scanner(System.in);
             System.out.println("Introdueix el path del fitxer a comprimir");
+            System.out.println("Exemple: /home/usr/fitxer");
             String path = S.next();
             File infile = new File(path);
 
@@ -25,7 +34,7 @@ public class Driver_JPEG {
             int width = 0, height;
 
             bis.read(bb, 0, 3);
-            if((char)bb[0] == 'P' && (char)bb[1] == '6') System.out.println("Lectura de fitxer P6");
+            if((char)bb[0] == 'P' && (char)bb[1] != '6') System.out.println("Fitxer diferent de P6");
             StringBuilder str = new StringBuilder();
             c = (char) bis.read();
             while(c != '\n'){
@@ -73,8 +82,7 @@ public class Driver_JPEG {
             System.out.println("Ratio " + J.getRate());
             System.out.println("Temps " + J.getTime());
             //Escriptura a fitxer .fG
-            System.out.println("Introdueix path de destí i nom del fitxer sense extensió");
-            System.out.println("Exemple \\home\\usr\\fitxer");
+            System.out.println("Introdueix path de destí del fitxer comprimit (fitxer sense extensió)");
 
             path = S.next();
             path = path + ".fg";
@@ -84,6 +92,7 @@ public class Driver_JPEG {
                     for (int j = 0; j < aux[a][i].length; ++j) {
                         file_o.write(aux[a][i][j]);
                     }
+                    file_o.write('\n');
                 }
             }
             file_o.close();
@@ -92,7 +101,7 @@ public class Driver_JPEG {
             int[][][] YCbCr = J.decompress(aux, height, width);
 
 
-            System.out.println("Introdueix el path desti del fitxer descomprimit");
+            System.out.println("Introdueix el path desti del fitxer descomprimit (amb extensió)");
             path = S.next();
             File outfile = new File(path);
             FileOutputStream fos = new FileOutputStream(outfile);
@@ -130,11 +139,10 @@ public class Driver_JPEG {
                 }
             }
             bos.close();
-
             System.out.println("JPEG acabat amb èxit.");
 
         } catch (FileNotFoundException e) {
-            System.out.println("El fitxer no ha estat trobat");
+            System.out.println("L'adreça no ha estat trobada");
 
         } catch (IOException e) {
             System.out.println("Error en la Entrada - Sortida");
