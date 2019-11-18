@@ -1,8 +1,5 @@
 package Algoritmes;
-import javax.naming.InsufficientResourcesException;
-import javax.print.DocFlavor;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.util.*;
 import java.lang.*;
@@ -11,8 +8,6 @@ public class LZSS {
 
     public LZSS() { }
 
-
-    public static double filesize;
 
     public static double CompressTime;
 
@@ -62,6 +57,7 @@ public class LZSS {
 
 
     public static Byte[] compress(byte[] file) throws IOException {
+        double startTime = System.currentTimeMillis();
         int match, offset, SB, LAB,LABini;
         match = 0;
         offset = 0;
@@ -76,7 +72,7 @@ public class LZSS {
         result.add(file[0]);
 
 
-        if (filesize < 4095) search_buffer = 0;
+        if (file.length < 4095) search_buffer = 0;
         else search_buffer = 4095;
         //Recorrem l'arxiu
         while ( LAB < file.length) {
@@ -139,12 +135,15 @@ public class LZSS {
                 else SB = 0;
             }
             else ++SB;
+            //Controlem que l'última màscara es codifiqui per molt que no hagi arribat a 7 bits
             if (LAB == file.length && !mask.equals("")) {
                 while(mask.length() < 7) mask = mask +"0";
                 encoded.addAll((encode(mask, result)));
             }
         }
-        Byte[] byteencoding = encoded.toArray(new Byte[encoded.size()]); //Convertim la llista a un byte[}
+        Byte[] byteencoding = encoded.toArray(new Byte[encoded.size()]); //Convertim la llista a un byte[]
+        double endTime = System.currentTimeMillis();
+        CompressTime = (endTime - startTime);
         return byteencoding;
     }
 
@@ -171,7 +170,7 @@ public class LZSS {
 
     //DESCRIPCIÓ DEL MÈTODE: Descodifiquem en un string l'array de bytes de l'arxiu comprimit
     //PRE: Bencoded és un arxiu codificat segons LZSS
-    //POST: És retorna la cadena de caracters corresponent a la descodificació de Bencoded
+    //POST: És retorna la cadena de caràcters corresponent a la descodificació de Bencoded
     //EXCEPCIONES:
 
     public static StringBuilder decompress (Byte[] Bencoded)  {
@@ -189,7 +188,7 @@ public class LZSS {
 
             //Recorrem la màscara de bits per identificar què són caràcters (0) i què són parelles <match,offset> (1)
 
-            for (int maskind = 0; maskind < binmask.length() && i+2 < encoded.size(); ++maskind) {
+            for (int maskind = 0; maskind < binmask.length() && i < encoded.size(); ++maskind) {
                 //Obtenim caràcters
                 if (binmask.charAt(maskind) == '0') {
                     result.append((char) (encoded.get(i++)).intValue());
@@ -225,8 +224,7 @@ public class LZSS {
             System.out.print(",");
         }
         System.out.println("\n");
-        //for (int f = 0; f < flags.length(); f++) if (flags.get(f)) System.out.println(f);
-        System.out.println("\n");
+        //for (int f = 0; f < flags.length(); f++) if (flags.get(f)) System.out.println(f
         for (int d = 0; d < decompressed.length();++d) System.out.print(decompressed.charAt(d));
         System.out.println("\n");
         System.out.println(CompressRatio);
@@ -234,35 +232,23 @@ public class LZSS {
         System.out.println(CompressTime);
     }
 
-    public static void WriteatFile (StringBuilder decompressed) throws IOException{
-        File out = new File("/home/clums/Escriptori/Uncompressed.fS");
-        FileWriter write = new FileWriter(out);
-        for (int i = 0; i < decompressed.length(); ++i) {
-            write.write(decompressed.charAt(i));
-        }
-    }
-
 
 
 
     public static void main(String[] args) throws IOException {
 
-        double startTime = System.currentTimeMillis();
 
         File file = new File("/home/clums/Escriptori/Ejemplo.txt");
         byte[] bytefile = Files.readAllBytes(file.toPath());
-        filesize = bytefile.length;
 
 
         Byte[] compressed = compress(bytefile);
-        Object oc = compressed;
 
 
-        double endTime = System.currentTimeMillis();
-        CompressTime = (endTime - startTime);
+
 
         StringBuilder decompressed = decompress(compressed);
-        CompressRatio = CalcCompressRatio(filesize, compressed.length);
+        CompressRatio = CalcCompressRatio(bytefile.length, compressed.length);
         //WriteatFile(decompressed);
         print_status(compressed,decompressed);
     }
