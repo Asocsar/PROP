@@ -6,7 +6,10 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1f6d7f23-e504-46d3-8360-893f3bbfc28d" name="Default Changelist" comment="">
+    <list default="true" id="27369ef3-35db-4b51-b372-e6f7098744ca" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/Estadístiques/Testeo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/PROP.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PROP.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Estadístiques/DriverEst.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Estadístiques/DriverEst.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Estadístiques/Estadistiques.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Estadístiques/Estadistiques.java" afterDir="false" />
     </list>
@@ -15,6 +18,13 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -39,9 +49,9 @@
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Project" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
   </component>
   <component name="RunDashboard">
