@@ -7,6 +7,18 @@ import java.util.ArrayList;
 
 public class JPEG_main {
 
+    //temps de l'ultima compressió / descompressió
+    private double time;
+    //rati de compressió assolit en la última compressió
+    private double rate;
+
+    // Pre : Cert
+    // Post: Retorna el temps de l'última compressió/descompressió
+    public double getTime () {return  this.time;}
+    // Pre : Certs
+    // Post: Retorna el rati assolit de l'última compressió
+    public double getRate () {return  this.rate;}
+
     private static int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
             {12, 12, 14, 19, 26, 58, 60, 55},
             {14, 13, 16, 24, 40, 57, 69, 56},
@@ -165,8 +177,8 @@ public class JPEG_main {
             curr = buff[i+1];
             for(int j = 0; j < count; ++j) {
                 B[ZigZag[c + j][0]][ZigZag[c + j][1]] = curr;
-                c++;
             }
+            c+=count;
         }
         //System.out.println();
 
@@ -284,7 +296,7 @@ public class JPEG_main {
 
         try {
 
-            File infile = new File("/home/maller/Downloads/west_2.ppm");
+            File infile = new File("/home/maller/Downloads/west_1.ppm");
             File outfile = new File("/home/maller/Downloads/wested2.ppm");
 
             FileInputStream fis = new FileInputStream(infile);

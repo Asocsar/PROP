@@ -2,11 +2,30 @@ package Algoritmes.JPEG;
 
 
 import java.io.*;
+import java.util.ArrayList;
 
 
 public class JPEG {
 
-    private static int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
+    //temps de l'ultima compressió / descompressió
+    private double time;
+    //rati de compressió assolit en la última compressió
+    private double rate;
+
+    //PRE: Cert
+    //POST: Crea una instància de classe
+    public JPEG(){
+        this.time = 0.0;
+        this.rate = 0.0;
+    }
+    // Pre : Cert
+    // Post: Retorna el temps de l'última compressió/descompressió
+    public double getTime () {return  this.time;}
+    // Pre : Certs
+    // Post: Retorna el rati assolit de l'última compressió
+    public double getRate () {return  this.rate;}
+
+    private int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
             {12, 12, 14, 19, 26, 58, 60, 55},
             {14, 13, 16, 24, 40, 57, 69, 56},
             {14, 17, 22, 29, 51, 87, 80, 62},
@@ -15,16 +34,8 @@ public class JPEG {
             {49, 64, 78, 87, 103, 121, 120, 101},
             {72, 92, 95, 98, 112, 110, 103, 99}};
 
-    private static int[][] QC = {{17, 18, 24, 47, 99, 99, 99, 99},
-            {18, 21, 26, 66, 99, 99, 99, 99},
-            {24, 26, 56, 99, 99, 99, 99, 99},
-            {47, 66, 99, 99, 99, 99, 99, 99},
-            {99, 99, 99, 99, 99, 99, 99, 99},
-            {99, 99, 99, 99, 99, 99, 99, 99},
-            {99, 99, 99, 99, 99, 99, 99, 99},
-            {99, 99, 99, 99, 99, 99, 99, 99}};
 
-    private static int[][] ZigZag = {
+    private int[][] ZigZag = {
             {0, 0},
             {0, 1}, {1, 0},
             {2, 0}, {1, 1}, {0, 2},
@@ -41,19 +52,9 @@ public class JPEG {
             {6, 7}, {7, 6},
             {7, 7}};
 
-    //temps de l'ultima compressió / descompressió
-    private double time;
-    //rati de compressió assolit en la última compressió
-    private double rate;
 
-    // Pre : Cert
-    // Post: Retorna el temps de l'última compressió/descompressió
-    public double getTime () {return  this.time;}
-    // Pre : Certs
-    // Post: Retorna el rati assolit de l'última compressió
-    public double getRate () {return  this.rate;}
 
-    private static double[][] dct(int[][] m) {
+    private double[][] dct(int[][] m) {
 
         double[][] dct = new double[8][8];
         double au, av, sum;
@@ -85,7 +86,7 @@ public class JPEG {
         return dct;
     }
 
-    private static int[][] idct(int[][] m) {
+    private int[][] idct(int[][] m) {
 
         int[][] idct = new int[8][8];
         double au, av, sum;
@@ -126,59 +127,65 @@ public class JPEG {
 
 
 
-    private static int[] compress8(int[][] m, boolean chroma) {
+    private int[] compress8(int[][] m) {
+
 
         //DCT Transform
-        double[][] D = dct(m);
+        double[][] D = this.dct(m);
 
         //Quantitzation
 
         //Si el boolean chroma es true aplicar el quantitzation de chrominance
         //System.out.println();
         int[][] B = new int[8][8];
-        if(chroma) {
-            for (int i = 0; i < 8; ++i) {
-                for (int j = 0; j < 8; ++j) {
-                    B[i][j] = (int) Math.round(D[i][j] / QC[i][j]);
-                    //System.out.printf("%d\t", B[i][j]);
-                }
-                //System.out.println();
+
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                B[i][j] = (int) Math.round(D[i][j] / Q[i][j]);
+                //System.out.printf("%d\t", B[i][j]);
             }
-        }else{
-            for (int i = 0; i < 8; ++i) {
-                for (int j = 0; j < 8; ++j) {
-                    B[i][j] = (int) Math.round(D[i][j] / Q[i][j]);
-                    //System.out.printf("%d\t", B[i][j]);
-                }
-                //System.out.println();
-            }
+            //System.out.println();
         }
+
 
         //Encoding ZigZag (RLE)
         //System.out.println();
-        int[] buff = new int[64];
-        for (int i = 0; i < 64; ++i) {
-            buff[i] = B[ZigZag[i][0]][ZigZag[i][1]];
-            //System.out.printf("%d\t", buff[i]);
-        }
-        //System.out.println();
 
-        return buff;
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        int last = B[0][0];
+        int count = 1, curr;
+        for (int i = 1; i < 64; i++) {
+            curr = B[ZigZag[i][0]][ZigZag[i][1]];
+            if (curr == last) count++;
+            else {
+                list.add(count);
+                list.add(last);
+                count = 1;
+                last = curr;
+
+            }
+        }
+        return list.stream().mapToInt(i->i).toArray();
 
         //We have to add the DC coefficient and the 63 other values
         //With RLE and Hufmann (RUNLENGTH, SIZE) (AMPLITUDE)
     }
 
 
-
-
-    private static int[][] decompress8(int[] buff, boolean chroma) {
+    private int[][] decompress8(int[] buff) {
 
         //Decoding ZigZag (RLE)
         //System.out.println("Comença la descompressió de 8x8");
         int[][] B = new int[8][8];
-        for (int i = 0; i < 64; ++i) {
-            B[ZigZag[i][0]][ZigZag[i][1]] = buff[i];
+        int c = 0, curr, count;
+
+        for (int i = 0; i < buff.length; i+=2) {
+            count = buff[i];
+            curr = buff[i+1];
+            for(int j = 0; j < count; ++j) {
+                B[ZigZag[c + j][0]][ZigZag[c + j][1]] = curr;
+            }
+            c+=count;
         }
         //System.out.println();
 
@@ -191,82 +198,75 @@ public class JPEG {
         }
 
         int[][] D = new int[8][8];
-        if (chroma) {
-
-
-            //System.out.println();
-            for (int i = 0; i < 8; ++i) {
-                for (int j = 0; j < 8; ++j) {
-                    D[i][j] = B[i][j] * QC[i][j];
-                    //System.out.printf("%d\t", D[i][j]);
-                }
-                //System.out.println();
+        //System.out.println();
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                D[i][j] = B[i][j] * Q[i][j];
+                //System.out.printf("%d\t", D[i][j]);
             }
-        }else{
             //System.out.println();
-            for (int i = 0; i < 8; ++i) {
-                for (int j = 0; j < 8; ++j) {
-                    D[i][j] = B[i][j] * Q[i][j];
-                    //System.out.printf("%d\t", D[i][j]);
-                }
-                //System.out.println();
-            }
         }
 
         //DCT Transform
         return idct(D);
+
     }
 
 
-    public static int[][][] compress(int[][][] YCbCr) {
+    public int[][][] compress(int[][][] YCbCr) {
 
-        int height, width, Bheight, Bwidth, length, posx, posy;
+        int height = 0, width = 0, Bheight, Bwidth, length, posx, posy;
         int[][][] buff = new int[3][][];
         //Buffer with 3dimensions
         /*
-        b[0] = NBlocks compressed which every on contains
-        a String(RLE) or a Bitset(Hufmann)
+        b[1] = NBlocks compressed which every on contains
+        an array of Ints(RLE) or a Bitset(Hufmann)
          */
-
-        for(int a = 0; a < 3; ++a) {
-
+        long start = System.currentTimeMillis();
+        System.out.println("Comença la compressió");
+        long midafinal = 0;
+        for (int a = 0; a < 3; ++a) {
 
             height = YCbCr[a].length;
             width = YCbCr[a][0].length;
             Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
             Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
-            System.out.println( "Blocs d'alçada: " + Bheight);
-            System.out.println( "Blocs d'amplada: " + Bwidth);
+            buff[a] = new int[Bheight * Bwidth][];
+            //System.out.println( "Blocs d'alçada: " + Bheight);
+            //System.out.println( "Blocs d'amplada: " + Bwidth);
+            midafinal = 3;
 
             for (int i = 0; i < Bheight; ++i) {
-                System.out.println( "Bi: " + i);
                 for (int j = 0; j < Bwidth; ++j) {
-                    System.out.println("Bj: "  + j);
                     int[][] m = new int[8][8];
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
 
-                            posx = j*8 + x;
-                            posy = i*8 + y;
-                            if (posx >= width) m[y][x] = m[y][x-1];
-
-                            else if(posy >= height) m[y][x] = m[y-1][x];
+                            posx = j * 8 + x;
+                            posy = i * 8 + y;
+                            if (posx >= width) m[y][x] = m[y][x - 1];
+                            else if (posy >= height) m[y][x] = m[y - 1][x];
                             else m[y][x] = YCbCr[a][posy][posx];
                         }
 
                     }
-                    buff[a][i*Bwidth +j] = compress8(m, a==0);
+                    buff[a][i * Bwidth + j] = compress8(m);
+                    midafinal = midafinal + buff[a][i * Bwidth + j].length;
+
                 }
             }
 
         }
+        long end = System.currentTimeMillis();
+        this.time = (end - start) / 1000F;
+        this.rate = 1 - midafinal / (height * width + 3);
         return buff;
     }
 
 
-    public static int[][][] decompress(int[][][] buff, int height, int width) {
+    public int[][][] decompress(int[][][] buff, int height, int width) {
 
-
+        System.out.println("Comença la descompressió");
         int[][][] YCbCr = new int[3][height][width];
         int Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
         int Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
@@ -276,7 +276,7 @@ public class JPEG {
             for (int i = 0; i < Bheight; ++i) {
                 for(int j = 0; j < Bwidth; ++j) {
 
-                    m = decompress8(buff[a][i * Bwidth + j], false);
+                    m = decompress8(buff[a][i * Bwidth + j]);
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
                             posx = j * 8 + x;
@@ -284,167 +284,24 @@ public class JPEG {
                             if (posx < width && posy < height) YCbCr[a][posy][posx] = m[y][x];
                         }
                     }
-
                 }
             }
         }
 
+        /*
         for(int a = 0; a < 3; ++a) {
             System.out.println();
             for (int i = 0; i < height; ++i) {
                 for (int j = 0; j < width; ++j) {
-
                     System.out.printf("%d\t", YCbCr[a][i][j]);
                 }
                 System.out.println();
             }
         }
+         */
 
         return YCbCr;
 
     }
 
-
-    public static void main(String[] args) {
-        /*
-
-        int[][] m = {
-                { 52, 55, 61, 66, 70, 61, 64, 73},
-                { 63, 59, 55, 90, 109, 85, 69, 72 },
-                { 62, 59, 68, 113, 144, 104, 66, 73 },
-                { 63, 58, 71, 122, 154, 106, 70, 69 },
-                { 67, 61, 68, 104, 126, 88, 68, 70 },
-                { 79, 65, 60, 70, 77, 68, 58, 75 },
-                { 85, 71, 64, 59, 55, 61, 65, 83 },
-                { 87, 79, 69, 68, 65, 76, 78, 94 }};
-
-
-        int[][]m2 = this.decompress8(this.compress8(m, false), false);  //Returns array of ints of Y
-
-
-        for(int i = 0; i < 8; ++i){
-            for(int j = 0; j < 8; ++j){
-                System.out.printf("%d\t", m2[i][j]);
-            }
-            System.out.println();
-        }
-        */
-
-        try {
-
-            File infile = new File("/home/maller/Downloads/west_2.ppm");
-            File outfile = new File("/home/maller/Downloads/wested2.ppm");
-
-            FileInputStream fis = new FileInputStream(infile);
-            BufferedInputStream bis = new BufferedInputStream(fis);
-
-            byte[] bb = new byte[50];
-            char c;
-            int width = 0, height;
-
-            bis.read(bb, 0, 3);
-            if((char)bb[0] == 'P' && (char)bb[1] == '6') System.out.println("Lectura de fitxer P6");
-            StringBuilder str = new StringBuilder();
-            c = (char) bis.read();
-            while(c != '\n'){
-                if(c == ' ') {
-                    width = Integer.parseInt(str.toString());
-                    str = new StringBuilder();
-                }
-                else str.append(c);
-                c = (char) bis.read();
-            }
-
-            height = Integer.parseInt(str.toString());
-            System.out.println("Width: " + width);
-            System.out.println("Height: " + height);
-
-            bis.read(bb, 0, 4);
-
-            System.out.println("Depth: " + (char) bb[0] + (char) bb[1] + (char) bb[2]);
-
-
-            int[][] Y = new int[height][width];
-            int[][] Cb = new int[height][width]; //height/factor_downsampling and width/FD
-            int[][] Cr = new int[height][width]; //H/fd and w/fd ??
-
-            //Read ints
-            int r, g, b;
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-
-                    r = bis.read();
-                    g = bis.read();
-                    b = bis.read();
-
-                    Y[i][j] = (int) (0.299 * r + 0.587 * g + 0.114 * b);
-                    Cb[i][j] = (int) (128 - 0.1687 * r - 0.3313 * g + 0.5 * b);
-                    Cr[i][j] = (int) (128 + 0.5 * r - 0.4187 * g - 0.0813 * b);
-
-                }
-            }
-            bis.close();
-            System.out.println("Finished reading");
-
-            /*
-            for (int i = 0; i < height; ++i) {
-                for (int j = 0; j < width; ++j) {
-
-                    System.out.printf("%d\t", Y[i][j]);
-                }
-                System.out.println();
-            }
-            */
-
-            int[][][] AUX = new int[][][] {Y, Cb, Cr};
-            int[][][] YCbCr = decompress(compress(AUX), height, width);
-
-
-            System.out.println("Start writing");
-            FileOutputStream fos = new FileOutputStream(outfile);
-            BufferedOutputStream bos = new BufferedOutputStream(fos);
-
-            bos.write(("P6" + "\n").getBytes());
-            bos.write((width + " " + height + "\n").getBytes());
-            bos.write(("255\n").getBytes());
-
-
-            for (int i = 0; i < height; ++i) {
-                for (int j = 0; j < width; ++j) {
-                    //YCbCr to RGB and write
-
-                    double y, cb, cr;
-
-
-                    y = (YCbCr[0][i][j]*298.082) / 256;
-                    cb = YCbCr[1][i][j];
-                    cr = YCbCr[2][i][j];
-
-                    r = (int) (y + 1.40200 * (cr - 0x80));
-                    g = (int) (y - 0.34414 * (cb - 0x80) - 0.71414 * (cr - 0x80));;
-                    b = (int) (y + 1.77200 * (cb - 0x80));
-
-                    r = Math.max(Math.min(r, 255), 0);
-                    g = Math.max(Math.min(g, 255), 0);
-                    b = Math.max(Math.min(b, 255), 0);
-
-
-                    bos.write(r);
-                    bos.write(g);
-                    bos.write(b);
-
-                }
-            }
-            bos.close();
-
-            System.out.println("JPEG acabat amb èxit.");
-
-        } catch (FileNotFoundException e) {
-            System.out.println("El fichero no ha sido encontrado");
-
-        } catch (IOException e) {
-            System.out.println("Error en la entrada salida");
-        }
-
-    }
 }
