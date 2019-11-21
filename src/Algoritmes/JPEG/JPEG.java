@@ -312,7 +312,6 @@ public class JPEG {
                 }
             }
         }
-
         return YCbCr;
 
     }
