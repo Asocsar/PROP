@@ -2,6 +2,7 @@ package Controlador_Estadistiques;
 import Estadístiques.Estadistiques;
 
 import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,21 @@ import java.util.List;
 public class Cont_Est {
 
 
-    public void Stats_Update() throws  IOException {
+
+
+   /* public static void main() throws  IOException{
+        Stats_Update();
+        System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
+        GetStats();
+        System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
+    }*/
+
+    //DESCRIPCIÓ DEL MÈTODE : S'actualitza l'arxiu de text d'estadístiques amb les últimes generades.
+    //PRE: Cert
+    //POST: L'arxiu d'stats ha estat actualitzat
+    //EXCEPCIONS: IOException
+
+    public static void Stats_Update() throws  IOException {
 
         //Update stats from last compression
 
@@ -52,11 +67,16 @@ public class Cont_Est {
         E.setLastAlg(E.getLastAlg());
 
         pw.print(4+E.getLastAlg());
-        pw.close();
 
     }
 
-    public void GetStats () throws IOException{ //Set stats from file to classes
+
+    //DESCRIPCIÓ DEL MÈTODE : Obtenim les estadístiques de l'arxiu i inicialitzem els valors d'aquestes en la classe Estadistiques
+    //PRE: Cert
+    //POST: La classe estadístiques ha estat inicialitzada amb els valors que ja teniem, si no en teníem, s'ha creat l'arxiu inicialitzat tot a "null"
+    //EXCEPCIONS: IOException i FileAlreadyExists(no s'ha pogut crear perquè ja existia)
+
+    public static void GetStats () throws IOException{ //Set stats from file to classes
 
 
         File OldStats = new File("Estadisticas.txt");
@@ -67,29 +87,28 @@ public class Cont_Est {
             try {
                 if (OldStats.createNewFile()) {
                     PrintWriter pw = new PrintWriter(new FileWriter(OldStats));
-                    pw.print("0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n"); //LZW
-                    pw.print("1" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n"); //LZSS
-                    pw.print("2" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n"); //LZ78
-                    pw.print("3" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n"); //JPEG
-                    pw.print("4" + "," + "null");                               //LAST ALGORITHM USED
-                    pw.close();
+                    pw.print("0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZW
+                    pw.print("1" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZSS
+                    pw.print("2" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZ78
+                    pw.print('3' + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //JPEG
+                    pw.print('4' + "," + "null");                                                       //LAST ALGORITHM USED
                 }
             }
             catch (Exception FileAlreadyExists){
-                System.err.print(FileAlreadyExists);
+                throw FileAlreadyExists;
             }
         }
 
         BufferedReader file = new BufferedReader(new FileReader(OldStats));
 
         Estadistiques oldE = new Estadistiques();
-        int act;
+        double act;
         String line = "";
         int id;
         while ((act = file.read()) != -1) {
 
             if (act == 0 | act == 1 | act == 2 | act == 3 | act == 4) {
-                id = act;
+                id = (int)act;
                 line = file.readLine();
 
                 // Get numeric values from file : timelast,timeglob,ratelast,rateglob,quant

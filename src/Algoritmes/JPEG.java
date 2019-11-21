@@ -1,10 +1,10 @@
-package Algoritmes.JPEG;
+package Algoritmes;
 
 
 import java.io.*;
 
 
-public class Driver_JPEG {
+public class JPEG {
 
     private static int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
             {12, 12, 14, 19, 26, 58, 60, 55},

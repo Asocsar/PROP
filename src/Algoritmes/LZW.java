@@ -6,22 +6,33 @@ import java.lang.Math;
 
 public class LZW {
 
+    //diccionaris que contenen la assosiació entre una seqüència de bytes i un enter
+    private Map<List<Byte>, Integer> Alfabet = new HashMap<List<Byte>, Integer>();
+    //diccionari que té associat a cada identificador una seqüència de Bytes
+    private Map<Integer, List<Byte>> Alfabet_inv = new HashMap<Integer, List<Byte>>();
 
-    private static Map<List<Byte>, Integer> Alfabet = new HashMap<List<Byte>, Integer>();
-    private static Map<Integer, List<Byte>> Alfabet_inv = new HashMap<Integer, List<Byte>>();
-
+    //temps de l'ultima compressió / descompressió
     private double time;
+    //rati de compressió assolit en la última compressió
     private double rate;
 
+    // Pre : Cert
+    // Post: Retorna el temps de l'última compressió/descompressió
     public double getTime () {return  this.time;}
+    // Pre : Certs
+    // Post: Retorna el rati assolit de l'última compressió
     public double getRate () {return  this.rate;}
 
+    // Pre : Cert
+    // Post: Retorna una instancia de la classe LZW
     public LZW () {
         create_alfa();
         this.time = 0;
         this.rate = 0;
     }
 
+    // Pre : Cert
+    // Post: Variables Alfabet i Alfabet_inv inicialitzades
     private void create_alfa() {
         int aux = 0;
         byte n = 0;
@@ -36,112 +47,104 @@ public class LZW {
 
     }
 
-
-    private double log (int x, int base ) {
-        return (double) Math.round(Math.log(x) / Math.log(base));
-    }
-
-    public int bytesCount(int n) {
+    /*public int bytesCount(int n) {
         return n < 0 ? 4 : (32 - Integer.numberOfLeadingZeros(n)) / 8 + 1;
-    }
+    }*/
 
-    public List<Integer> compress(Object o) throws IOException {
-        byte [] file = (byte []) o;
+    // Pre : Cert
+    // Post: Retorna una llista de Integers que representa el fitxer comprimit
+    public List<Integer> compress(byte [] file)  {
         long start = System.currentTimeMillis();
+        // Creem el diccionari de forma local a la funció per un acces més ràpid
         Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
         int cantidad = 0;
         List<Integer> result = new ArrayList<>();
+        // cadena de bytes que es troben al diccionari
         Byte  [] w = new Byte[0];
-        boolean add = false;
+        // següent cadena a llegir
+        Byte[] k = new Byte[1];
+        // cadena que contindrà concatenació de w + k
+        Byte[] aux = new Byte[k.length + w.length];
         double n2 = 0;
         for (byte b : file) {
-            if (Alf_aux.size() >= 0xFFFE) {
-                Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
-                /*if (add) {
-                    result.add(Alf_aux.get(Arrays.asList(w)));
-                    w[0] = b;
-                }*/
-            }
             ++cantidad;
-            Byte[] k = new Byte[1];
+            k = new Byte[1];
             k[0] = b;
-            Byte[] aux = new Byte[k.length + w.length];
-            System.arraycopy(w, 0, aux, 0, w.length);
+            aux = new Byte[k.length + w.length];System.arraycopy(w, 0, aux, 0, w.length);
             System.arraycopy(k, 0, aux, w.length, k.length);
+            // si ja existeix aux al diccionari llavors fem w = aux, per mes tard poder probar aux + k
             if (Alf_aux.containsKey(Arrays.asList(aux))) {
                 w = new Byte[aux.length];
                 w = aux;
-                add = true;
             } else {
-                add = false;
-                Alf_aux.put(Arrays.asList(aux), Alf_aux.size());
-                Integer l = Alf_aux.get(Arrays.asList(w));
-                if (l < 0x10000) {
-                    if (l < 0x100)
-                        n2 += 8;// 8 bit
-                    else
-                        n2 += 2;// 16 bit
-                } else {
-                    if (l < 0x100000000L)
-                        n2 += 4;// 32 bit
-                    else
-                        n2 += 8;// 64 bit
-                }
-                //n2 += bytesCount(l);
+                // si el identificador supera el nombre 53248 llavors no s'incrementa el tamany per
+                // evitar perdues en la lectura i escritura del fitxer
+                if (Alf_aux.size() < 53248) Alf_aux.put(Arrays.asList(aux), Alf_aux.size());
+                int l = Alf_aux.get(Arrays.asList(w));
+                n2 += 2;
                 result.add(l);
+                // avancem al següent caràcter
                 w = new Byte[k.length];
                 w = k;
             }
         }
+        // en la ultima iteració fem w = k, es a dir que el caràcter k, o la seqüència
+        // de caràcters aux no han sigut afegits al resultat
+        result.add(Alf_aux.get(Arrays.asList(w)));
         long end = System.currentTimeMillis();
         this.time = (end - start) / 1000F;
-        this.rate = cantidad/n2;
-        //System.out.println(this.time);
-        //System.out.println(this.rate);
+        if (file.length > 0)
+            this.rate = cantidad/n2;
+        else
+            this.rate = 0;
         return result;
     }
 
 
-    public byte[] descomprimir (Object o) {
-        List<Integer> s = (List<Integer>) o;
+    // Pre : Cert
+    // Post: Retorna un array de bytes que representa el fitxer original
+    public byte[] descomprimir (List<Integer> s) {
+        if (s.size() == 0) {
+            return new byte[0];
+        }
         long start = System.currentTimeMillis();
         Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
         int i = 0;
+        // comencem amb el primer codi
         int cod_viejo = s.get(i);
         List<Byte> caracter = Alf_aux.get(cod_viejo);
         int cod_nuevo;
-        List<Byte> cadena;
+        List<Byte> cadena = null;
         List<Byte> result =  new ArrayList<>();
         result.addAll(caracter);
         ++i;
         while (i < s.size()) {
-            if (Alf_aux.size() >= 0xFFFE) {
-                Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
-                /*cod_viejo = s.get(i);
-                caracter = Alf_aux.get(cod_viejo);
-                result.addAll(caracter);*/
-            }
             cod_nuevo = s.get(i);
+            // si el següent codi esta al diccionari el decodifiquem obtenint la seqüència
+            // de caràcters associada
             if (Alf_aux.containsKey(cod_nuevo)) {
                 cadena = Alf_aux.get(cod_nuevo);
             }
+            // de no ser així cadena serà igual a la concatenació del codi vell
+            // més el següent caràcter
             else {
                 cadena = new ArrayList<>();
                 cadena.addAll(Alf_aux.get(cod_viejo));
                 cadena.addAll(caracter);
-                //cadena += caracter;
             }
             result.addAll(cadena);
             caracter = Collections.singletonList(cadena.get(0));
             List<Byte> aderir = new ArrayList<>();
             aderir.addAll(Alf_aux.get(cod_viejo));
             aderir.addAll(caracter);
+            //afegim la concatenació trobada al diccionari
             Alf_aux.put(Alf_aux.size(), aderir);
             cod_viejo = cod_nuevo;
             ++i;
         }
         byte [] fin = new byte[result.size()];
         int k = 0;
+        // pasem de llistes de Bytes a array de bytes
         for (Byte b: result) {
             fin[k++] = b;
         }

@@ -1,3 +1,4 @@
+
 package Algoritmes;
 
 import java.io.*;
@@ -127,4 +128,5 @@ public class LZ78 {
     }
 
 }
+
 

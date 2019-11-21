@@ -1,167 +1,300 @@
 package Estadístiques;
 
+
 public class Estadistiques {
-    private static double gradeW = 0;
-    private static double timeW = 0;
-    private static double grade8 = 0;
-    private static double time8 = 0;
-    private static double gradeS = 0;
-    private static double timeS = 0;
-    private static double gradeG = 0;
-    private static double timeG = 0;
-    private static double gradeWT = 0;
-    private static double timeWT = 0;
-    private static double grade8T = 0;
-    private static double time8T = 0;
-    private static double gradeST = 0;
-    private static double timeST = 0;
-    private static double gradeGT = 0;
-    private static double timeGT = 0;
-    private static int numW = 0;
-    private static int numS = 0;
-    private static int num8 = 0;
-    private static int numG = 0;
-    private static String last = "";
 
-    public  Estadistiques () {}
 
-    public int getQuantLZW () {
-        return numW;
-    }
-    public int getQuantLZSS () {
-        return numS;
-    }
-    public int getQuantLZ78 () {
-        return num8;
-    }
-    public int getQuantJPEG () {
-        return numG;
+    // LZW
+    // Variables LZW
+    private static double timeLZW;
+    private static double GtimeLZW;
+    private static double ratioLZW;
+    private static double GratioLZW;
+    private static double QuantLZW;
+
+    // Aqui estbim uns valors per a las variables de temps i rati de l'algorisme LZW
+    // Pre : Cert
+    // Post: Variables LZW inicialitzades
+    public static void setLZW(double tl, double tg, double rl, double rg, double quant) {
+        timeLZW = tl;
+        GtimeLZW = tg;
+        ratioLZW = rl;
+        GratioLZW = rg;
+        QuantLZW = quant;
     }
 
-    public void setLZW (double gr, double grT, double ti, double tiT, double q) {
-        gradeW = gr;
-        gradeWT = grT;
-        timeW = ti;
-        timeWT = tiT;
-        numW = (int)q;
+    // Pre : Cert
+    // Post: retorna el temps trigat de l'ultima compressio
+    public static double getTimeLZW() {
+        return timeLZW;
     }
 
-    public void setLZSS (double gr, double grT, double ti, double tiT, double q) {
-        gradeS = gr;
-        gradeST = grT;
-        timeS = ti;
-        timeST = tiT;
-        numS = (int)q;
+    // Pre : Cert
+    // Post: Retorna el temps global de totes les compressions
+    public static double getGlobTimeLZW() {
+        return (QuantLZW != 0) ? GtimeLZW/QuantLZW : 0;
     }
 
-    public void setLZ78 (double gr, double grT, double ti, double tiT, double q) {
-        grade8 = gr;
-        grade8T = grT;
-        time8 = ti;
-        time8T = tiT;
-        num8 = (int)q;
+    // Pre : Cert
+    // Post: Retorna grau de compressio assolit en la ultima execucio
+    public static double getRatioLZW() {
+        return ratioLZW;
     }
 
-    public void setJPEG  (double gr, double grT, double ti, double tiT, double q) {
-        gradeG = gr;
-        gradeGT = grT;
-        timeG = ti;
-        timeGT = tiT;
-        numG = (int)q;
+    // Pre : Cert
+    // Post: Retorna grau de compressió global
+    public static double getGlobRatioLZW() {
+        return (QuantLZW != 0) ? GratioLZW/QuantLZW : 0;
+    }
+
+    // Pre : Cert
+    // Post: Retorna quantitat de vegades executat LZW
+    public static double getQuantLZW() {
+        return QuantLZW;
     }
 
 
-    public double getRatioLZW () {return gradeW;}
-    public double getRatioLZSS () {return grade8;}
-    public double getRatioLZ78 () {return gradeS;}
-    public double getRatioJPEG () {return gradeG;}
+    //LZ78
 
+    private static double timeLZ78;
+    private static double GtimeLZ78;
+    private static double ratioLZ78;
+    private static double GratioLZ78;
+    private static double QuantLZ78;
 
-    public double getTimeLZW () {return timeW;}
-    public double getTimeLZSS () {return time8;}
-    public double getTimeLZ78 () {return timeS;}
-    public double getTimeJPEG () {return timeG;}
-
-    public double getGlobRatioLZW () {return gradeWT;}
-    public double getGlobRatioLZSS () {return grade8T;}
-    public double getGlobRatioLZ78 () {return gradeST;}
-    public double getGlobRatioJPEG () {return gradeGT;}
-
-
-    public double getGlobTimeLZW () {return timeWT;}
-    public double getGlobTimeLZSS () {return time8T;}
-    public double getGlobTimeLZ78 () {return timeST;}
-    public double getGlobTimeJPEG () {return timeGT;}
-
-
-    public void actW (double ti, double gr) {
-        timeW = ti;
-        timeWT += ti;
-        gradeW = gr;
-        gradeWT += gr;
-        numW += 1;
-        last = "0";
+    // Aqui estbim uns valors per a las variables de temps i rati de l'algorisme LZ78
+    // Pre : Cert
+    // Post: Variables LZ78 inicialitzades
+    public static void setLZ78(double tl, double tg, double rl, double rg, double quant) {
+        timeLZ78 = tl;
+        GtimeLZ78 = tg;
+        ratioLZ78 = rl;
+        GratioLZ78 = rg;
+        QuantLZ78 = quant;
     }
 
-    public void actS (double ti, double gr) {
-        timeS = ti;
-        timeST += ti;
-        gradeS = gr;
-        gradeST += gr;
-        numS += 1;
-        last = "1";
+    // Pre : Cert
+    // Post: retorna el temps trigat de l'ultima compressio
+    public static double getTimeLZ78() {
+        return timeLZ78;
     }
 
-    public void act8 (double ti, double gr) {
-        time8 = ti;
-        time8T += ti;
-        grade8 = gr;
-        grade8T += gr;
-        num8 += 1;
-        last = "2";
+    // Pre : Cert
+    // Post: Retorna el temps global de totes les compressions
+    public static double getGlobTimeLZ78() {
+        return (QuantLZ78 != 0) ?  GtimeLZ78/QuantLZ78 : 0;
     }
 
-    public void actG (double ti, double gr) {
-        timeG = ti;
-        timeGT += ti;
-        gradeG = gr;
-        gradeGT += gr;
-        numG += 1;
-        last = "3";
+    // Pre : Cert
+    // Post: Retorna grau de compressio assolit en la ultima execucio
+    public static double getRatioLZ78() {
+        return ratioLZ78;
     }
 
-    public String getLastAlg () {return  last; }
-    public void setLastAlg (String id) {last = id;}
+    // Pre : Cert
+    // Post: Retorna grau de compressió global
+    public static double getGlobRatioLZ78() {
+        return (QuantLZ78 != 0) ?  GratioLZ78/QuantLZ78 : 0;
+    }
 
-    public void visualglob() {
+    // Pre : Cert
+    // Post: Retorna quantitat de vegades executat LZ78
+    public static double getQuantLZ78() {
+        return QuantLZ78;
+    }
+
+
+    //LZSS
+
+    private static double timeLZSS;
+    private static double GtimeLZSS;
+    private static double ratioLZSS;
+    private static double GratioLZSS;
+    private static double QuantLZSS;
+
+    // Aqui estbim uns valors per a las variables de temps i rati de l'algorisme LZ78
+    // Pre : Cert
+    // Post: Variables LZSS inicialitzades
+    public static void setLZSS(double tl, double tg, double rl, double rg, double quant) {
+        timeLZSS = tl;
+        GtimeLZSS = tg;
+        ratioLZSS = rl;
+        GratioLZSS = rg;
+        QuantLZSS = quant;
+    }
+
+    // Pre : Cert
+    // Post: retorna el temps trigat de l'ultima compressio
+    public static double getTimeLZSS() {
+        return timeLZSS;
+    }
+
+    // Pre : Cert
+    // Post: Retorna el temps global de totes les compressions
+    public static double getGlobTimeLZSS() {
+        return (QuantLZSS != 0) ? GtimeLZSS/QuantLZSS : 0;
+    }
+
+    // Pre : Cert
+    // Post: Retorna grau de compressio assolit en la ultima execucio
+    public static double getRatioLZSS() {
+        return ratioLZSS;
+    }
+
+    // Pre : Cert
+    // Post: Retorna grau de compressió global
+    public static double getGlobRatioLZSS() {
+        return (QuantLZSS != 0) ? GratioLZSS/QuantLZSS : 0;
+    }
+
+    // Pre : Cert
+    // Post: Retorna quantitat de vegades executat LZss
+    public static double getQuantLZSS() {
+        return QuantLZSS;
+    }
+
+
+    //JPEG
+
+    private static double timeJPEG;
+    private static double GtimeJPEG;
+    private static double ratioJPEG;
+    private static double GratioJPEG;
+    private static double QuantJPEG;
+
+
+    // Aqui estbim uns valors per a las variables de temps i rati de l'algorisme JPEG
+    // Pre : Cert
+    // Post: Variables JPEG inicialitzades
+    public static void setJPEG(double tl, double tg, double rl, double rg, double quant) {
+        timeJPEG = tl;
+        GtimeJPEG = tg;
+        ratioJPEG = rl;
+        GratioJPEG = rg;
+        QuantJPEG = quant;
+    }
+
+    // Pre : Cert
+    // Post: retorna el temps trigat de l'ultima compressio
+    public static double getTimeJPEG() {
+        return timeJPEG;
+    }
+
+    // Pre : Cert
+    // Post: Retorna el temps global de totes les compressions
+    public static double getGlobTimeJPEG() {
+        return (QuantJPEG != 0) ? GtimeJPEG/QuantJPEG : 0;
+    }
+
+    // Pre : Cert
+    // Post: Retorna grau de compressio assolit en la ultima execucio
+    public static double getRatioJPEG() {
+        return ratioJPEG;
+    }
+
+    // Pre : Cert
+    // Post: Retorna grau de compressió global
+    public static double getGlobRatioJPEG() {
+        return (QuantJPEG != 0) ? GratioJPEG/QuantJPEG : 0;
+    }
+
+    // Pre : Cert
+    // Post: Retorna quantitat de vegades executat JPEG
+    public static double getQuantJPEG() {
+        return QuantJPEG;
+    }
+
+    //LAST ALGORITHM USED
+
+    public static String LastAlg = "";
+
+    // Pre: Cert
+    // Post: retorna l'últim algoritme utilitzat
+    public static String getLastAlg() {
+        return LastAlg;
+    }
+
+    // Pre : Cert
+    // Post: estableix l'últim algoritme utilitzat
+    public static void setLastAlg(String lAlg) {
+        LastAlg = lAlg;
+    }
+
+    //ALGORITHM STATS UPDATE
+
+    // Pre :  ti > 0 && gr > 0
+    // Post: variables LZW actualitzades
+    public static void actW(double ti, double gr) {
+        timeLZW = ti;
+        GtimeLZW += ti;
+        ratioLZW = gr;
+        GratioLZW += gr;
+        QuantLZW++;
+        setLastAlg("LZW");
+    }
+
+    // Pre :  ti > 0 && gr > 0
+    // Post: variables LZW actualitzades
+    public static void actS(double ti, double gr) {
+        timeLZSS = ti;
+        GtimeLZSS += ti;
+        ratioLZSS = gr;
+        GratioLZSS += gr;
+        QuantLZSS++;
+        setLastAlg("LZSS");
+    }
+
+    // Pre :  ti > 0 && gr > 0
+    // Post: variables LZW actualitzades
+    public static void act8(double ti, double gr) {
+        timeLZ78 = ti;
+        GtimeLZ78 += ti;
+        ratioLZ78 = gr;
+        GratioLZ78 += gr;
+        QuantLZ78++;
+        setLastAlg("LZ78");
+    }
+
+    // Pre :  ti > 0 && gr > 0
+    // Post: variables LZW actualitzades
+    public static void actG(double ti, double gr) {
+        timeJPEG = ti;
+        GtimeJPEG += ti;
+        ratioJPEG = gr;
+        GratioJPEG += gr;
+        QuantJPEG++;
+        setLastAlg("JPEG");
+    }
+
+    // Pre : Cert
+    // Post: Mostra totes les estadístiques
+    public static void visualglob() {
         System.out.println("Tiempos de ultimas compresiones");
-        System.out.println("LZ78 " + timeW);
-        System.out.println("LZSS " + timeS);
-        System.out.println("LZW " + timeW);
-        System.out.println("JPEG " + timeG);
+        System.out.println("LZ78 " + timeLZ78);
+        System.out.println("LZSS " + timeLZSS);
+        System.out.println("LZW " + timeLZW);
+        System.out.println("JPEG " + timeJPEG);
         System.out.println("Ratios de ultimas compresiones");
-        System.out.println("LZ78 " + grade8);
-        System.out.println("LZSS " + gradeS);
-        System.out.println("LZW " + gradeW);
-        System.out.println("JPEG " + gradeG);
+        System.out.println("LZ78 " + ratioLZ78);
+        System.out.println("LZSS " + ratioLZSS);
+        System.out.println("LZW " + ratioLZW);
+        System.out.println("JPEG " + ratioJPEG);
         System.out.println("Tiempos globales por cada algoritmo");
-        System.out.println("LZ78 " + timeWT/num8);
-        System.out.println("LZSS " + timeST/numS);
-        System.out.println("LZW " + timeWT/numW);
-        System.out.println("JPEG " + timeGT/numG);
+        System.out.println("LZ78 " + ((QuantLZ78 != 0) ? GtimeLZ78/QuantLZ78 : 0));
+        System.out.println("LZSS " + ((QuantLZSS != 0) ? GtimeLZSS/QuantLZSS : 0));
+        System.out.println("LZW " + ((QuantLZW != 0) ? GtimeLZW/QuantLZW : 0));
+        System.out.println("JPEG " + ((QuantJPEG != 0) ? GtimeJPEG/QuantJPEG : 0));
         System.out.println("Ratios globales por cada algoritmo");
-        System.out.println("LZ78 " + grade8T/num8);
-        System.out.println("LZSS " + gradeST/numS);
-        System.out.println("LZW " + gradeWT/numW);
-        System.out.println("JPEG " + gradeGT/numG);
+        System.out.println("LZ78 " + ((QuantLZ78 != 0) ? GratioLZ78/QuantLZ78 : 0));
+        System.out.println("LZSS " + ((QuantLZSS != 0) ? GratioLZSS/QuantLZSS : 0));
+        System.out.println("LZW " + ((QuantLZW != 0) ? GratioLZW/QuantLZW : 0));
+        System.out.println("JPEG " + ((QuantJPEG != 0) ? GratioJPEG/QuantJPEG : 0));
         System.out.println("Numero de veces de ejecución");
-        System.out.println("LZ78 " + num8);
-        System.out.println("LZSS " + numS);
-        System.out.println("LZW " + numW);
-        System.out.println("JPEG " + numG);
+        System.out.println("LZ78 " + QuantLZ78);
+        System.out.println("LZSS " + QuantLZSS);
+        System.out.println("LZW " + QuantLZW);
+        System.out.println("JPEG " + QuantJPEG);
+        System.out.println("Ultimo algoritmo utilizado");
+        System.out.println(getLastAlg());
     }
-
-
-
-
 }

@@ -11,10 +11,10 @@ public class Main {
         Cont_Est CE = new Cont_Est();
         CE.GetStats();
         Scanner S = new Scanner(System.in);
-        System.out.println("1:comprimir/descomprimir\n2:Estadisticas globales\n3:Comparar ultima compresión");
-        while (S.hasNext()) {
-            //System.out.println("1:comprimir/descomprimir\n2:Estadisticas globales\n3:Comparar ultima compresión");
-            int inten = S.nextInt();
+        int inten = -1;
+        while (inten != 4) {
+            System.out.println("1:comprimir/descomprimir\n2:Estadisticas globales\n3:Comparar ultima compresión\n4:Salir");
+            inten = S.nextInt();
             if (inten == 1) {
                 System.out.println("Introduzca dirección del fichero a comprimir");
                 String path = S.next();
@@ -25,9 +25,8 @@ public class Main {
                 System.out.println("Introduzca algoritmo deseado para comprimir/descomprimir");
                 System.out.println("\t1: LZ78\n\t2:LZSS\n\t3:LZW\n\t4:JPEG");
                 int id = S.nextInt();
-                controlador_gestor_fitxer I = new controlador_gestor_fitxer(path, path2, id, n);
                 Cont_CD C = new Cont_CD();
-                C.compressio_descompressio(I);
+                C.compressio_descompressio(path, path2, id, n);
                 System.out.println("Si desea comparar introduzca 1\nAlternativamente 0");
                 int com = S.nextInt();
                 if (com == 1) C.comparar();
