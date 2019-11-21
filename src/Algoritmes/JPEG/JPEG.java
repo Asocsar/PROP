@@ -1,4 +1,4 @@
-package Algoritmes.JPEG;
+
 
 
 import java.io.*;
@@ -9,22 +9,27 @@ public class JPEG {
 
     //temps de l'ultima compressió / descompressió
     private double time;
+
     //rati de compressió assolit en la última compressió
     private double rate;
 
     //PRE: Cert
-    //POST: Crea una instància de classe
+    //POST: Inicialitza la classe JPEG
+    // Descripció: Crea una instància de classe JPEG i inicialitza variable time i rate
     public JPEG(){
         this.time = 0.0;
         this.rate = 0.0;
     }
+
     // Pre : Cert
-    // Post: Retorna el temps de l'última compressió/descompressió
+    // Post: Retorna l'últim temps de compressió.
     public double getTime () {return  this.time;}
+
     // Pre : Certs
-    // Post: Retorna el rati assolit de l'última compressió
+    // Post: Retorna del ratio de compressió
     public double getRate () {return  this.rate;}
 
+    //Matriu de quantificació de la luminància, forma part de la part lossy.
     private int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
             {12, 12, 14, 19, 26, 58, 60, 55},
             {14, 13, 16, 24, 40, 57, 69, 56},
@@ -34,6 +39,7 @@ public class JPEG {
             {49, 64, 78, 87, 103, 121, 120, 101},
             {72, 92, 95, 98, 112, 110, 103, 99}};
 
+    //Matriu de quantificació de la crominància, forma part de la part lossy.
     private int[][] QC = {{17, 18, 24, 47, 99, 99, 99, 99},
             {18, 21, 26, 66, 99, 99, 99, 99},
             {24, 26, 56, 99, 99, 99, 99, 99},
@@ -43,7 +49,7 @@ public class JPEG {
             {99, 99, 99, 99, 99, 99, 99, 99},
             {99, 99, 99, 99, 99, 99, 99, 99}};
 
-
+    //Matriu per fer el reccoregut en ZigZag sobre cada blocde 8x8.
     private int[][] ZigZag = {
             {0, 0},
             {0, 1}, {1, 0},
@@ -62,7 +68,8 @@ public class JPEG {
             {7, 7}};
 
 
-
+    //Funció que aplica la transformada discreta del cosinus
+    // Es l'aplicació per definició, és una sub-funció de compress8.
     private double[][] dct(int[][] m) {
 
         double[][] dct = new double[8][8];
@@ -85,16 +92,11 @@ public class JPEG {
                 dct[u][v] = 0.25 * au * av * sum;
             }
         }
-        /*
-        for (x = 0; x < 8; x++) {
-            for (y = 0; y < 8; y++)
-                System.out.printf("%f\t", dct[x][y]);+ compress
-            System.out.println();
-        }
-        */
         return dct;
     }
 
+    //Funció que aplica la transforma discreta del cosinus de Tipus -II
+    //O també anomenada inversa, subfunció de decompress8
     private int[][] idct(int[][] m) {
 
         int[][] idct = new int[8][8];
@@ -112,30 +114,31 @@ public class JPEG {
                         av = (v == 0) ? 1 / Math.sqrt(2) : 1;
                         sum += m[u][v] * au * av * Math.cos(((2 * x + 1) * u * Math.PI) / 16) * Math.cos(((2 * y + 1) * v * Math.PI) / 16);
                     }
-
                 }
-
                 idct[x][y] = (int) Math.round(0.25 * sum);
             }
         }
 
-        //System.out.println();
+
         for (x = 0; x < 8; x++) {
             for (y = 0; y < 8; y++) {
-                //System.out.printf("%d\t", idct[x][y]);
                 if (idct[x][y] > 127) idct[x][y] = 255;
                 else idct[x][y] += 128;
             }
-            //System.out.println();
         }
-        //System.out.println();
 
         return idct;
     }
 
 
 
-
+    // Pre : m conté una matriu de 8x8 corresponent a un bloc a la imatge.
+    // El contigut de m són enters.
+    // Post: Retorna una llista de ints que representa la codificació amb RLE.
+    // Descripció: La compressió bloc a bloc està feta per aquesta funció, aplica la
+    //transformació DCT, la quantització i l'encoding fet amb RLE.
+    // Per aconseguir l'encoding de RLE, ho guardem en una llista
+    //i després ho passem a un array de ints
     private int[] compress8(int[][] m, boolean chroma) {
 
 
@@ -148,21 +151,20 @@ public class JPEG {
         if(chroma){
             for (int i = 0; i < 8; ++i) {
                 for (int j = 0; j < 8; ++j) {
-                    B[i][j] = (int) Math.round(D[i][j] / QC[i][j]);
+                    B[i][j] = (int) Math.round(D[i][j] / (double) QC[i][j]);
                 }
             }
 
         }else{
             for (int i = 0; i < 8; ++i) {
                 for (int j = 0; j < 8; ++j) {
-                    B[i][j] = (int) Math.round(D[i][j] / Q[i][j]);
+                    B[i][j] = (int) Math.round(D[i][j] / (double) Q[i][j]);
                 }
             }
         }
 
 
         //Encoding ZigZag (RLE)
-        //System.out.println();
 
         ArrayList<Integer> list = new ArrayList<Integer>();
         int last = B[0][0];
@@ -184,11 +186,15 @@ public class JPEG {
         //With RLE and Hufmann (RUNLENGTH, SIZE) (AMPLITUDE)
     }
 
-
+    // Pre : Cert
+    // Post: Retorna una matriu de mida 8x8 que representa el sub-bloc original.
+    // Descripció: Es fa la conversió de l'array d'enters a un bloc mitjançant l'aplicació
+    //del decodint del RLE, la desquantització i la DCT inversa.
+    // A RLE c es el Nint [0..63] inici i count són les repeticions del caràcter curr
     private int[][] decompress8(int[] buff, boolean chroma) {
 
         //Decoding ZigZag (RLE)
-        //System.out.println("Comença la descompressió de 8x8");
+
         int[][] B = new int[8][8];
         int c = 0, curr, count;
 
@@ -223,7 +229,12 @@ public class JPEG {
 
     }
 
-
+    // Pre : Cert
+    // Post: Retorna una matriu de Integers que representa el fitxer comprimit.
+    // Descripció: Hi han 3 canals, Y, Cb i Cr. Per cada canal guardem una array amb
+    //tantes posicions com NBlocs hi han. I per cada NBlock guardem el
+    //resultat codificat, que té longitud variable segons la compressió que
+    //aconseguim. De padding utilitzem repetició el caràcter si posx o posy són mes grans que la imatge
     public int[][][] compress(int[][][] YCbCr) {
 
         int height = 0, width = 0, Bheight, Bwidth, length, posx, posy;
@@ -272,7 +283,12 @@ public class JPEG {
         return buff;
     }
 
-
+    //Pre: Cert
+    //Post: Retorna una matriu de ints que representa la imatge original.
+    //Descripció: Fa el procés de decompressió general, és a dir que reconstrueix la
+    //imatge bloc a bloc, llegint els buffers de longitud variable i
+    //descomprimint-los obté la submatriu que afegeix q la matriu
+    //general.
     public int[][][] decompress(int[][][] buff, int height, int width) {
 
         System.out.println("Comença la descompressió");

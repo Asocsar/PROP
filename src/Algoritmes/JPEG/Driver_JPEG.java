@@ -1,4 +1,4 @@
-package Algoritmes.JPEG;
+
 
 
 import java.io.*;
@@ -87,6 +87,7 @@ public class Driver_JPEG {
             path = S.next();
             path = path + ".fg";
             FileWriter file_o = new FileWriter(path);
+            file_o.write(width + " " + height + "\n");
             for(int a = 0; a < 3; ++a) {
                 for (int i = 0; i < height; ++i) {
                     for (int j = 0; j < aux[a][i].length; ++j) {

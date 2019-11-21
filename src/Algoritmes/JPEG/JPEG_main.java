@@ -297,7 +297,7 @@ public class JPEG_main {
         try {
 
             File infile = new File("/home/maller/Downloads/west_1.ppm");
-            File outfile = new File("/home/maller/Downloads/wested2.ppm");
+        File outfile = new File("/home/maller/Downloads/wested2.ppm");
 
             FileInputStream fis = new FileInputStream(infile);
             BufferedInputStream bis = new BufferedInputStream(fis);
