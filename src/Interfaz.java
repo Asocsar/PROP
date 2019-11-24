@@ -116,7 +116,16 @@ public class Interfaz extends JFrame {
     private JTextPane textPane1;
     private JFilePicker Picker1;
     private JFilePicker Picker2;
+    private JRadioButton LZW;
+    private JRadioButton LZSS;
+    private JRadioButton LZ78;
+    private JRadioButton JPEG;
     private static JFrame frame;
+    /* 0 : LZW
+    *  1 : LZSS
+    *  2 : LZ78
+    *  3 : JPEG*/
+    private static int metodo;
 
     private void createUIComponents () {
         Picker1 = new JFilePicker("Selecció", "Busca");
@@ -128,26 +137,50 @@ public class Interfaz extends JFrame {
     }
 
     public Interfaz() {
+        ButtonGroup group = new ButtonGroup();
+        group.add(LZ78);
+        group.add(LZW);
+        group.add(LZSS);
+        group.add(JPEG);
+        LZW.doClick();
+        metodo = 0;
         Sortir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
             }
         });
+
+        LZW.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                metodo = 0;
+            }
+        });
+
+        LZSS.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                metodo = 1;
+            }
+        });
+
+        LZ78.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                metodo = 2;
+            }
+        });
+
+        JPEG.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                metodo = 3;
+            }
+        });
     }
 
-    /*public Interfaz() {
-        super("Compression y Descompression");
-        setContentPane(Panel);
-    }*/
-
     public static void main(String[] args) {
-       /* SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Interfaz().setVisible(true);
-            }
-        });*/
         frame = new JFrame();
         frame.setContentPane(new Interfaz().Panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
