@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="it-tidalwave-android-awt-1.0.10">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/it-tidalwave-android-awt-1.0.10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -39,7 +39,7 @@ public class controlador_gestor_fitxer {
         gestor_fitxers gestor = new gestor_fitxers();
         C_P= c_p;
         id_a= id_algorisme;
-        if (!C_P) {
+        if (C_P) {
             String aux = Path_original.substring(Path_original.length() - 3);
             if (!aux.equals("txt") & !aux.equals("ppm")) {
                 throw new FicheroCompressionNoValido("El fichero seleccionado no es valido");

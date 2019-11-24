@@ -1,4 +1,4 @@
-import Controlador_ficheros.controlador_gestor_fitxer;
+/*import Controlador_ficheros.controlador_gestor_fitxer;
 import Controlador_Compressio_Descompressio.Cont_CD;
 import Estadístiques.Estadistiques;
 import Controlador_Estadistiques.Cont_Est;
@@ -43,3 +43,4 @@ public class Main {
         CE.Stats_Update();
     }
 }
+*/

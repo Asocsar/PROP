@@ -7,5 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="it-tidalwave-android-awt-1.0.10" level="project" />
   </component>
 </module>
