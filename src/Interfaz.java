@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class Interfaz {
+public class Interfaz extends JFrame {
 
     public static class JFilePicker extends JPanel {
         private String textFieldLabel;
@@ -32,6 +32,8 @@ public class Interfaz {
             this.buttonLabel = buttonLabel;
 
             fileChooser = new JFileChooser();
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            //fileChooser.removeChoosableFileFilter();
 
             setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
@@ -111,15 +113,19 @@ public class Interfaz {
     private JButton Close_Button;
     private JTextPane textPane2;
     private JButton Sortir;
-    private JLabel Decorador_1;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JButton escollirButton1;
-    private JButton escollirButton;
-    private JLabel Decorador_2;
     private JTextPane textPane1;
+    private JFilePicker Picker1;
+    private JFilePicker Picker2;
     private static JFrame frame;
 
+    private void createUIComponents () {
+        Picker1 = new JFilePicker("Selecció", "Busca");
+        Picker1.setMode(JFilePicker.MODE_SAVE);
+        Picker1.addFileTypeFilter(".ppm", "PPM Images");
+        Picker1.addFileTypeFilter(".txt", "TXT Files");
+        Picker2 = new JFilePicker("Selecció", "Busca");
+        Picker2.setMode(JFilePicker.MODE_SAVE);
+    }
 
     public Interfaz() {
         Sortir.addActionListener(new ActionListener() {
@@ -130,7 +136,18 @@ public class Interfaz {
         });
     }
 
+    /*public Interfaz() {
+        super("Compression y Descompression");
+        setContentPane(Panel);
+    }*/
+
     public static void main(String[] args) {
+       /* SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new Interfaz().setVisible(true);
+            }
+        });*/
         frame = new JFrame();
         frame.setContentPane(new Interfaz().Panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
