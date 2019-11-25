@@ -1,7 +1,5 @@
-import Controlador_ficheros.controlador_gestor_fitxer;
+
 import Controlador_Compressio_Descompressio.Cont_CD;
-import Estadístiques.Estadistiques;
-import Controlador_Estadistiques.Cont_Est;
 
 
 import javax.swing.*;
@@ -41,7 +39,7 @@ public class Interfaz extends JFrame {
             // creates the GUI
             label = new JLabel(textFieldLabel);
 
-            textField = new JTextField(30);
+            textField = new JTextField(20);
             textField.setEditable(false);
             button = new JButton(buttonLabel);
 
@@ -101,6 +99,11 @@ public class Interfaz extends JFrame {
         public JFilePicker change (String s1, String s2) {
             return new JFilePicker(s1,s2);
         }
+
+        public void removefilter () {
+            fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
+            textField.setText("");
+        }
     }
 
     public static class FileTypeFilter extends FileFilter {
@@ -137,7 +140,11 @@ public class Interfaz extends JFrame {
     private JRadioButton LZSS;
     private JRadioButton LZ78;
     private JRadioButton JPEG;
-    private JRadioButton radioButton1;
+    private JRadioButton Fitxer;
+    private JRadioButton Carpeta;
+    private JRadioButton Compress;
+    private JRadioButton Descompress;
+    private JButton Action;
     private static JFrame frame;
     /* 0 : LZW
     *  1 : LZSS
@@ -147,9 +154,14 @@ public class Interfaz extends JFrame {
     /* 0 : File
     *  1 : Directory*/
     private static int metodo = 0;
+    /* 0 : Compression
+    *  1 : Descompression*/
+    private static int compresion = 0;
     private static String pos = ".txt";
     private static String Sec = "TXT Files";
     private JRadioButton [] L = new JRadioButton[] {LZW, LZSS, LZ78, JPEG};
+    private JRadioButton [] J = new JRadioButton[] {Fitxer, Carpeta};
+    private JRadioButton [] K = new JRadioButton[] {Compress, Descompress};
 
     private void createUIComponents () {
         Picker1 = new JFilePicker("Selecció", "Busca");
@@ -166,28 +178,101 @@ public class Interfaz extends JFrame {
 
     public void changeFilter () {
         if (metodo == 3) {
-            System.out.println("HOla");;
-            pos = ".ppm";
-            Sec = "PPM Files";
+            if (compresion == 0) {
+                pos = ".ppm";
+                Sec = "PPM Files";
+            }
+            else  {
+                pos = ".fG";
+                Sec = "PPM Compressed-Files";
+            }
         } else {
-            pos = ".txt";
-            Sec = "TXT Files";
+            if (compresion == 0) {
+                pos = ".txt";
+                Sec = "TXT Files";
+            }
+            else {
+                if (metodo == 0) pos = ".fW";
+                else if (metodo == 1) pos = ".fS";
+                else if (metodo == 2) pos = ".f8";
+                else pos = ".fG";
+                Sec = "TXT Compressed File";
+            }
         }
-        Picker1 = Picker1.change(pos, Sec);
+        Picker1.addFileTypeFilter(pos,Sec);
+    }
+
+    public void actPickers() {
+        Picker1.selectmode(state);
+        Picker1.updateUI();
+        Picker1.removefilter();
+        if (state == 0)
+            changeFilter();
     }
 
     public Interfaz() {
-        ButtonGroup group = new ButtonGroup();
-        group.add(LZ78);
-        group.add(LZW);
-        group.add(LZSS);
-        group.add(JPEG);
-        L[metodo].doClick();
+        ButtonGroup group1 = new ButtonGroup();
+        group1.add(LZ78);
+        group1.add(LZW);
+        group1.add(LZSS);
+        group1.add(JPEG);
+        ButtonGroup group2 = new ButtonGroup();
+        group2.add(Compress);
+        group2.add(Descompress);
+        ButtonGroup group3 = new ButtonGroup();
+        group3.add(Fitxer);
+        group3.add(Carpeta);
+        if (!L[metodo].isSelected()) L[metodo].doClick();
+        if (!J[state].isSelected()) J[state].doClick();
+        if (!K[compresion].isSelected()) K[compresion].doClick();
         Sortir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+            }
+        });
 
+        Action.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Cont_CD C = new Cont_CD();
+                C.compressio_descompressio(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), metodo, compresion == 0);
+            }
+        });
+
+
+        Carpeta.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                state = 1;
+                actPickers();
+                //frame.setContentPane(new Interfaz().Panel);
+            }
+        });
+
+        Fitxer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                state = 0;
+                actPickers();
+                //frame.setContentPane(new Interfaz().Panel);
+
+            }
+        });
+
+        Descompress.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                compresion = 1;
+                actPickers();
+            }
+        });
+
+        Compress.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                compresion = 0;
+                actPickers();
             }
         });
 
@@ -195,8 +280,7 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 metodo = 0;
-                changeFilter();
-                frame.setContentPane(new Interfaz().Panel);
+                actPickers();
             }
         });
 
@@ -204,8 +288,7 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 metodo = 1;
-                changeFilter();
-                frame.setContentPane(new Interfaz().Panel);
+                actPickers();
             }
         });
 
@@ -213,8 +296,7 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 metodo = 2;
-                changeFilter();
-                frame.setContentPane(new Interfaz().Panel);
+                actPickers();
             }
         });
 
@@ -222,8 +304,7 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 metodo = 3;
-                changeFilter();
-                frame.setContentPane(new Interfaz().Panel);
+                actPickers();
             }
         });
 

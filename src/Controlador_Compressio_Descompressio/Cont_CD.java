@@ -28,7 +28,7 @@ public class Cont_CD {
             Estadistiques E = new Estadistiques();
             switch (id) {
                 // Es decideix quin algorisme utilitzar i quina accio pendre
-                case 1:
+                case 2:
                     LZ78 L8 = new LZ78();
                     if (comprimir) {
                         System.out.println("LZ78 compression ejecutado");
@@ -44,7 +44,7 @@ public class Cont_CD {
                     }
 
                     break;
-                case 2:
+                case 1:
                     LZSS LS = new LZSS();
                     if (comprimir) {
                         System.out.println("LZSS compression ejecutado");
@@ -58,7 +58,7 @@ public class Cont_CD {
                         time = LS.getTime();
                     }
                     break;
-                case 3:
+                case 0:
                     LZW LW = new LZW();
                     if (comprimir) {
                         System.out.println("LZW compression ejecutado");
