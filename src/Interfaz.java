@@ -41,6 +41,7 @@ public class Interfaz extends JFrame {
             label = new JLabel(textFieldLabel);
 
             textField = new JTextField(30);
+            textField.setEditable(false);
             button = new JButton(buttonLabel);
 
             button.addActionListener(new ActionListener() {
@@ -64,6 +65,7 @@ public class Interfaz extends JFrame {
             } else if (mode == MODE_SAVE) {
                 if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                     textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+
                 }
             }
         }
@@ -83,6 +85,10 @@ public class Interfaz extends JFrame {
 
         public JFileChooser getFileChooser() {
             return this.fileChooser;
+        }
+
+        public JFilePicker change (String s1, String s2) {
+            return new JFilePicker(s1,s2);
         }
     }
 
@@ -125,13 +131,14 @@ public class Interfaz extends JFrame {
     *  1 : LZSS
     *  2 : LZ78
     *  3 : JPEG*/
-    private static int metodo;
-    private static String pos;
-    private static String Sec;
+    private static int metodo = 0;
+    private static String pos = ".txt";
+    private static String Sec = "TXT Files";
+    private JRadioButton [] L = new JRadioButton[] {LZW, LZSS, LZ78, JPEG};
 
     private void createUIComponents () {
         Picker1 = new JFilePicker("Selecció", "Busca");
-        Picker1.addFileTypeFilter(".txt", "TXT Files");
+        Picker1.addFileTypeFilter(pos, Sec);
         Picker1.setMode(JFilePicker.MODE_SAVE);
         Picker2 = new JFilePicker("Selecció", "Busca");
         Picker2.setMode(JFilePicker.MODE_SAVE);
@@ -146,8 +153,7 @@ public class Interfaz extends JFrame {
             pos = ".txt";
             Sec = "TXT Files";
         }
-        Picker1 = new JFilePicker("Selecció", "Busca");
-        Picker1.addFileTypeFilter(pos,Sec);
+        Picker1 = Picker1.change(pos, Sec);
     }
 
     public Interfaz() {
@@ -156,14 +162,12 @@ public class Interfaz extends JFrame {
         group.add(LZW);
         group.add(LZSS);
         group.add(JPEG);
-        LZW.doClick();
-        metodo = 0;
-        pos = ".txt";
-        Sec = "TXT Files";
+        L[metodo].doClick();
         Sortir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+
             }
         });
 
@@ -172,7 +176,7 @@ public class Interfaz extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 metodo = 0;
                 changeFilter();
-
+                frame.setContentPane(new Interfaz().Panel);
             }
         });
 
@@ -181,7 +185,7 @@ public class Interfaz extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 metodo = 1;
                 changeFilter();
-
+                frame.setContentPane(new Interfaz().Panel);
             }
         });
 
@@ -190,7 +194,7 @@ public class Interfaz extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 metodo = 2;
                 changeFilter();
-
+                frame.setContentPane(new Interfaz().Panel);
             }
         });
 
@@ -199,6 +203,7 @@ public class Interfaz extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 metodo = 3;
                 changeFilter();
+                frame.setContentPane(new Interfaz().Panel);
             }
         });
 
