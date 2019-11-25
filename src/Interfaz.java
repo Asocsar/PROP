@@ -33,6 +33,7 @@ public class Interfaz extends JFrame {
 
             fileChooser = new JFileChooser();
             fileChooser.setAcceptAllFileFilterUsed(false);
+            //fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             //fileChooser.removeChoosableFileFilter();
 
             setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -55,6 +56,16 @@ public class Interfaz extends JFrame {
             add(textField);
             add(button);
 
+        }
+
+        public void selectmode (int n) {
+            if (n == 0) {
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            }
+
+            else {
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            }
         }
 
         private void buttonActionPerformed(ActionEvent evt) {
@@ -126,11 +137,15 @@ public class Interfaz extends JFrame {
     private JRadioButton LZSS;
     private JRadioButton LZ78;
     private JRadioButton JPEG;
+    private JRadioButton radioButton1;
     private static JFrame frame;
     /* 0 : LZW
     *  1 : LZSS
     *  2 : LZ78
     *  3 : JPEG*/
+    private static int state = 0;
+    /* 0 : File
+    *  1 : Directory*/
     private static int metodo = 0;
     private static String pos = ".txt";
     private static String Sec = "TXT Files";
@@ -138,10 +153,15 @@ public class Interfaz extends JFrame {
 
     private void createUIComponents () {
         Picker1 = new JFilePicker("Selecció", "Busca");
-        Picker1.addFileTypeFilter(pos, Sec);
+        Picker1.selectmode(state);
         Picker1.setMode(JFilePicker.MODE_SAVE);
+
         Picker2 = new JFilePicker("Selecció", "Busca");
+        Picker2.selectmode(1);
         Picker2.setMode(JFilePicker.MODE_SAVE);
+
+        if (state == 0)
+            Picker1.addFileTypeFilter(pos, Sec);
     }
 
     public void changeFilter () {
