@@ -126,14 +126,28 @@ public class Interfaz extends JFrame {
     *  2 : LZ78
     *  3 : JPEG*/
     private static int metodo;
+    private static String pos;
+    private static String Sec;
 
     private void createUIComponents () {
         Picker1 = new JFilePicker("Selecció", "Busca");
-        Picker1.setMode(JFilePicker.MODE_SAVE);
-        Picker1.addFileTypeFilter(".ppm", "PPM Images");
         Picker1.addFileTypeFilter(".txt", "TXT Files");
+        Picker1.setMode(JFilePicker.MODE_SAVE);
         Picker2 = new JFilePicker("Selecció", "Busca");
         Picker2.setMode(JFilePicker.MODE_SAVE);
+    }
+
+    public void changeFilter () {
+        if (metodo == 3) {
+            System.out.println("HOla");;
+            pos = ".ppm";
+            Sec = "PPM Files";
+        } else {
+            pos = ".txt";
+            Sec = "TXT Files";
+        }
+        Picker1 = new JFilePicker("Selecció", "Busca");
+        Picker1.addFileTypeFilter(pos,Sec);
     }
 
     public Interfaz() {
@@ -144,6 +158,8 @@ public class Interfaz extends JFrame {
         group.add(JPEG);
         LZW.doClick();
         metodo = 0;
+        pos = ".txt";
+        Sec = "TXT Files";
         Sortir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -155,6 +171,8 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 metodo = 0;
+                changeFilter();
+
             }
         });
 
@@ -162,6 +180,8 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 metodo = 1;
+                changeFilter();
+
             }
         });
 
@@ -169,6 +189,8 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 metodo = 2;
+                changeFilter();
+
             }
         });
 
@@ -176,8 +198,10 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 metodo = 3;
+                changeFilter();
             }
         });
+
     }
 
     public static void main(String[] args) {
