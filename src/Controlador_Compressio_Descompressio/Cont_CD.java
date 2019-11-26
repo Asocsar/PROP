@@ -128,7 +128,8 @@ public class Cont_CD {
 
     // Pre : Hi ha hagut com a mínim una compressió des de que s'ha iniciat el programa
     // Post: Mostra el contingut del fitxer original i el resultat després d'haver comprimit aquest
-    public void comparar() {
+    public String [] comparar() {
+        String [] K = new String[2];
         if (path1.equals("")) {
             System.out.println("Por favor ejecute una compressión antes de comparar");
         }
@@ -138,15 +139,18 @@ public class Cont_CD {
                 //llegim el contingut del fitxer original
                 System.out.println("path origen a comparar -> " + path1);
                 String S = I.obtenir_fitxer(path1);
+                K[0] = S;
                 System.out.println(S);
                 System.out.println();
                 //descomprimir el contingut del fitxer comprimit i el mostrem
                 Object L = action(path2, id, false, I);
                 System.out.println("path desti a comparar -> " + path2);
                 System.out.println((String) L);
+                K[1] = (String)L;
             } catch (IOException e) {
                 System.out.println("El archivo a comparar ha sido desplazado en el sistema");
             }
         }
+        return  K;
     }
 }

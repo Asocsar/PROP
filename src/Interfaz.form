@@ -77,11 +77,6 @@
           <verticalAlignment value="1"/>
         </properties>
       </component>
-      <hspacer id="f2d88">
-        <constraints>
-          <grid row="9" column="2" row-span="1" col-span="3" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </hspacer>
       <vspacer id="29c99">
         <constraints>
           <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
@@ -209,6 +204,14 @@
         </constraints>
         <properties>
           <text value="Comprimir/Descomprimir"/>
+        </properties>
+      </component>
+      <component id="8d86" class="javax.swing.JButton" binding="Compare">
+        <constraints>
+          <grid row="9" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Comparar"/>
         </properties>
       </component>
     </children>

@@ -57,12 +57,15 @@ public class Interfaz extends JFrame {
         }
 
         public void selectmode (int n) {
-            if (n == 0) {
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            }
-
-            else {
+            if (n == 1) {
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            }
+            else {
+                if (metodo == 1 && state == 0) {
+                    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                } else {
+                    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                }
             }
         }
 
@@ -130,7 +133,6 @@ public class Interfaz extends JFrame {
     }
 
     private JPanel Panel;
-    private JButton Close_Button;
     private JTextPane textPane2;
     private JButton Sortir;
     private JTextPane textPane1;
@@ -145,6 +147,7 @@ public class Interfaz extends JFrame {
     private JRadioButton Compress;
     private JRadioButton Descompress;
     private JButton Action;
+    private JButton Compare;
     private static JFrame frame;
     /* 0 : LZW
     *  1 : LZSS
@@ -165,7 +168,7 @@ public class Interfaz extends JFrame {
 
     private void createUIComponents () {
         Picker1 = new JFilePicker("Selecció", "Busca");
-        Picker1.selectmode(state);
+        Picker1.selectmode(-1);
         Picker1.setMode(JFilePicker.MODE_SAVE);
 
         Picker2 = new JFilePicker("Selecció", "Busca");
@@ -183,8 +186,14 @@ public class Interfaz extends JFrame {
                 Sec = "PPM Files";
             }
             else  {
-                pos = ".fG";
-                Sec = "PPM Compressed-Files";
+                if (state == 0) {
+                    pos = ".fG";
+                    Sec = "PPM Compressed-Files";
+                }
+                else {
+                    pos = ".FG";
+                    Sec = "PPM Compressed-Folder";
+                }
             }
         } else {
             if (compresion == 0) {
@@ -192,22 +201,30 @@ public class Interfaz extends JFrame {
                 Sec = "TXT Files";
             }
             else {
-                if (metodo == 0) pos = ".fW";
-                else if (metodo == 1) pos = ".fS";
-                else if (metodo == 2) pos = ".f8";
-                else pos = ".fG";
-                Sec = "TXT Compressed File";
+                if (state == 0) {
+                    if (metodo == 0) pos = ".fW";
+                    else if (metodo == 1) pos = ".fS";
+                    else if (metodo == 2) pos = ".f8";
+                    else pos = ".fG";
+                    Sec = "TXT Compressed File";
+                }
+                else {
+                    if (metodo == 0) pos = ".FW";
+                    else if (metodo == 1) pos = ".FS";
+                    else if (metodo == 2) pos = ".F8";
+                    else pos = ".FG";
+                    Sec = "TXT Compressed Folder";
+                }
             }
         }
         Picker1.addFileTypeFilter(pos,Sec);
     }
 
     public void actPickers() {
-        Picker1.selectmode(state);
+        Picker1.selectmode(-1);
         Picker1.updateUI();
         Picker1.removefilter();
-        if (state == 0)
-            changeFilter();
+        changeFilter();
     }
 
     public Interfaz() {
@@ -240,6 +257,13 @@ public class Interfaz extends JFrame {
             }
         });
 
+        Compare.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Cont_CD C = new Cont_CD();
+                String[] S = C.comparar();
+            }
+        });
 
         Carpeta.addActionListener(new ActionListener() {
             @Override
