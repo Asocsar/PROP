@@ -77,11 +77,6 @@
           <verticalAlignment value="1"/>
         </properties>
       </component>
-      <vspacer id="29c99">
-        <constraints>
-          <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </vspacer>
       <vspacer id="55d41">
         <constraints>
           <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
@@ -214,6 +209,11 @@
           <text value="Comparar"/>
         </properties>
       </component>
+      <vspacer id="18a66">
+        <constraints>
+          <grid row="7" column="7" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
     </children>
   </grid>
 </form>
