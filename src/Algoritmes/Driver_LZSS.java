@@ -32,18 +32,26 @@ public class Driver_LZSS {
                 File file = new File(path);
                 byte[] c = Files.readAllBytes(file.toPath());
 
+                //LINIES DE TESTEO DE JOCS: IMPRIMIM EL FITXER QUE ES COMPRIMIRA
+                //for(byte b : c) System.out.print(b+',');
+                //System.out.print("\n");
+
                 LZSS A = new LZSS();
                 //Comprimimos el fichero objetivo
-                Byte[] compressed = A.compress(c);
+                List<Byte> compressed = A.compress(c);
                 System.out.println("La compressió s'ha donat amb èxit");
                 //Mostramos el ratio de compresión y tiempo tardado
                 System.out.println("El ratio de compressió ha estat" + ": " + A.getRate() + "\n");
                 System.out.println("El temps de compressió ha estat" + ": " + A.getTime() + "\n");
 
-                path = "/home/clums/Escriptori/JOCS_DE_PROVA/" + "/" + dir + "/" + test.substring(0, test.length() - 4) + ".fS";
+                //LINIES DE TESTEO DE JOCS: IMPRIMIM EL FITXER COMPRIMIT
+
+                //for(Byte B : compressed) System.out.print(B+',');
+
+                path = "/home/clums/Escriptori/JOCS_DE_PROVA/" + "/" + dir + "/Compressed/" + test.substring(0, test.length() - 4) + ".fS";
                 File file_out = new File(path);
 
-                byte[] towrite = new byte[compressed.length];
+                byte[] towrite = new byte[compressed.size()];
                 int writeind = 0;
                 for (Byte comp : compressed) {
                     towrite[writeind++] = comp;
@@ -54,17 +62,25 @@ public class Driver_LZSS {
                 File filed = new File(path);
                 byte[] d = Files.readAllBytes(filed.toPath());
 
-                Byte[] todecod = new Byte[d.length];
-                int decodindex = 0;
+                List<Byte> todecod = new ArrayList<>();
                 for (byte b : d) {
-                    todecod[decodindex++] = b;
+                    todecod.add(b);
                 }
 
                 path = "/home/clums/Escriptori/JOCS_DE_PROVA/" + "/" + dir + "/" + test.substring(0, test.length() - 4) + "S" + ".txt";
-                StringBuilder decompressed = A.decompress(todecod);
+                List<Byte> decompressed = A.decompress(todecod);
+
+                //for (int i = 0; i<decompressed.length(); ++i) System.out.print(decompressed.charAt(i));
+
 
                 File file2 = new File(path);
-                Files.write(file2.toPath(), Collections.singleton(decompressed));
+                OutputStream out = new FileOutputStream(file2.toPath().toString());
+                byte[] tofile = new byte[decompressed.size()];
+                int tofind = 0;
+                for(Byte l : decompressed){
+                    tofile[tofind++] = l;
+                }
+                out.write(tofile);
             }
             carpetes++;
         }
