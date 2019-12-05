@@ -246,6 +246,7 @@ public class JPEG {
         long start = System.currentTimeMillis();
         System.out.println("Comença la compressió");
         long midafinal = 0;
+
         for (int a = 0; a < 3; ++a) {
 
             if(a < 2) computeQ2(quality, a != 0);
@@ -255,6 +256,7 @@ public class JPEG {
             Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
             Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
             buff[a] = new int[Bheight * Bwidth][];
+            System.out.println("Mida del buff: " + buff[a].length);
             midafinal = 3;
 
             for (int i = 0; i < Bheight; ++i) {
@@ -272,6 +274,12 @@ public class JPEG {
 
                     }
                     buff[a][i * Bwidth + j] = compress8(m);
+                    if(i==0 && j==0) {
+                        for(int z = 0; z < buff[a][0].length; ++z) System.out.printf( "%d ", buff[a][0][z]);
+                        System.out.println();
+                    }
+
+
                     midafinal += buff[a][i * Bwidth + j].length;
 
                 }
@@ -298,16 +306,24 @@ public class JPEG {
         int Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
         int posx, posy;
         int[][] m;
+        System.out.println("Midaesperada " + Bwidth*Bheight);
+        System.out.println("Midabuff: " + buff[0].length);
         for(int a = 0; a < 3; a++) {
             if(a < 2) computeQ2(quality, a != 0);
-            for (int i = 0; i < Bheight; ++i) {
-                for(int j = 0; j < Bwidth; ++j) {
 
-                    m = decompress8(buff[a][i * Bwidth + j]);
+            for (int i = 0; i < height; i+=8) {
+                for(int j = 0; j < width; j+=8) {
+                    //System.out.println("Nou bloc");
+
+                    //System.out.println("i/8: " + i/8);
+                    //System.out.println("i/8*Bwidth " + i/8 * Bwidth);
+                   // System.out.println("Bloc: " + (i/8 * Bwidth + j/8));
+                    m = decompress8( buff[a][i/8 * Bwidth + j/8]);
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
-                            posx = j * 8 + x;
-                            posy = i * 8 + y;
+                            posx = j + x;
+                            posy = i + y;
+                            //System.out.println("posy: " + posy + " " + "posx: " + posx);
                             if (posx < width && posy < height) YCbCr[a][posy][posx] = m[y][x];
                         }
                     }
