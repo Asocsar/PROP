@@ -1,8 +1,7 @@
-
+package Algoritmes.JPEG;
 
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -28,6 +27,9 @@ public class Driver_JPEG {
             BufferedInputStream bis = new BufferedInputStream(fis);
 
             JPEG J = new JPEG();
+
+
+
 
             byte[] bb = new byte[50];
             char c;
@@ -77,7 +79,9 @@ public class Driver_JPEG {
             bis.close();
             System.out.println("Finished reading");
             int[][][] aux = new int[][][] {Y, Cb, Cr};
-            aux = J.compress(aux);
+            System.out.println("Introdueix la qualitat de compressió (0-100)");
+            int quality =  Integer.parseInt(S.next());
+            aux = J.compress(aux, quality);
 
             System.out.println("Ratio " + J.getRate());
             System.out.println("Temps " + J.getTime());
@@ -99,7 +103,7 @@ public class Driver_JPEG {
             file_o.close();
 
 
-            int[][][] YCbCr = J.decompress(aux, height, width);
+            int[][][] YCbCr = J.decompress(aux, height, width, quality);
 
 
             System.out.println("Introdueix el path desti del fitxer descomprimit (amb extensió)");

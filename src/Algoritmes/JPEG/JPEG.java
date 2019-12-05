@@ -1,36 +1,14 @@
 
 
-
+package Algoritmes.JPEG;
 import java.io.*;
 import java.util.ArrayList;
 
 
 public class JPEG {
 
-    //temps de l'ultima compressió / descompressió
-    private double time;
-
-    //rati de compressió assolit en la última compressió
-    private double rate;
-
-    //PRE: Cert
-    //POST: Inicialitza la classe JPEG
-    // Descripció: Crea una instància de classe JPEG i inicialitza variable time i rate
-    public JPEG(){
-        this.time = 0.0;
-        this.rate = 0.0;
-    }
-
-    // Pre : Cert
-    // Post: Retorna l'últim temps de compressió.
-    public double getTime () {return  this.time;}
-
-    // Pre : Certs
-    // Post: Retorna del ratio de compressió
-    public double getRate () {return  this.rate;}
-
     //Matriu de quantificació de la luminància, forma part de la part lossy.
-    private int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
+    private static final int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
             {12, 12, 14, 19, 26, 58, 60, 55},
             {14, 13, 16, 24, 40, 57, 69, 56},
             {14, 17, 22, 29, 51, 87, 80, 62},
@@ -40,7 +18,7 @@ public class JPEG {
             {72, 92, 95, 98, 112, 110, 103, 99}};
 
     //Matriu de quantificació de la crominància, forma part de la part lossy.
-    private int[][] QC = {{17, 18, 24, 47, 99, 99, 99, 99},
+    private static final int[][] QC = {{17, 18, 24, 47, 99, 99, 99, 99},
             {18, 21, 26, 66, 99, 99, 99, 99},
             {24, 26, 56, 99, 99, 99, 99, 99},
             {47, 66, 99, 99, 99, 99, 99, 99},
@@ -48,6 +26,8 @@ public class JPEG {
             {99, 99, 99, 99, 99, 99, 99, 99},
             {99, 99, 99, 99, 99, 99, 99, 99},
             {99, 99, 99, 99, 99, 99, 99, 99}};
+
+    private int[][] Q2 = new int[8][8];
 
     //Matriu per fer el reccoregut en ZigZag sobre cada blocde 8x8.
     private int[][] ZigZag = {
@@ -67,6 +47,29 @@ public class JPEG {
             {6, 7}, {7, 6},
             {7, 7}};
 
+
+    //temps de l'ultima compressió / descompressió
+    private double time;
+
+    //rati de compressió assolit en la última compressió
+    private double rate;
+
+
+    //PRE: Cert
+    //POST: Inicialitza la classe JPEG
+    // Descripció: Crea una instància de classe JPEG i inicialitza variable time i rate
+    public JPEG(){
+        this.time = 0.0;
+        this.rate = 0.0;
+    }
+
+    // Pre : Cert
+    // Post: Retorna l'últim temps de compressió.
+    public double getTime () {return  this.time;}
+
+    // Pre : Certs
+    // Post: Retorna del ratio de compressió
+    public double getRate () {return  this.rate;}
 
     //Funció que aplica la transformada discreta del cosinus
     // Es l'aplicació per definició, és una sub-funció de compress8.
@@ -94,6 +97,7 @@ public class JPEG {
         }
         return dct;
     }
+
 
     //Funció que aplica la transforma discreta del cosinus de Tipus -II
     //O també anomenada inversa, subfunció de decompress8
@@ -130,6 +134,20 @@ public class JPEG {
         return idct;
     }
 
+    private void computeQ2(int quality, boolean chroma){
+
+        double s;
+        if (quality < 50) s = 5000/quality;
+        else s = 200 - 2*quality;
+
+        for(int x = 0; x < 8; ++x){
+            for(int y = 0; y < 8; ++y){
+                if(chroma) Q2[x][y] = (int) Math.floor((s * QC[x][y] + 50) / 100);
+                else Q2[x][y] = (int) Math.floor((s * Q[x][y] + 50) / 100);
+                if(Q2[x][y] == 0) Q2[x][y] = 1; //Per evitar dividir entre 0
+            }
+        }
+    }
 
 
     // Pre : m conté una matriu de 8x8 corresponent a un bloc a la imatge.
@@ -139,7 +157,7 @@ public class JPEG {
     //transformació DCT, la quantització i l'encoding fet amb RLE.
     // Per aconseguir l'encoding de RLE, ho guardem en una llista
     //i després ho passem a un array de ints
-    private int[] compress8(int[][] m, boolean chroma) {
+    private int[] compress8(int[][] m) {
 
 
         //DCT Transform
@@ -148,24 +166,13 @@ public class JPEG {
         //Quantitzation
 
         int[][] B = new int[8][8];
-        if(chroma){
-            for (int i = 0; i < 8; ++i) {
-                for (int j = 0; j < 8; ++j) {
-                    B[i][j] = (int) Math.round(D[i][j] / (double) QC[i][j]);
-                }
-            }
-
-        }else{
-            for (int i = 0; i < 8; ++i) {
-                for (int j = 0; j < 8; ++j) {
-                    B[i][j] = (int) Math.round(D[i][j] / (double) Q[i][j]);
-                }
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                B[i][j] = (int) Math.round(D[i][j] / (double) Q2[i][j]);
             }
         }
 
-
         //Encoding ZigZag (RLE)
-
         ArrayList<Integer> list = new ArrayList<Integer>();
         int last = B[0][0];
         int count = 1, curr;
@@ -191,7 +198,7 @@ public class JPEG {
     // Descripció: Es fa la conversió de l'array d'enters a un bloc mitjançant l'aplicació
     //del decodint del RLE, la desquantització i la DCT inversa.
     // A RLE c es el Nint [0..63] inici i count són les repeticions del caràcter curr
-    private int[][] decompress8(int[] buff, boolean chroma) {
+    private int[][] decompress8(int[] buff) {
 
         //Decoding ZigZag (RLE)
 
@@ -208,19 +215,9 @@ public class JPEG {
         }
 
         int[][] D = new int[8][8];
-        if(chroma){
-            for (int i = 0; i < 8; ++i) {
-                for (int j = 0; j < 8; ++j) {
-                    D[i][j] = B[i][j] * QC[i][j];
-                }
-            }
-
-        }else {
-
-            for (int i = 0; i < 8; ++i) {
-                for (int j = 0; j < 8; ++j) {
-                    D[i][j] = B[i][j] * Q[i][j];
-                }
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                D[i][j] = B[i][j] * Q2[i][j];
             }
         }
 
@@ -229,13 +226,15 @@ public class JPEG {
 
     }
 
+    // Descripció: Hi han 3 canals, Y
     // Pre : Cert
     // Post: Retorna una matriu de Integers que representa el fitxer comprimit.
     // Descripció: Hi han 3 canals, Y, Cb i Cr. Per cada canal guardem una array amb
     //tantes posicions com NBlocs hi han. I per cada NBlock guardem el
     //resultat codificat, que té longitud variable segons la compressió que
     //aconseguim. De padding utilitzem repetició el caràcter si posx o posy són mes grans que la imatge
-    public int[][][] compress(int[][][] YCbCr) {
+    public int[][][] compress(int[][][] YCbCr, int quality) {
+
 
         int height = 0, width = 0, Bheight, Bwidth, length, posx, posy;
         int[][][] buff = new int[3][][];
@@ -248,6 +247,8 @@ public class JPEG {
         System.out.println("Comença la compressió");
         long midafinal = 0;
         for (int a = 0; a < 3; ++a) {
+
+            if(a < 2) computeQ2(quality, a != 0);
 
             height = YCbCr[a].length;
             width = YCbCr[a][0].length;
@@ -270,8 +271,8 @@ public class JPEG {
                         }
 
                     }
-                    buff[a][i * Bwidth + j] = compress8(m, a != 0);
-                    midafinal = midafinal + buff[a][i * Bwidth + j].length;
+                    buff[a][i * Bwidth + j] = compress8(m);
+                    midafinal += buff[a][i * Bwidth + j].length;
 
                 }
             }
@@ -289,7 +290,7 @@ public class JPEG {
     //imatge bloc a bloc, llegint els buffers de longitud variable i
     //descomprimint-los obté la submatriu que afegeix q la matriu
     //general.
-    public int[][][] decompress(int[][][] buff, int height, int width) {
+    public int[][][] decompress(int[][][] buff, int height, int width, int quality) {
 
         System.out.println("Comença la descompressió");
         int[][][] YCbCr = new int[3][height][width];
@@ -298,10 +299,11 @@ public class JPEG {
         int posx, posy;
         int[][] m;
         for(int a = 0; a < 3; a++) {
+            if(a < 2) computeQ2(quality, a != 0);
             for (int i = 0; i < Bheight; ++i) {
                 for(int j = 0; j < Bwidth; ++j) {
 
-                    m = decompress8(buff[a][i * Bwidth + j], a != 0);
+                    m = decompress8(buff[a][i * Bwidth + j]);
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
                             posx = j * 8 + x;
@@ -312,6 +314,7 @@ public class JPEG {
                 }
             }
         }
+
         return YCbCr;
 
     }
