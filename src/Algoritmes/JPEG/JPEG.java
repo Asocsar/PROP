@@ -1,6 +1,8 @@
 
 
 package Algoritmes.JPEG;
+import org.omg.CORBA.SetOverrideType;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -157,7 +159,7 @@ public class JPEG {
     //transformació DCT, la quantització i l'encoding fet amb RLE.
     // Per aconseguir l'encoding de RLE, ho guardem en una llista
     //i després ho passem a un array de ints
-    private int[] compress8(int[][] m) {
+    private int[] compress8(int[][] m, boolean zz) {
 
 
         //DCT Transform
@@ -172,8 +174,17 @@ public class JPEG {
             }
         }
 
+
+        if (zz) {
+            System.out.println("Imprimint el primer bloc");
+            for (int i = 0; i < 64; i++) {
+                System.out.printf( "%d ", B[ZigZag[i][0]][ZigZag[i][1]]);
+            }
+            System.out.println();
+        }
+
         //Encoding ZigZag (RLE)
-        ArrayList<Integer> list = new ArrayList<Integer>();
+        ArrayList<Integer> list = new ArrayList<>();
         int last = B[0][0];
         int count = 1, curr;
         for (int i = 1; i < 64; i++) {
@@ -187,7 +198,16 @@ public class JPEG {
 
             }
         }
+
+        /*
+        if (zz) {
+            System.out.println("Imprimint el primer bloc amb RLE");
+            for (Integer integer : list) System.out.printf("%d ", integer);
+            System.out.println();
+        }*/
         return list.stream().mapToInt(i->i).toArray();
+
+
 
         //We have to add the DC coefficient and the 63 other values
         //With RLE and Hufmann (RUNLENGTH, SIZE) (AMPLITUDE)
@@ -273,11 +293,11 @@ public class JPEG {
                         }
 
                     }
-                    buff[a][i * Bwidth + j] = compress8(m);
-                    if(i==0 && j==0) {
+                    buff[a][i * Bwidth + j] = compress8(m, i==0 && j == 0);
+                    /*if(i==0 && j==0) {
                         for(int z = 0; z < buff[a][0].length; ++z) System.out.printf( "%d ", buff[a][0][z]);
                         System.out.println();
-                    }
+                    }*/
 
 
                     midafinal += buff[a][i * Bwidth + j].length;

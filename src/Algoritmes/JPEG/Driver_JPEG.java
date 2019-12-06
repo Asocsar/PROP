@@ -1,6 +1,7 @@
 package Algoritmes.JPEG;
 
 
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.io.*;
 import java.util.Scanner;
 
@@ -93,6 +94,29 @@ public class Driver_JPEG {
 
             path = S.next();
             path = path + ".fg";
+
+            FileOutputStream fosc = new FileOutputStream(path);
+            BufferedOutputStream bosc = new BufferedOutputStream(fosc);
+            bosc.write(width);
+            bosc.write(height);
+            bosc.write(quality);
+
+            int length = aux[0].length;
+            //Escriure bytes
+            for(int a = 0; a < 3; ++a) {
+                //escriure byte 'A'
+                for (int i = 0; i < length; ++i) {
+                    //escriure byte 'B'
+                    bosc.write(aux[a][i].length); //escriure mida array comprimit
+                    for (int j = 0; j < aux[a][i].length; ++j) {
+                        bosc.write((byte) aux[a][i][j]);
+                    }
+                }
+            }
+            bosc.close();
+
+
+            /*
             FileWriter file_o = new FileWriter(path);
             file_o.write(width);
             file_o.write(height);
@@ -100,8 +124,24 @@ public class Driver_JPEG {
             int length = aux[0].length;
 
 
-
+            //Escriure bytes
             for(int a = 0; a < 3; ++a) {
+                //escriure byte 'A'
+                for (int i = 0; i < length; ++i) {
+                    //escriure byte 'B'
+                    file_o.write((byte) aux[a][i].length); //escriure mida array comprimit
+                    for (int j = 0; j < aux[a][i].length; ++j) {
+                        file_o.write((byte) aux[a][i][j]);
+                    }
+                }
+            }
+            file_o.close();
+
+             */
+
+            /*
+            for(int a = 0; a < 3; ++a) {
+                System.out.println("Nou color");
                 for (int i = 0; i < length; ++i) {
                     for (int j = 0; j < aux[a][i].length; ++j) {
                         System.out.printf("%d ",aux[a][i][j]);
@@ -110,29 +150,21 @@ public class Driver_JPEG {
                 }
                 System.out.println();
             }
+            */
 
-
-            //Escriure bytes
-            for(int a = 0; a < 3; ++a) {
-                //escriure byte 'A'
-                for (int i = 0; i < length; ++i) {
-                    //escriure byte 'B'
-                    file_o.write(aux[a][i].length); //escriure mida array comprimit
-
-                    for (int j = 0; j < aux[a][i].length; ++j) {
-
-                        file_o.write(aux[a][i][j]);
-                    }
-                }
-            }
-            file_o.close();
 
             //Reading comprimit i escriptura descomprimit
-            FileReader file_in = new FileReader(path);
+            FileInputStream fisc = new FileInputStream(path);
+            BufferedInputStream bisc = new BufferedInputStream(fisc);
             int midafila;
-            width = file_in.read();
-            height = file_in.read();
-            quality = file_in.read();
+
+            width = bisc.read();
+            height = bisc.read();
+            quality = bisc.read();
+
+            System.out.println("w: " + width);
+            System.out.println("h: " + height);
+            System.out.println("q: " + quality);
 
             int Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
             int Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
@@ -141,24 +173,24 @@ public class Driver_JPEG {
             int[][][] aux2 = new int[3][length][];
             for(int a = 0; a < 3; ++a) {
                 for (int i = 0; i < length; ++i) {
-                    midafila = file_in.read();
+                    midafila = bisc.read();
                     //System.out.println("i: "+ i);
                     aux2[a][i] = new int[midafila];
                     for (int j = 0; j < midafila; ++j) {
-                        aux2[a][i][j] = file_in.read();
+                        aux2[a][i][j] = bisc.read();
                     }
 
                 }
             }
-            file_in.close();
+            bisc.close();
 
             //Diferència entre aux i aux2
             for(int a = 0; a < 3; ++a) {
-                if(aux[a].length != aux2[a].length) System.out.println("Mides diferents de blocs");
+                if(aux[a].length != aux2[a].length) System.out.println("Mides diferents de blocs: " + aux[a].length + " | " + aux2[a].length);
                 for (int i = 0; i < aux[0].length; ++i) {
                     if (aux[a][i].length != aux2[a][i].length){
                         //System.out.println("--------------------------------------------------------");
-                        System.out.println( "Mides diferents, escrita: "+ aux.length + " | llegida: " + aux2.length);
+                        System.out.println( "Mides diferents, escrita: "+ aux[a][i].length + " | llegida: " + aux2[a][i].length);
                         System.out.println("Color: " + a +", Bloc: " + i);
                        // System.out.println("--------------------------------------------------------");
 
@@ -176,9 +208,7 @@ public class Driver_JPEG {
             }
 
 
-
-
-            int[][][] YCbCr = J.decompress(aux2, height, width, quality);
+            int[][][] YCbCr = J.decompress(aux, height, width, quality);
 
 
             System.out.println("Introdueix el path desti del fitxer descomprimit (amb extensió)");
@@ -225,6 +255,7 @@ public class Driver_JPEG {
             System.out.println("L'adreça no ha estat trobada");
 
         } catch (IOException e) {
+            System.out.println(e);
             System.out.println("Error en la Entrada - Sortida");
         }
 
