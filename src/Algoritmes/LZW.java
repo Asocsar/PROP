@@ -1,10 +1,11 @@
 package Algoritmes;
 
-import java.io.*;
-import java.util.*;
-import java.lang.Math;
 
-public class LZW {
+import java.math.BigInteger;
+import java.util.*;
+import java.lang.Integer;
+
+public class LZW extends Algoritmes{
 
     //diccionaris que contenen la assosiació entre una seqüència de bytes i un enter
     private Map<List<Byte>, Integer> Alfabet = new HashMap<List<Byte>, Integer>();
@@ -53,7 +54,7 @@ public class LZW {
 
     // Pre : Cert
     // Post: Retorna una llista de Integers que representa el fitxer comprimit
-    public List<Integer> compress(byte [] file)  {
+    public byte[] compress(byte [] file)  {
         long start = System.currentTimeMillis();
         // Creem el diccionari de forma local a la funció per un acces més ràpid
         Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
@@ -97,29 +98,30 @@ public class LZW {
             this.rate = cantidad/n2;
         else
             this.rate = 0;
-        return result;
+        byte [] retur = new byte[result.size()];
+        return retur;
     }
 
 
     // Pre : Cert
     // Post: Retorna un array de bytes que representa el fitxer original
-    public byte[] descomprimir (List<Integer> s) {
-        if (s.size() == 0) {
+    public byte[] descompress (byte[] s) {
+        if (s.length == 0) {
             return new byte[0];
         }
         long start = System.currentTimeMillis();
         Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
         int i = 0;
         // comencem amb el primer codi
-        int cod_viejo = s.get(i);
+        byte cod_viejo = s[i];
         List<Byte> caracter = Alf_aux.get(cod_viejo);
-        int cod_nuevo;
+        byte cod_nuevo;
         List<Byte> cadena = null;
         List<Byte> result =  new ArrayList<>();
         result.addAll(caracter);
         ++i;
-        while (i < s.size()) {
-            cod_nuevo = s.get(i);
+        while (i < s.length) {
+            cod_nuevo = s[i];
             // si el següent codi esta al diccionari el decodifiquem obtenint la seqüència
             // de caràcters associada
             if (Alf_aux.containsKey(cod_nuevo)) {

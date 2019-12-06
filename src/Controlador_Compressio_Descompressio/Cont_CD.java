@@ -69,7 +69,7 @@ public class Cont_CD {
 
                     } else {
                         System.out.println("LZW descompression ejecutado");
-                        L = LW.descomprimir((List<Integer>) I.get_buffer(path_o, comprimir, id));
+                        L = LW.descompress((byte[]) I.get_buffer(path_o, comprimir, id));
                         time = LW.getTime();
 
                     }
