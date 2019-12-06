@@ -299,7 +299,6 @@ public class JPEG {
                         System.out.println();
                     }*/
 
-
                     midafinal += buff[a][i * Bwidth + j].length;
 
                 }
