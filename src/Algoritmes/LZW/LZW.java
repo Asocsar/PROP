@@ -1,6 +1,7 @@
 package Algoritmes.LZW;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.lang.Math;
 
@@ -53,7 +54,7 @@ public class LZW {
 
     // Pre : Cert
     // Post: Retorna una llista de Integers que representa el fitxer comprimit
-    public List<Integer> compress(byte [] file)  {
+    public byte[] compress(byte [] file)  {
         long start = System.currentTimeMillis();
         // Creem el diccionari de forma local a la funció per un acces més ràpid
         Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
@@ -70,7 +71,8 @@ public class LZW {
             ++cantidad;
             k = new Byte[1];
             k[0] = b;
-            aux = new Byte[k.length + w.length];System.arraycopy(w, 0, aux, 0, w.length);
+            aux = new Byte[k.length + w.length];
+            System.arraycopy(w, 0, aux, 0, w.length);
             System.arraycopy(k, 0, aux, w.length, k.length);
             // si ja existeix aux al diccionari llavors fem w = aux, per mes tard poder probar aux + k
             if (Alf_aux.containsKey(Arrays.asList(aux))) {
@@ -97,29 +99,41 @@ public class LZW {
             this.rate = cantidad/n2;
         else
             this.rate = 0;
-        return result;
+
+        byte [] resul = new byte[result.size()*4];
+        int it = 0;
+
+        for (Integer i : result) {
+            byte [] bytes = ByteBuffer.allocate(4).putInt(i).array();
+            for (byte p : bytes) {
+                resul[it] = p;
+                ++it;
+            }
+        }
+        return resul;
     }
 
 
     // Pre : Cert
     // Post: Retorna un array de bytes que representa el fitxer original
-    public byte[] descomprimir (List<Integer> s) {
-        if (s.size() == 0) {
+    public byte[] descomprimir (byte[] bytes) {
+        if (bytes.length == 0) {
             return new byte[0];
         }
         long start = System.currentTimeMillis();
         Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
         int i = 0;
+        ByteBuffer s = ByteBuffer.wrap(bytes);
         // comencem amb el primer codi
-        int cod_viejo = s.get(i);
+        int cod_viejo = s.getInt(i);
         List<Byte> caracter = Alf_aux.get(cod_viejo);
         int cod_nuevo;
         List<Byte> cadena = null;
         List<Byte> result =  new ArrayList<>();
         result.addAll(caracter);
-        ++i;
-        while (i < s.size()) {
-            cod_nuevo = s.get(i);
+        i += 4;
+        while (i < bytes.length) {
+            cod_nuevo = s.getInt(i);
             // si el següent codi esta al diccionari el decodifiquem obtenint la seqüència
             // de caràcters associada
             if (Alf_aux.containsKey(cod_nuevo)) {
@@ -140,7 +154,7 @@ public class LZW {
             //afegim la concatenació trobada al diccionari
             Alf_aux.put(Alf_aux.size(), aderir);
             cod_viejo = cod_nuevo;
-            ++i;
+            i += 4;
         }
         byte [] fin = new byte[result.size()];
         int k = 0;
