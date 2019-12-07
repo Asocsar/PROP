@@ -128,7 +128,7 @@ public class Cont_CD {
 
     // Pre: Cert
     // Post: Descomprimeix el fitxer situat al path_o i el desa al path_d
-    public void descompressio_fitxer (String path_o, String path_d, String algoritme) throws IOException {
+    public void descompressio_fitxer (String path_o, String path_d) throws IOException {
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         id = I.getAlgoritme(path_o);
         Object L = action(path_o, id, false, I);
