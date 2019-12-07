@@ -1,9 +1,8 @@
 package Algoritmes;
 
 
-import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.*;
-import java.lang.Integer;
 
 public class LZW extends Algoritmes{
 
@@ -12,24 +11,19 @@ public class LZW extends Algoritmes{
     //diccionari que té associat a cada identificador una seqüència de Bytes
     private Map<Integer, List<Byte>> Alfabet_inv = new HashMap<Integer, List<Byte>>();
 
-    //temps de l'ultima compressió / descompressió
-    private double time;
-    //rati de compressió assolit en la última compressió
-    private double rate;
-
     // Pre : Cert
     // Post: Retorna el temps de l'última compressió/descompressió
-    public double getTime () {return  this.time;}
+    public double getTime () {return  super.time;}
     // Pre : Certs
     // Post: Retorna el rati assolit de l'última compressió
-    public double getRate () {return  this.rate;}
+    public double getRate () {return  super.grade;}
 
     // Pre : Cert
     // Post: Retorna una instancia de la classe LZW
     public LZW () {
         create_alfa();
-        this.time = 0;
-        this.rate = 0;
+        super.time = 0;
+        super.grade = 0;
     }
 
     // Pre : Cert
@@ -71,7 +65,8 @@ public class LZW extends Algoritmes{
             ++cantidad;
             k = new Byte[1];
             k[0] = b;
-            aux = new Byte[k.length + w.length];System.arraycopy(w, 0, aux, 0, w.length);
+            aux = new Byte[k.length + w.length];
+            System.arraycopy(w, 0, aux, 0, w.length);
             System.arraycopy(k, 0, aux, w.length, k.length);
             // si ja existeix aux al diccionari llavors fem w = aux, per mes tard poder probar aux + k
             if (Alf_aux.containsKey(Arrays.asList(aux))) {
@@ -93,35 +88,46 @@ public class LZW extends Algoritmes{
         // de caràcters aux no han sigut afegits al resultat
         result.add(Alf_aux.get(Arrays.asList(w)));
         long end = System.currentTimeMillis();
-        this.time = (end - start) / 1000F;
+        super.time = (end - start) / 1000F;
         if (file.length > 0)
-            this.rate = cantidad/n2;
+            super.grade = cantidad/n2;
         else
-            this.rate = 0;
-        byte [] retur = new byte[result.size()];
-        return retur;
+            super.grade = 0;
+
+        byte [] resul = new byte[result.size()*4];
+        int it = 0;
+
+        for (Integer i : result) {
+            byte [] bytes = ByteBuffer.allocate(4).putInt(i).array();
+            for (byte p : bytes) {
+                resul[it] = p;
+                ++it;
+            }
+        }
+        return resul;
     }
 
 
     // Pre : Cert
     // Post: Retorna un array de bytes que representa el fitxer original
-    public byte[] descompress (byte[] s) {
-        if (s.length == 0) {
+    public byte[] descompress (byte[] bytes) {
+        if (bytes.length == 0) {
             return new byte[0];
         }
         long start = System.currentTimeMillis();
         Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
         int i = 0;
+        ByteBuffer s = ByteBuffer.wrap(bytes);
         // comencem amb el primer codi
-        byte cod_viejo = s[i];
+        int cod_viejo = s.getInt(i);
         List<Byte> caracter = Alf_aux.get(cod_viejo);
-        byte cod_nuevo;
+        int cod_nuevo;
         List<Byte> cadena = null;
         List<Byte> result =  new ArrayList<>();
         result.addAll(caracter);
-        ++i;
-        while (i < s.length) {
-            cod_nuevo = s[i];
+        i += 4;
+        while (i < bytes.length) {
+            cod_nuevo = s.getInt(i);
             // si el següent codi esta al diccionari el decodifiquem obtenint la seqüència
             // de caràcters associada
             if (Alf_aux.containsKey(cod_nuevo)) {
@@ -142,7 +148,7 @@ public class LZW extends Algoritmes{
             //afegim la concatenació trobada al diccionari
             Alf_aux.put(Alf_aux.size(), aderir);
             cod_viejo = cod_nuevo;
-            ++i;
+            i += 4;
         }
         byte [] fin = new byte[result.size()];
         int k = 0;
@@ -151,7 +157,7 @@ public class LZW extends Algoritmes{
             fin[k++] = b;
         }
         long end = System.currentTimeMillis();
-        this.time = (end - start) / 1000F;
+        super.time = (end - start) / 1000F;
         return fin;
     }
 }

@@ -14,7 +14,7 @@ public class Cont_CD {
     private static String path2 = "";
     private static double time;
     private static double rate;
-    private static int id;
+    private static String id;
 
     public Cont_CD (){
     }
@@ -22,54 +22,54 @@ public class Cont_CD {
 
     // Pre : Cert
     // Post: Retorna el resultat d'aplicar compressió o descompressió d'algun algorisme
-    private  Object action (String path_o, int id, boolean comprimir, controlador_gestor_fitxer I)  {
+    private  Object action (String path_o, String id, boolean comprimir, controlador_gestor_fitxer I)  {
         Object L = null;
         try {
             Estadistiques E = new Estadistiques();
             switch (id) {
                 // Es decideix quin algorisme utilitzar i quina accio pendre
-                case 2:
+                case "LZ78":
                     LZ78 L8 = new LZ78();
                     if (comprimir) {
                         System.out.println("LZ78 compression ejecutado");
-                        L = L8.compresio((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = L8.compresio(I.get_buffer(path_o, comprimir, id));
                         //s'actualitzen les estadístiques i es guarda temps i rati
                         time = L8.get_time();
                         rate = L8.get_ratio_c();
                         E.act8(time, rate);
                     } else {
                         System.out.println("LZ78 descompression ejecutado");
-                        L = L8.descompresio((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = L8.descompresio(I.get_buffer(path_o, comprimir, id));
                         time = L8.get_time();
                     }
 
                     break;
-                case 1:
+                case "LZSS":
                     LZSS LS = new LZSS();
                     if (comprimir) {
                         System.out.println("LZSS compression ejecutado");
-                        L = LS.compress((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = LS.compress(I.get_buffer(path_o, comprimir, id));
                         time = LS.getTime();
                         rate = LS.getRate();
                         E.actS(time, rate);
                     } else {
                         System.out.println("LZSS descompression ejecutado");
-                        L = LS.decompress((Byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = LS.decompress(I.get_buffer(path_o, comprimir, id));
                         time = LS.getTime();
                     }
                     break;
-                case 0:
+                case "LZW":
                     LZW LW = new LZW();
                     if (comprimir) {
                         System.out.println("LZW compression ejecutado");
-                        L = LW.compress((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = LW.compress(I.get_buffer(path_o, comprimir, id));
                         time = LW.getTime();
                         rate = LW.getRate();
                         E.actW(time, rate);
 
                     } else {
                         System.out.println("LZW descompression ejecutado");
-                        L = LW.descompress((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = LW.descompress(I.get_buffer(path_o, comprimir, id));
                         time = LW.getTime();
 
                     }
@@ -103,53 +103,65 @@ public class Cont_CD {
     }
 
     // Pre: Cert
-    // Post: Comprimeix o descomprimeix el fitxer situat al path_o i el desa al path_d
-    public void compressio_descompressio(String path_o, String path_d, int ide, boolean compress) {
-        Object L = null;
-        id = ide;
+    // Post: Comprimeix el fitxer situat al path_o i el desa al path_d
+    public void compressio_fitxer (String path_o, String path_d, String algoritme) throws IOException {
+        id = algoritme;
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
-        // es fa l'accio demanada
-        L = action(path_o, id, compress, I);
-        if (L != null) {
-            System.out.println("Time " + time);
-            if (compress) System.out.println("Rate " + rate);
-            // en cas de compressio guardem els path
-            if (compress) {
-                path1 = path_o;
-                path2 = path_d;
-            }
-            try {
-                I.writeFile(L, path_d, path_o);
-            } catch (IOException e) {
-                System.out.println("Fallo en la escritura");
-            }
+        Object L = action(path_o, id, true, I);
+        path1 = path_o;
+        path2 = path_d;
+        I.writeFile(L, path_o, path_d);
+    }
+
+    // Pre: Cert
+    // Post: Comprimeix el fitxer situat al path_o i el desa al path_d
+    public void compressio_carpeta (String path_o, String path_d, String algoritme) throws IOException {
+        id = algoritme;
+        controlador_gestor_fitxer I = new controlador_gestor_fitxer();
+       // I.folder(path_o);
+        while (/*I.resten()*/true) {
+            Object L = action(path_o, id, true, I);
+            I.writeFile(L, path_o, path_d);
         }
     }
 
+
+    // Pre: Cert
+    // Post: Descomprimeix el fitxer situat al path_o i el desa al path_d
+    public void descompressio_fitxer (String path_o, String path_d, String algoritme) throws IOException {
+        id = algoritme;
+        controlador_gestor_fitxer I = new controlador_gestor_fitxer();
+        Object L = action(path_o, id, false, I);
+        I.writeFile(L, path_o, path_d);
+    }
+
+    // Pre: Cert
+    // Post: Descomprimeix el fitxer situat al path_o i el desa al path_d
+    public void descompressio_carpeta (String path_o, String path_d, String algoritme) throws IOException {
+        id = algoritme;
+        controlador_gestor_fitxer I = new controlador_gestor_fitxer();
+        Object L = action(path_o, id, false, I);
+        I.writeFile(L, path_o, path_d);
+    }
+
+
+
+
     // Pre : Hi ha hagut com a mínim una compressió des de que s'ha iniciat el programa
     // Post: Mostra el contingut del fitxer original i el resultat després d'haver comprimit aquest
-    public String [] comparar() {
+    public String [] comparar() throws IOException {
         String [] K = new String[2];
         if (path1.equals("")) {
-            System.out.println("Por favor ejecute una compressión antes de comparar");
+
         }
         else {
-            try {
-                controlador_gestor_fitxer I = new controlador_gestor_fitxer();
-                //llegim el contingut del fitxer original
-                System.out.println("path origen a comparar -> " + path1);
-                String S = I.obtenir_fitxer(path1);
-                K[0] = S;
-                System.out.println(S);
-                System.out.println();
-                //descomprimir el contingut del fitxer comprimit i el mostrem
-                Object L = action(path2, id, false, I);
-                System.out.println("path desti a comparar -> " + path2);
-                System.out.println((String) L);
-                K[1] = (String)L;
-            } catch (IOException e) {
-                System.out.println("El archivo a comparar ha sido desplazado en el sistema");
-            }
+            controlador_gestor_fitxer I = new controlador_gestor_fitxer();
+            //llegim el contingut del fitxer original
+            String S = I.obtenir_fitxer(path1);
+            K[0] = S;
+            //descomprimir el contingut del fitxer comprimit i el mostrem
+            Object L = action(path2, id, false, I);
+            //K[1] = I.compare(L);
         }
         return  K;
     }
