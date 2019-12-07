@@ -5,9 +5,9 @@ import java.util.List;
 import java.lang.String;
 
 public class LZ78 {
-    private long elapsed_time;
-    private long length_n;
-    private long length_c;
+    private double elapsed_time;
+    private double length_n;
+    private double length_c;
 
     //PRE: Cert
     //POST: Crea una instància de la classe Algorisme_LZ78.LZ78
@@ -17,12 +17,12 @@ public class LZ78 {
 
    //PRE: Cert
    //POST: Retorna el temps trigat en la ultima compressió / descompressió
-    public long get_time() {
+    public double get_Time() {
         return elapsed_time;
     }
    //PRE: Cert
    //POST: Retorna un byte[] amb tots els valors de a ajuntats
-    public  static byte[] transform(List<Byte>a){
+    private byte[] transform(List<Byte>a){
           byte[] n = new byte[a.size()];
           for(int i=0; i < a.size(); ++i){
               n[i]= a.get(i);
@@ -32,7 +32,7 @@ public class LZ78 {
 
     //PRE: Cert
     //POST: Retorna un byte[] amb tots els valors de a ajuntats
-    public  static byte[] transform2(List<List<Byte>>a, int tam){
+    private byte[] transform2(List<List<Byte>>a, int tam){
         byte[] n = new byte[tam];
         int x=0;
         for(int i=0; i < a.size(); ++i){
@@ -46,7 +46,7 @@ public class LZ78 {
 
     //PRE: Cert
     //POST: Retorna un byte indicant la poscio de la llista b en a, o -1 si no existeix
-    public static byte found (List<List<Byte>> a, List<Byte> b){
+    private byte found (List<List<Byte>> a, List<Byte> b){
             for(int i= 1; i < a.size(); ++i){
                 if (a.get(i).size() == b.size()) {
                     List<Byte> aux = a.get(i);
@@ -64,8 +64,8 @@ public class LZ78 {
         //POST: Retorna una llista de Integers que representa el fitxer comprimit
 
         //PROBANT CARACTERS ESPECIALS
-        public static byte[] compresio(byte[] fole)  {
-            long starttime = System.currentTimeMillis();
+        public byte[] compress(byte[] fole)  {
+            double starttime = System.currentTimeMillis();
             length_n= fole.length;
             int x=0;
             Byte[] file = new Byte[fole.length];
@@ -103,7 +103,7 @@ public class LZ78 {
                     Caracters.add(null);
                 }
             }
-            long endtime = System.currentTimeMillis();
+            double endtime = System.currentTimeMillis();
             elapsed_time = endtime - starttime;
             length_c = result.size();
             return transform(result);
@@ -111,8 +111,8 @@ public class LZ78 {
 
         //PRE: Cert
         //POST: Retorna un String amb el text original
-        public static byte[] descompresio(byte[] aux) {
-            long starttime = System.currentTimeMillis();
+        public static byte[] descompress(byte[] aux) {
+            double starttime = System.currentTimeMillis();
             int x=0;
             Byte[] file = new Byte[aux.length];
             for(byte a : aux){
@@ -173,7 +173,7 @@ public class LZ78 {
             }
                 Caracters.remove(0);
                 Caracters_aux.addAll(Caracters);
-                long endtime = System.currentTimeMillis();
+                double endtime = System.currentTimeMillis();
                 elapsed_time = endtime - starttime;
                 return transform2(Caracters_aux,tam);
             }
@@ -181,7 +181,7 @@ public class LZ78 {
 
         //PRE: Cert
         //POST: Retorna el rati assolit en la ultima compressió
-        public Long get_ratio() {
+        public double get_Rate() {
             return length_n / length_c;
         }
 
