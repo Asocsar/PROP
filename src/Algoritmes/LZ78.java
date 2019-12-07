@@ -5,9 +5,8 @@ import java.util.List;
 import java.lang.String;
 
 public class LZ78 {
-    private double elapsed_time;
-    private double length_n;
-    private double length_c;
+    private double time;
+    private double grade;
 
     //PRE: Cert
     //POST: Crea una instància de la classe Algorisme_LZ78.LZ78
@@ -18,7 +17,7 @@ public class LZ78 {
    //PRE: Cert
    //POST: Retorna el temps trigat en la ultima compressió / descompressió
     public double get_Time() {
-        return elapsed_time;
+        return time;
     }
    //PRE: Cert
    //POST: Retorna un byte[] amb tots els valors de a ajuntats
@@ -66,7 +65,6 @@ public class LZ78 {
         //PROBANT CARACTERS ESPECIALS
         public byte[] compress(byte[] fole)  {
             double starttime = System.currentTimeMillis();
-            length_n= fole.length;
             int x=0;
             Byte[] file = new Byte[fole.length];
             for(byte a : fole){
@@ -104,8 +102,8 @@ public class LZ78 {
                 }
             }
             double endtime = System.currentTimeMillis();
-            elapsed_time = endtime - starttime;
-            length_c = result.size();
+            time = endtime - starttime;
+            grade = fole.length/result.size();
             return transform(result);
         }
 
@@ -174,7 +172,7 @@ public class LZ78 {
                 Caracters.remove(0);
                 Caracters_aux.addAll(Caracters);
                 double endtime = System.currentTimeMillis();
-                elapsed_time = endtime - starttime;
+                time = endtime - starttime;
                 return transform2(Caracters_aux,tam);
             }
 
@@ -182,7 +180,7 @@ public class LZ78 {
         //PRE: Cert
         //POST: Retorna el rati assolit en la ultima compressió
         public double get_Rate() {
-            return length_n / length_c;
+            return grade;
         }
 
 }
