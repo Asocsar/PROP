@@ -259,21 +259,30 @@ public class JPEG {
         int i = 3;
         char c = (char) b[i];
         StringBuilder str = new StringBuilder();
+        while(c == '#') {
+            while(c != '\n') {
+                c = (char) b[++i];
+                System.out.println("Char comentari: " + c);
+            }
+        } // Skip comentaris
+
+        c = (char) b[++i];
         while( c != '\n'){
-            if(c == ' '){
+            if(c != ' ') str.append(c);
+            else {
                 width = Integer.parseInt(str.toString());
                 str = new StringBuilder();
             }
-            else str.append(c);
-            ++i;
-            c = (char) b[i];
+            c = (char) b[++i];
+            System.out.println("Char: " + c);
         }
+
+
+
         height = Integer.parseInt(str.toString());
         System.out.println("Width: " + width);
         System.out.println("Height: " + height);
 
-        //Passar comentaris i aturar a "/n255/n"
-        while(b[i] != 10 || b[i+1] != 50 || b[i+2] != 53 || b[i+3] != 53 || b[i+4] != 10) ++i;
 
         int[][][] m = new int[3][height][width];
         return m;
