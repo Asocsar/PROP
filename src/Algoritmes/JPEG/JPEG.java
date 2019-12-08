@@ -4,6 +4,7 @@ package Algoritmes.JPEG;
 import org.omg.CORBA.SetOverrideType;
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 
@@ -139,7 +140,7 @@ public class JPEG {
     private void computeQ2(int quality, boolean chroma){
 
         double s;
-        if (quality < 50) s = 5000/quality;
+        if (quality < 50) s = 5000.0/quality;
         else s = 200 - 2*quality;
 
         for(int x = 0; x < 8; ++x){
@@ -246,7 +247,39 @@ public class JPEG {
 
     }
 
-    // Descripció: Hi han 3 canals, Y
+
+    public int[][][] byteAtoMat(byte[] b){
+
+        int height = 0;
+        int width = 0;
+
+        for(int i = 0; i < 150; ++i) System.out.println(b[i] + " "); //10 50 53 10 Acaba header
+        if((char)b[0] != 'P' || (char)b[1] != '6') System.out.println("Format de fitxer no suportat ");
+
+        int i = 3;
+        char c = (char) b[i];
+        StringBuilder str = new StringBuilder();
+        while( c != '\n'){
+            if(c == ' '){
+                width = Integer.parseInt(str.toString());
+                str = new StringBuilder();
+            }
+            else str.append(c);
+            ++i;
+            c = (char) b[i];
+        }
+        height = Integer.parseInt(str.toString());
+        System.out.println("Width: " + width);
+        System.out.println("Height: " + height);
+
+        //Passar comentaris i aturar a "/n255/n"
+        while(b[i] != 10 || b[i+1] != 50 || b[i+2] != 53 || b[i+3] != 53 || b[i+4] != 10) ++i;
+
+        int[][][] m = new int[3][height][width];
+        return m;
+
+    }
+
     // Pre : Cert
     // Post: Retorna una matriu de Integers que representa el fitxer comprimit.
     // Descripció: Hi han 3 canals, Y, Cb i Cr. Per cada canal guardem una array amb
@@ -263,6 +296,7 @@ public class JPEG {
         b[1] = NBlocks compressed which every on contains
         an array of Ints(RLE) or a Bitset(Hufmann)
          */
+
         long start = System.currentTimeMillis();
         System.out.println("Comença la compressió");
         long midafinal = 0;
@@ -287,8 +321,8 @@ public class JPEG {
 
                             posx = j * 8 + x;
                             posy = i * 8 + y;
-                            if (posx >= width) m[y][x] = m[y][x - 1];
-                            else if (posy >= height) m[y][x] = m[y - 1][x];
+                            if (posx >= width) m[y][x] = m[y][x - 1]; //Repeteix últim bloc
+                            else if (posy >= height) m[y][x] = m[y - 1][x]; //Repeteix últim bloc
                             else m[y][x] = YCbCr[a][posy][posx];
                         }
 

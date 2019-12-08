@@ -3,6 +3,7 @@ package Algoritmes.JPEG;
 
 import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.Scanner;
 
 
@@ -32,8 +33,9 @@ public class Driver_JPEG {
 
             byte[] bb = new byte[50];
             char c;
-            int width = 0, height;
+            int width = 0, height = 0;
 
+            /*
             bis.read(bb, 0, 3);
             if((char)bb[0] == 'P' && (char)bb[1] != '6') System.out.println("Fitxer diferent de P6");
             StringBuilder str = new StringBuilder();
@@ -78,10 +80,13 @@ public class Driver_JPEG {
             bis.close();
             System.out.println("Finished reading");
             int[][][] aux = new int[][][] {Y, Cb, Cr};
+            */
 
             System.out.println("Introdueix la qualitat de compressió (0-100)");
             int quality =  Integer.parseInt(S.next());
 
+            byte [] buff = Files.readAllBytes(infile.toPath());
+            int[][][] aux = J.byteAtoMat(buff);
             //Crida a compress
             aux = J.compress(aux, quality);
 
@@ -221,7 +226,7 @@ public class Driver_JPEG {
             bos.write((width + " " + height + "\n").getBytes());
             bos.write(("255\n").getBytes());
 
-
+            int r,g,b;
             for (int i = 0; i < height; ++i) {
                 for (int j = 0; j < width; ++j) {
                     //YCbCr to RGB and write
