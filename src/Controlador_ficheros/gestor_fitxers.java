@@ -10,9 +10,9 @@ import java.lang.String;
 
 public class gestor_fitxers {
     //VARIABLES DE LA CLASSE
-    private static String nom_fitxer;
-    private static Integer id_desc;
-    private static String extensio;
+    private String nom_fitxer;
+    private Integer id_desc;
+    private String extensio;
 
 
     //PRE: Cert
@@ -21,7 +21,7 @@ public class gestor_fitxers {
 
     }
 
-    public static void folder(){
+    public void folder(){
 
     }
 
@@ -29,7 +29,7 @@ public class gestor_fitxers {
 
     //PRE: Id ha de ser un id d’algorisme vàlid. El path_og ha de ser vàlid.
     //POST: Retorna un objecte amb l’estructura de dades necessària per la compressió de l’arxiu demanat per l’algorisme seleccionat.
-    public static byte[] get_f_compressio(String path_og, String id_a) throws IOException {
+    public byte[] get_f_compressio(String path_og, String id_a) throws IOException {
         nombre_fichero(path_og);
         ex_comp(id_a);
         return buscar_leer_archivo(path_og);
@@ -37,7 +37,7 @@ public class gestor_fitxers {
 
     //PRE: Id ha de ser un id d’algorisme vàlid
     //POST: Crea un fitxer i hi escriu el resultat de la compressió.
-    public static void c_e_fichero_comp (String path_desti, Object aux) throws IOException {
+    public void c_e_fichero_comp (String path_desti, Object aux) throws IOException {
         Path path_dest= Paths.get(path_desti,nom_fitxer);
         String nom_ex= path_dest + extensio;
         File file = new File(nom_ex);
@@ -51,7 +51,7 @@ public class gestor_fitxers {
 
     //PRE: Id ha de ser un id d’algorisme vàlid
     //POST: La variable global extensió queda actualitzada.
-    private static void ex_comp(String id_s){
+    private void ex_comp(String id_s){
         switch(id_s) {
             case"LZ78":
                 extensio=".f8";
@@ -79,7 +79,7 @@ public class gestor_fitxers {
 
     //PRE: El path_og ha de ser vàlid.
     //POST: Retorna un objecte amb l’estructura de dades necessària per la descompressió de l’arxiu demanat.
-    public static byte[] conversio_fitxer_desc(String path_og) throws IOException {
+    public byte[] conversio_fitxer_desc(String path_og) throws IOException {
         id_ex_desc(path_og);
         nombre_fichero(path_og);
         return buscar_leer_archivo(path_og);
@@ -87,7 +87,7 @@ public class gestor_fitxers {
 
     //PRE: path_og és un path vàlid.
     //POST: Crea un fitxer en el path_desti i hi escriu el resultat de la descompressió.
-    public static void c_e_fichero_descomp (String path_og, String path_desti, Object encoded) throws IOException {
+    public void c_e_fichero_descomp (String path_og, String path_desti, Object encoded) throws IOException {
         String nom_ex= nom_fitxer + extensio;
         Path path_dest= Paths.get(path_desti,nom_ex);
         System.out.println(path_dest);
@@ -108,7 +108,7 @@ public class gestor_fitxers {
 
     //PRE: path_og és un path vàlid
     //POST: Actualitza les variables id_desc i extensió depenent del path_og
-    private static void id_ex_desc(String path_og){
+    private void id_ex_desc(String path_og){
         String aux= path_og.substring(path_og.length()-2);
         if(aux.equals("f8")) {
             id_desc = 1;
@@ -133,14 +133,14 @@ public class gestor_fitxers {
 
     //PRE:El path “path_og” és vàlid
     //POST: Retorna un objecte que representa la estructura de dades necessària depenent de l’algorisme utilitzat i de si es fa una compressió o descompressió.
-    private static byte[] buscar_leer_archivo(String path_og) throws IOException {
+    private byte[] buscar_leer_archivo(String path_og) throws IOException {
         File file = new File (path_og);
         byte[] aux1 = Files.readAllBytes(file.toPath());
         return aux1;
     }
 
     //AGAFA EL NOM DEL FITXER ORIGINAL
-    private static void nombre_fichero(String Path_og){
+    private void nombre_fichero(String Path_og){
         Path p = Paths.get(Path_og);
         String aux = p.getFileName().toString();
         int pos = aux.lastIndexOf(".");
@@ -149,7 +149,7 @@ public class gestor_fitxers {
 
     //PRE: Cert
     //POST: Retorna el contingut del fitxer en el path "path" en un string
-    public static String read_file(String path) throws IOException {
+    public String read_file(String path) throws IOException {
             File file = new File(path);
             BufferedReader br = new BufferedReader(new FileReader(file));
             String aux = "";
