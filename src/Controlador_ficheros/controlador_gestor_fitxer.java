@@ -13,7 +13,7 @@ public class controlador_gestor_fitxer {
     private Boolean C_P;
     private String id_a;
     private gestor_fitxers gestor;
-    private boolean restante;
+    private Boolean restante;
 
     //EXCEPCIONS
 
