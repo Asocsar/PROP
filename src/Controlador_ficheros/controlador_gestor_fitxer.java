@@ -4,7 +4,8 @@ package Controlador_Gestor_Fitxer;
 import Gestor_fitxeros.gestor_fitxers;
 
 import java.io.IOException;
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class controlador_gestor_fitxer {
@@ -51,6 +52,7 @@ public class controlador_gestor_fitxer {
     public Object get_buffer(String Path_original, Boolean c_p,String id) throws IOException, FicheroCompressionNoValido, FicheroDescompressionNoValido {
         C_P= c_p;
         id_a= id;
+        //IF COMPRESIO
         if (C_P) {
             String aux = Path_original.substring(Path_original.length() - 3);
             if (!aux.equals("txt") & !aux.equals("ppm")) {
@@ -60,10 +62,11 @@ public class controlador_gestor_fitxer {
             else {
                 if ((aux.equals("txt") & id_a.equals("JPEG")) | (aux.equals("ppm") & !id_a.equals("JPEG") )) {
                     throw new FicheroCompressionNoValido("El fichero seleccionado no es comaptible con el algorismo");
-                } else gestor.get_f_compressio(Path_original);
+                } else gestor.get_f_compressio(Path_original, id);
             }
         }
 
+        //PART DESCOMPRESIO
         else {
             String aux = Path_original.substring(Path_original.length() - 2);
             if((!aux.equals("f8")& !aux.equals("fS") & !aux.equals("fW") & !aux.equals("fG"))){
@@ -77,12 +80,13 @@ public class controlador_gestor_fitxer {
 
     //PRE: path_og ha de ser vàlid
     //POST: Crea un fitxer amb el resultat de la compressió o descompressió passat per paràmetre.
-    public void writeFile (Object write, String Path_desti,String path_og) throws IOException{
+    public void writeFile (Object write, String Path_desti,String Path_og) throws IOException{
+        Path path= Paths.get(Path_desti);
         if(!C_P){
-            gestor.c_e_fichero_descomp(path_og,Path_desti,write);
+            gestor.c_e_fichero_descomp(Path_og,Path_desti,write);
         }
 
-        else gestor.c_e_fichero_comp(Path_desti,write,path_og); //ARREGLAR c_e_fichero_comp
+        else gestor.c_e_fichero_comp(Path_desti,write); 
     }
 
     //PRE: Cert
@@ -110,4 +114,3 @@ public class controlador_gestor_fitxer {
     }
 
 }
-
