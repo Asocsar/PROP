@@ -1,7 +1,7 @@
-package Controlador_Gestor_Fitxer;
+package Controlador_ficheros;
 
 
-import Gestor_fitxeros.gestor_fitxers;
+
 
 import java.io.IOException;
 import java.nio.file.Path;

@@ -32,14 +32,14 @@ public class Cont_CD {
                     LZ78 L8 = new LZ78();
                     if (comprimir) {
                         System.out.println("LZ78 compression ejecutado");
-                        L = L8.compresio(I.get_buffer(path_o, comprimir, id));
+                        L = L8.compresio((byte[]) I.get_buffer(path_o, comprimir, id));
                         //s'actualitzen les estadístiques i es guarda temps i rati
                         time = L8.get_time();
                         rate = L8.get_ratio_c();
                         E.act8(time, rate);
                     } else {
                         System.out.println("LZ78 descompression ejecutado");
-                        L = L8.descompresio(I.get_buffer(path_o, comprimir, id));
+                        L = L8.descompresio((byte[]) I.get_buffer(path_o, comprimir, id));
                         time = L8.get_time();
                     }
 
@@ -48,13 +48,13 @@ public class Cont_CD {
                     LZSS LS = new LZSS();
                     if (comprimir) {
                         System.out.println("LZSS compression ejecutado");
-                        L = LS.compress(I.get_buffer(path_o, comprimir, id));
+                        L = LS.compress((byte[]) I.get_buffer(path_o, comprimir, id));
                         time = LS.getTime();
                         rate = LS.getRate();
                         E.actS(time, rate);
                     } else {
                         System.out.println("LZSS descompression ejecutado");
-                        L = LS.decompress(I.get_buffer(path_o, comprimir, id));
+                        L = LS.decompress((Byte[]) I.get_buffer(path_o, comprimir, id));
                         time = LS.getTime();
                     }
                     break;
@@ -62,14 +62,14 @@ public class Cont_CD {
                     LZW LW = new LZW();
                     if (comprimir) {
                         System.out.println("LZW compression ejecutado");
-                        L = LW.compress(I.get_buffer(path_o, comprimir, id));
+                        L = LW.compress((byte[]) I.get_buffer(path_o, comprimir, id));
                         time = LW.getTime();
                         rate = LW.getRate();
                         E.actW(time, rate);
 
                     } else {
                         System.out.println("LZW descompression ejecutado");
-                        L = LW.descompress(I.get_buffer(path_o, comprimir, id));
+                        L = LW.descompress((byte[]) I.get_buffer(path_o, comprimir, id));
                         time = LW.getTime();
 
                     }

@@ -1,4 +1,4 @@
-package Gestor_fitxeros;
+package Controlador_ficheros;
 
 import java.io.*;
 import java.nio.file.*;
