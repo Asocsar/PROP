@@ -160,7 +160,7 @@ public class gestor_fitxers {
             return aux;
     }
     
-     public static String compare_g(byte[] aux, String id) throws IOException {
+     public String compare_g(byte[] aux, String id) throws IOException {
         File file = new File("temp.txt");
         if(file.createNewFile()) {
             FileOutputStream fop = new FileOutputStream(file);
