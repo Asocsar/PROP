@@ -1,6 +1,7 @@
 package Controlador_ficheros;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.lang.String;
 
@@ -39,7 +40,7 @@ public class gestor_fitxers {
     //POST: Crea un fitxer i hi escriu el resultat de la compressió.
     public void c_e_fichero_comp (String path_desti, Object aux) throws IOException {
         Path path_dest= Paths.get(path_desti,nom_fitxer);
-        String nom_ex= path_dest + extensio;
+        String nom_ex= path_desti.substring(0, path_desti.length()-4) + extensio;
         File file = new File(nom_ex);
         if (file.createNewFile()) {
             FileOutputStream fop= new FileOutputStream(file);
@@ -150,14 +151,29 @@ public class gestor_fitxers {
     //PRE: Cert
     //POST: Retorna el contingut del fitxer en el path "path" en un string
     public String read_file(String path) throws IOException {
-            File file = new File(path);
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String aux = "";
-            String aux2;
-            while ((aux2 = br.readLine()) != null) {
-                aux = aux + aux2 + "/n";
-            }
-            return aux;
+        File file = new File(path);
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String aux = "";
+        String aux2;
+        while ((aux2 = br.readLine()) != null) {
+            aux = aux + aux2 + "/n";
+        }
+        return aux;
+    }
+
+    public String compare_g(byte[] aux, String id) throws IOException {
+        File file = new File("temp.txt");
+        if(file.createNewFile()) {
+            FileOutputStream fop = new FileOutputStream(file);
+            fop.write(aux);
+            fop.flush();
+            fop.close();
+            //}
+            byte[] encoded = Files.readAllBytes(Paths.get("temp.txt"));
+            file.delete();
+            return new String(encoded, Charset.defaultCharset());
+        }
+        return null;
     }
 
 }

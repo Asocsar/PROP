@@ -8,6 +8,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 
 public class Interfaz extends JFrame {
 
@@ -165,6 +167,7 @@ public class Interfaz extends JFrame {
     private JRadioButton [] L = new JRadioButton[] {LZW, LZSS, LZ78, JPEG};
     private JRadioButton [] J = new JRadioButton[] {Fitxer, Carpeta};
     private JRadioButton [] K = new JRadioButton[] {Compress, Descompress};
+    HashMap<Integer, String> M = new HashMap<Integer, String>();
 
     private void createUIComponents () {
         Picker1 = new JFilePicker("Selecció", "Busca");
@@ -228,6 +231,10 @@ public class Interfaz extends JFrame {
     }
 
     public Interfaz() {
+        M.put(0, "LZW");
+        M.put(1, "LZSS");
+        M.put(2, "LZ78");
+        M.put(3, "JPEG");
         ButtonGroup group1 = new ButtonGroup();
         group1.add(LZ78);
         group1.add(LZW);
@@ -253,7 +260,23 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Cont_CD C = new Cont_CD();
-                C.compressio_descompressio(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), metodo, compresion == 0);
+                try {
+                    if (compresion == 0) {
+                        if (state == 0)
+                            C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo));
+                        else
+                            C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo));
+                    } else {
+                        if (state == 0)
+                            C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath());
+                        else
+                            C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath());
+
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
             }
         });
 
@@ -261,7 +284,11 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Cont_CD C = new Cont_CD();
-                String[] S = C.comparar();
+                try {
+                    String[] S = C.comparar();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 

@@ -2,7 +2,6 @@ package Controlador_ficheros;
 
 
 
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,7 +11,7 @@ public class controlador_gestor_fitxer {
 
     private Boolean C_P;
     private String id_a;
-    private gestor_fitxers gestor;
+    private gestor_fitxers gestor = new gestor_fitxers();
     private Boolean restante;
 
     //EXCEPCIONS
@@ -49,9 +48,10 @@ public class controlador_gestor_fitxer {
 
     //PRE: Path_original ha de ser vàlid
     //POST: Retorna l’estructura de dades necessària obtinguda del fitxer del path_original, depenent de si és una compressió o descompressió i de l’algorisme que s’utilitzarà.
-    public Object get_buffer(String Path_original, Boolean c_p,String id) throws IOException, FicheroCompressionNoValido, FicheroDescompressionNoValido {
+    public byte[] get_buffer(String Path_original, Boolean c_p,String id) throws IOException, FicheroCompressionNoValido, FicheroDescompressionNoValido {
         C_P= c_p;
         id_a= id;
+        byte b [] = null;
         //IF COMPRESIO
         if (C_P) {
             String aux = Path_original.substring(Path_original.length() - 3);
@@ -60,22 +60,26 @@ public class controlador_gestor_fitxer {
             }
 
             else {
-                if ((aux.equals("txt") & id_a.equals("JPEG")) | (aux.equals("ppm") & !id_a.equals("JPEG") )) {
+                if ((aux.equals("txt") && id_a.equals("JPEG")) || (aux.equals("ppm") && !id_a.equals("JPEG") )) {
                     throw new FicheroCompressionNoValido("El fichero seleccionado no es comaptible con el algorismo");
-                } else gestor.get_f_compressio(Path_original, id);
+                }
+                else {
+                    b = gestor.get_f_compressio(Path_original, id_a);
+                }
             }
         }
 
         //PART DESCOMPRESIO
         else {
             String aux = Path_original.substring(Path_original.length() - 2);
-            if((!aux.equals("f8")& !aux.equals("fS") & !aux.equals("fW") & !aux.equals("fG"))){
+            if((!aux.equals("f8") && !aux.equals("fS") && !aux.equals("fW") && !aux.equals("fG"))){
                 throw new FicheroDescompressionNoValido("El fichero no se puede descomprimir.");
             }
-            else gestor.conversio_fitxer_desc(Path_original);
+            else
+                b = gestor.conversio_fitxer_desc(Path_original);
 
         }
-        return null;
+        return b;
     }
 
     //PRE: path_og ha de ser vàlid
@@ -86,7 +90,7 @@ public class controlador_gestor_fitxer {
             gestor.c_e_fichero_descomp(Path_og,Path_desti,write);
         }
 
-        else gestor.c_e_fichero_comp(Path_desti,write); 
+        else gestor.c_e_fichero_comp(Path_desti,write);
     }
 
     //PRE: Cert
@@ -112,5 +116,9 @@ public class controlador_gestor_fitxer {
         }
         return null;
     }
+    public String compare(byte[] aux, String id) throws IOException {
+        return gestor.compare_g(aux,id);
+    }
+
 
 }

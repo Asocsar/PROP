@@ -32,15 +32,15 @@ public class Cont_CD {
                     LZ78 L8 = new LZ78();
                     if (comprimir) {
                         System.out.println("LZ78 compression ejecutado");
-                        L = L8.compresio((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = L8.compress((byte[]) I.get_buffer(path_o, comprimir, id));
                         //s'actualitzen les estadístiques i es guarda temps i rati
-                        time = L8.get_time();
-                        rate = L8.get_ratio_c();
+                        time = L8.get_Time();
+                        rate = L8.get_Rate();
                         E.act8(time, rate);
                     } else {
                         System.out.println("LZ78 descompression ejecutado");
-                        L = L8.descompresio((byte[]) I.get_buffer(path_o, comprimir, id));
-                        time = L8.get_time();
+                        L = L8.descompress((byte[]) I.get_buffer(path_o, comprimir, id));
+                        time = L8.get_Time();
                     }
 
                     break;
@@ -54,7 +54,7 @@ public class Cont_CD {
                         E.actS(time, rate);
                     } else {
                         System.out.println("LZSS descompression ejecutado");
-                        L = LS.decompress((Byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = LS.descompress((byte[]) I.get_buffer(path_o, comprimir, id));
                         time = LS.getTime();
                     }
                     break;
@@ -62,7 +62,8 @@ public class Cont_CD {
                     LZW LW = new LZW();
                     if (comprimir) {
                         System.out.println("LZW compression ejecutado");
-                        L = LW.compress((byte[]) I.get_buffer(path_o, comprimir, id));
+                        byte [] b = (byte[]) I.get_buffer(path_o, comprimir, id);
+                        L = LW.compress(b);
                         time = LW.getTime();
                         rate = LW.getRate();
                         E.actW(time, rate);
@@ -109,7 +110,7 @@ public class Cont_CD {
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         Object L = action(path_o, id, true, I);
         path1 = path_o;
-        path2 = path_d;
+        path2 = path1.substring(0, path1.length()-4) + ".fW";
         I.writeFile(L, path_o, path_d);
     }
 
@@ -160,8 +161,8 @@ public class Cont_CD {
             String S = I.obtenir_fitxer(path1);
             K[0] = S;
             //descomprimir el contingut del fitxer comprimit i el mostrem
-            Object L = action(path2, id, false, I);
-            K[1] = I.compare(L);
+            byte[] L = (byte[]) action(path2, id, false, I);
+            K[1] = I.compare(L, id);
         }
         return  K;
     }

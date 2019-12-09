@@ -42,17 +42,12 @@ public class LZW extends Algoritmes{
 
     }
 
-    /*public int bytesCount(int n) {
-        return n < 0 ? 4 : (32 - Integer.numberOfLeadingZeros(n)) / 8 + 1;
-    }*/
-
     // Pre : Cert
     // Post: Retorna una llista de Integers que representa el fitxer comprimit
     public byte[] compress(byte [] file)  {
         long start = System.currentTimeMillis();
         // Creem el diccionari de forma local a la funció per un acces més ràpid
         Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
-        int cantidad = 0;
         List<Integer> result = new ArrayList<>();
         // cadena de bytes que es troben al diccionari
         Byte  [] w = new Byte[0];
@@ -62,7 +57,6 @@ public class LZW extends Algoritmes{
         Byte[] aux = new Byte[k.length + w.length];
         double n2 = 0;
         for (byte b : file) {
-            ++cantidad;
             k = new Byte[1];
             k[0] = b;
             aux = new Byte[k.length + w.length];
@@ -89,10 +83,6 @@ public class LZW extends Algoritmes{
         result.add(Alf_aux.get(Arrays.asList(w)));
         long end = System.currentTimeMillis();
         super.time = (end - start) / 1000F;
-        if (file.length > 0)
-            super.grade = cantidad/n2;
-        else
-            super.grade = 0;
 
         byte [] resul = new byte[result.size()*4];
         int it = 0;
@@ -104,6 +94,10 @@ public class LZW extends Algoritmes{
                 ++it;
             }
         }
+        if (file.length > 0)
+            super.grade = file.length/resul.length;
+        else
+            super.grade = 0;
         return resul;
     }
 
