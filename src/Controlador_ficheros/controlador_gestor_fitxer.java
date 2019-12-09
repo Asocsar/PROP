@@ -112,7 +112,7 @@ public class controlador_gestor_fitxer {
         }
         return null;
     }
-     public static String compare(byte[] aux, String id) throws IOException {
+     public String compare(byte[] aux, String id) throws IOException {
         return gestor.compare_g(aux,id);
     }
 
