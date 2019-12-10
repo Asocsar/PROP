@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.lang.String;
+import java.util.List;
 
 
 
@@ -25,6 +26,25 @@ public class gestor_fitxers {
 
     public void folder(){
 
+    }
+    
+     //COMPRESSIO CARPETES:
+    public List<String> get_paths_folder(String Path_o, List<String> paths_fitxers){
+        File[] files = new File(Path_o).listFiles();
+        for(File a: files) {
+            if (a.isDirectory()) {
+                get_paths_folder(a.getPath(),paths_fitxers);
+            } else paths_fitxers.add(a.getPath());
+        }
+        return paths_fitxers;
+    }
+
+    public void create_dir(String Path_dir) throws IOException {
+        File dir = new File(Path_dir);
+        dir.mkdir();
+        Path path_cap = Paths.get(Path_dir,"Capçalera.txt");
+        File file = new File(path_cap.toString());
+        file.createNewFile();
     }
 
     //COMPRESSIO:
