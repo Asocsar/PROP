@@ -84,7 +84,7 @@ public class controlador_gestor_fitxer {
 
     //PRE: path_og ha de ser vàlid
     //POST: Crea un fitxer amb el resultat de la compressió o descompressió passat per paràmetre.
-    public void writeFile (Object write, String Path_desti,String Path_og) throws IOException{
+    public void writeFile (Object write, String Path_og,String Path_desti) throws IOException{
         Path path= Paths.get(Path_desti);
         if(!C_P){
             gestor.c_e_fichero_descomp(Path_og,Path_desti,write);
