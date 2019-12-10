@@ -14,6 +14,7 @@ public class gestor_fitxers {
     private String nom_fitxer;
     private Integer id_desc;
     private String extensio;
+    private String Path_original;
 
 
     //PRE: Cert
@@ -31,6 +32,8 @@ public class gestor_fitxers {
     //PRE: Id ha de ser un id d’algorisme vàlid. El path_og ha de ser vàlid.
     //POST: Retorna un objecte amb l’estructura de dades necessària per la compressió de l’arxiu demanat per l’algorisme seleccionat.
     public byte[] get_f_compressio(String path_og, String id_a) throws IOException {
+        int pos= path_og.lastIndexOf('/');
+        Path_original= path_og.substring(0,pos);
         nombre_fichero(path_og);
         ex_comp(id_a);
         return buscar_leer_archivo(path_og);
@@ -39,8 +42,10 @@ public class gestor_fitxers {
     //PRE: Id ha de ser un id d’algorisme vàlid
     //POST: Crea un fitxer i hi escriu el resultat de la compressió.
     public void c_e_fichero_comp (String path_desti, Object aux) throws IOException {
+        if (path_desti.equals("")) path_desti=Path_original;
         Path path_dest= Paths.get(path_desti,nom_fitxer);
-        String nom_ex= path_desti.substring(0, path_desti.length()-4) + extensio;
+        String nom_ex= path_dest + extensio;
+
         File file = new File(nom_ex);
         if (file.createNewFile()) {
             FileOutputStream fop= new FileOutputStream(file);
@@ -81,6 +86,8 @@ public class gestor_fitxers {
     //PRE: El path_og ha de ser vàlid.
     //POST: Retorna un objecte amb l’estructura de dades necessària per la descompressió de l’arxiu demanat.
     public byte[] conversio_fitxer_desc(String path_og) throws IOException {
+        int pos= path_og.lastIndexOf('/');
+        Path_original= path_og.substring(0,pos);
         id_ex_desc(path_og);
         nombre_fichero(path_og);
         return buscar_leer_archivo(path_og);
@@ -89,14 +96,15 @@ public class gestor_fitxers {
     //PRE: path_og és un path vàlid.
     //POST: Crea un fitxer en el path_desti i hi escriu el resultat de la descompressió.
     public void c_e_fichero_descomp (String path_og, String path_desti, Object encoded) throws IOException {
+        if (path_desti.equals("")) path_desti=Path_original;
         String nom_ex= nom_fitxer + extensio;
         Path path_dest= Paths.get(path_desti,nom_ex);
-        System.out.println(path_dest);
         if(id_desc==4){
             System.out.print("Escriure imatge descomprimida.");
         }
         else {
             File file = new File(String.valueOf(path_dest));
+            System.out.println(String.valueOf(path_dest));
             if(file.createNewFile()) {
                 FileOutputStream fop = new FileOutputStream(file);
                 fop.write((byte[])encoded);
@@ -168,7 +176,6 @@ public class gestor_fitxers {
             fop.write(aux);
             fop.flush();
             fop.close();
-            //}
             byte[] encoded = Files.readAllBytes(Paths.get("temp.txt"));
             file.delete();
             return new String(encoded, Charset.defaultCharset());
