@@ -5,14 +5,17 @@ package Controlador_ficheros;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class controlador_gestor_fitxer {
 
     private Boolean C_P;
     private String id_a;
-    private gestor_fitxers gestor = new gestor_fitxers();
+    private gestor_fitxers gestor;
     private Boolean restante;
+      private List<String> paths_fitxers = new ArrayList<>();
 
     //EXCEPCIONS
 
