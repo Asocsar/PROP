@@ -35,7 +35,16 @@ public class controlador_gestor_fitxer {
     //PRE: Cert
     //POST: Crea una instancia de la classe controlador_gestor_fitxer
     public controlador_gestor_fitxer() {
-
+        gestor= new gestor_fitxers();
+    }
+    
+     public List<String> paths_folder(String Path_o, String id) throws IOException {
+        String exten= getExtensio(id);
+        String path_dest= Path_o+ exten;
+        gestor.create_dir(path_dest);
+        paths_fitxers= new ArrayList<>();
+        paths_fitxers= gestor.get_paths_folder(Path_o,paths_fitxers);
+        return paths_fitxers;
     }
 
     public void folder(String Path_o){
@@ -111,6 +120,25 @@ public class controlador_gestor_fitxer {
             case"fW": return "LZW";
 
             case"fG": return "JPEG";
+
+            default:
+        }
+        return null;
+    }
+    
+     private  String getExtensio (String id_s) {
+        switch (id_s) {
+            case "LZ78":
+                return ".F8";
+
+            case "LZSS":
+                return ".FS";
+
+            case "LZW":
+                return ".FW";
+
+            case "JPEG":
+                return ".FG";
 
             default:
         }
