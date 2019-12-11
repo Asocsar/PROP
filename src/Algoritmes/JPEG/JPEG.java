@@ -51,6 +51,9 @@ public class JPEG {
             {7, 7}};
 
 
+    //Qualitat de la compressió
+    private int quality;
+
     //temps de l'ultima compressió / descompressió
     private double time;
 
@@ -61,7 +64,8 @@ public class JPEG {
     //PRE: Cert
     //POST: Inicialitza la classe JPEG
     // Descripció: Crea una instància de classe JPEG i inicialitza variable time i rate
-    public JPEG(){
+    public JPEG( int quality ){
+        this.quality = quality;
         this.time = 0.0;
         this.rate = 0.0;
     }
@@ -152,6 +156,13 @@ public class JPEG {
         }
     }
 
+    //Excepció que salta quan un fitxer introduit per a comprimir no és de tipus correcte
+    public  class JPEGException extends Exception {
+        public JPEGException (String message) {
+            super(message);
+        }
+    }
+
 
     // Pre : m conté una matriu de 8x8 corresponent a un bloc a la imatge.
     // El contigut de m són enters.
@@ -174,7 +185,6 @@ public class JPEG {
                 B[i][j] = (int) Math.round(D[i][j] / (double) Q2[i][j]);
             }
         }
-
 
         if (zz) {
             System.out.println("Imprimint el primer bloc");
@@ -200,18 +210,21 @@ public class JPEG {
             }
         }
 
+        //We have to add the DC coefficient and the 63 other values
+        //With RLE and Hufmann (RUNLENGTH, SIZE) (AMPLITUDE)
+
+
         /*
         if (zz) {
             System.out.println("Imprimint el primer bloc amb RLE");
             for (Integer integer : list) System.out.printf("%d ", integer);
             System.out.println();
         }*/
+
+
         return list.stream().mapToInt(i->i).toArray();
 
 
-
-        //We have to add the DC coefficient and the 63 other values
-        //With RLE and Hufmann (RUNLENGTH, SIZE) (AMPLITUDE)
     }
 
     // Pre : Cert
@@ -248,46 +261,6 @@ public class JPEG {
     }
 
 
-    public int[][][] byteAtoMat(byte[] b){
-
-        int height = 0;
-        int width = 0;
-
-        for(int i = 0; i < 150; ++i) System.out.println(b[i] + " "); //10 50 53 10 Acaba header
-        if((char)b[0] != 'P' || (char)b[1] != '6') System.out.println("Format de fitxer no suportat ");
-
-        int i = 3;
-        char c = (char) b[i];
-        StringBuilder str = new StringBuilder();
-        while(c == '#') {
-            while(c != '\n') {
-                c = (char) b[++i];
-                System.out.println("Char comentari: " + c);
-            }
-        } // Skip comentaris
-
-        c = (char) b[++i];
-        while( c != '\n'){
-            if(c != ' ') str.append(c);
-            else {
-                width = Integer.parseInt(str.toString());
-                str = new StringBuilder();
-            }
-            c = (char) b[++i];
-            System.out.println("Char: " + c);
-        }
-
-
-
-        height = Integer.parseInt(str.toString());
-        System.out.println("Width: " + width);
-        System.out.println("Height: " + height);
-
-
-        int[][][] m = new int[3][height][width];
-        return m;
-
-    }
 
     // Pre : Cert
     // Post: Retorna una matriu de Integers que representa el fitxer comprimit.
@@ -295,16 +268,53 @@ public class JPEG {
     //tantes posicions com NBlocs hi han. I per cada NBlock guardem el
     //resultat codificat, que té longitud variable segons la compressió que
     //aconseguim. De padding utilitzem repetició el caràcter si posx o posy són mes grans que la imatge
-    public int[][][] compress(int[][][] YCbCr, int quality) {
-
+    public byte[] compress(byte[] b) throws JPEGException {
 
         int height = 0, width = 0, Bheight, Bwidth, length, posx, posy;
-        int[][][] buff = new int[3][][];
-        //Buffer with 3dimensions
-        /*
-        b[1] = NBlocks compressed which every on contains
-        an array of Ints(RLE) or a Bitset(Hufmann)
-         */
+
+        if((char)b[0] != 'P' || (char)b[1] != '6') throw new JPEGException("Format de fitxer no suportat ");
+
+        int it = 3;
+        char c = (char) b[it];
+        StringBuilder str = new StringBuilder();
+        while(c == '#') {
+            while(c != '\n') {
+                c = (char) b[++it];
+                System.out.println("Char comentari: " + c);
+            }
+        } // Skip comentaris
+
+        c = (char) b[++it];
+        while( c != '\n'){
+            if(c != ' ') str.append(c);
+            else {
+                width = Integer.parseInt(str.toString());
+                str = new StringBuilder();
+            }
+            c = (char) b[++it];
+            System.out.println("Char: " + c);
+        }
+
+        height = Integer.parseInt(str.toString());
+        System.out.println("Width: " + width);
+        System.out.println("Height: " + height);
+
+        int[][][] YCbCr = new int[3][height][width];
+        //Read ints
+        int red, green, blue;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+
+                red = b[++it];
+                green = b[++it];
+                blue = b[++it];
+                YCbCr[0][i][j] = (int) (0.299 * red + 0.587 * green + 0.114 * blue);
+                YCbCr[1][i][j] = (int) (128 - 0.1687 * red - 0.3313 * green + 0.5 * blue);
+                YCbCr[2][i][j] = (int) (128 + 0.5 * red - 0.4187 * green - 0.0813 * blue);
+            }
+        }
+
+
 
         long start = System.currentTimeMillis();
         System.out.println("Comença la compressió");
@@ -360,9 +370,16 @@ public class JPEG {
     //imatge bloc a bloc, llegint els buffers de longitud variable i
     //descomprimint-los obté la submatriu que afegeix q la matriu
     //general.
-    public int[][][] decompress(int[][][] buff, int height, int width, int quality) {
+    public byte[] descompress(byte[] b) {
+        int height = 0, width = 0;
+        //Decodificar height, width i quality a partir del buffer de bytes
 
         System.out.println("Comença la descompressió");
+
+
+
+
+        int[][][] buff = new int[0][0][0];
         int[][][] YCbCr = new int[3][height][width];
         int Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
         int Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
@@ -377,9 +394,6 @@ public class JPEG {
                 for(int j = 0; j < width; j+=8) {
                     //System.out.println("Nou bloc");
 
-                    //System.out.println("i/8: " + i/8);
-                    //System.out.println("i/8*Bwidth " + i/8 * Bwidth);
-                   // System.out.println("Bloc: " + (i/8 * Bwidth + j/8));
                     m = decompress8( buff[a][i/8 * Bwidth + j/8]);
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
@@ -393,8 +407,37 @@ public class JPEG {
             }
         }
 
-        return YCbCr;
+        StringBuilder sb  = new StringBuilder();
+        sb.append("P6\n");
+        sb.append(width).append(" ").append(height).append("\n");
+        sb.append("255\n");
 
+        //YCbCr to RGB and write
+        int r,g,b;
+        double y, cb, cr;
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+
+                y = (YCbCr[0][i][j] * 298.082) / 256;
+                cb = YCbCr[1][i][j];
+                cr = YCbCr[2][i][j];
+
+                r = (int) (y + 1.40200 * (cr - 0x80));
+                g = (int) (y - 0.34414 * (cb - 0x80) - 0.71414 * (cr - 0x80));
+                b = (int) (y + 1.77200 * (cb - 0x80));
+
+                r = Math.max(Math.min(r, 255), 0);
+                g = Math.max(Math.min(g, 255), 0);
+                b = Math.max(Math.min(b, 255), 0);
+
+                sb.append(r);
+                sb.append(g);
+                sb.append(b);
+
+            }
+        }
+
+        return sb.toString().getBytes();
     }
 
 }
