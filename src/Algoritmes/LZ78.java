@@ -103,7 +103,8 @@ public class LZ78 extends Algoritmes {
         }
         double endtime = System.currentTimeMillis();
         time = endtime - starttime;
-        grade = fole.length/result.size();
+        if(fole.length==0) grade= 0;
+        else grade = fole.length/result.size();
         return transform(result);
     }
 
