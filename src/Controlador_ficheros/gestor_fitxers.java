@@ -13,7 +13,6 @@ import java.util.List;
 public class gestor_fitxers {
     //VARIABLES DE LA CLASSE
     private String nom_fitxer;
-    private Integer id_desc;
     private String extensio;
     private String Path_original;
 
@@ -22,6 +21,10 @@ public class gestor_fitxers {
     //POST: Crea una instancia de la classe gestor_fitxers
     public gestor_fitxers(){
 
+    }
+    
+     public String path_if_null(){
+        return Path_original;
     }
 
     public void folder(){
@@ -119,42 +122,21 @@ public class gestor_fitxers {
         if (path_desti.equals("")) path_desti=Path_original;
         String nom_ex= nom_fitxer + extensio;
         Path path_dest= Paths.get(path_desti,nom_ex);
-        if(id_desc==4){
-            System.out.print("Escriure imatge descomprimida.");
+        File file = new File(String.valueOf(path_dest));
+        if(file.createNewFile()) {
+            FileOutputStream fop = new FileOutputStream(file);
+            fop.write((byte[])encoded);
+            fop.flush();
+            fop.close();
         }
-        else {
-            File file = new File(String.valueOf(path_dest));
-            System.out.println(String.valueOf(path_dest));
-            if(file.createNewFile()) {
-                FileOutputStream fop = new FileOutputStream(file);
-                fop.write((byte[])encoded);
-                fop.flush();
-                fop.close();
-            }
-        }
-
     }
 
     //PRE: path_og és un path vàlid
     //POST: Actualitza les variables id_desc i extensió depenent del path_og
-    private void id_ex_desc(String path_og){
+      private void id_ex_desc(String path_og){
         String aux= path_og.substring(path_og.length()-2);
-        if(aux.equals("f8")) {
-            id_desc = 1;
-            extensio= ".txt";
-        }
-        else if (aux.equals("fS")){
-            id_desc= 2;
-            extensio = ".txt";
-        }
-        else if (aux.equals("fW")){
-            id_desc = 3;
-            extensio = ".txt";
-        }
-        else if (aux.equals("fG")){
-            id_desc= 4;
-            extensio = ".ppm";
-        }
+        if (aux.equals("fG")) extensio = ".ppm";
+        else extensio = ".txt";
 
     }
 
