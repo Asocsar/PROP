@@ -41,6 +41,11 @@ public class controlador_gestor_fitxer {
         gestor= new gestor_fitxers();
     }
     
+     public String path_if_null(){ 
+        return gestor.path_if_null();
+    }
+
+    
      public List<String> paths_folder(String Path_o, String id) throws IOException {
         String exten= getExtensio(id);
         String path_dest= Path_o+ exten;
