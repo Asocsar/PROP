@@ -1,10 +1,6 @@
 
 
 package Algoritmes.JPEG;
-import org.omg.CORBA.SetOverrideType;
-
-import java.io.*;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 
@@ -33,7 +29,7 @@ public class JPEG {
     private int[][] Q2 = new int[8][8];
 
     //Matriu per fer el reccoregut en ZigZag sobre cada blocde 8x8.
-    private int[][] ZigZag = {
+    private static final int[][] ZigZag = {
             {0, 0},
             {0, 1}, {1, 0},
             {2, 0}, {1, 1}, {0, 2},
@@ -171,27 +167,18 @@ public class JPEG {
     //transformació DCT, la quantització i l'encoding fet amb RLE.
     // Per aconseguir l'encoding de RLE, ho guardem en una llista
     //i després ho passem a un array de ints
-    private int[] compress8(int[][] m, boolean zz) {
+    private String compress8(int[][] m) {
 
 
         //DCT Transform
         double[][] D = this.dct(m);
 
         //Quantitzation
-
         int[][] B = new int[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
                 B[i][j] = (int) Math.round(D[i][j] / (double) Q2[i][j]);
             }
-        }
-
-        if (zz) {
-            System.out.println("Imprimint el primer bloc");
-            for (int i = 0; i < 64; i++) {
-                System.out.printf( "%d ", B[ZigZag[i][0]][ZigZag[i][1]]);
-            }
-            System.out.println();
         }
 
         //Encoding ZigZag (RLE)
@@ -209,20 +196,11 @@ public class JPEG {
 
             }
         }
-
         //We have to add the DC coefficient and the 63 other values
         //With RLE and Hufmann (RUNLENGTH, SIZE) (AMPLITUDE)
 
-
-        /*
-        if (zz) {
-            System.out.println("Imprimint el primer bloc amb RLE");
-            for (Integer integer : list) System.out.printf("%d ", integer);
-            System.out.println();
-        }*/
-
-
-        return list.stream().mapToInt(i->i).toArray();
+        StringBuilder sb = new StringBuilder();
+        return sb.toString();
 
 
     }
@@ -232,7 +210,7 @@ public class JPEG {
     // Descripció: Es fa la conversió de l'array d'enters a un bloc mitjançant l'aplicació
     //del decodint del RLE, la desquantització i la DCT inversa.
     // A RLE c es el Nint [0..63] inici i count són les repeticions del caràcter curr
-    private int[][] decompress8(int[] buff) {
+    private int[][] decompress8(String s) {
 
         //Decoding ZigZag (RLE)
 
@@ -270,19 +248,15 @@ public class JPEG {
     //aconseguim. De padding utilitzem repetició el caràcter si posx o posy són mes grans que la imatge
     public byte[] compress(byte[] b) throws JPEGException {
 
-        int height = 0, width = 0, Bheight, Bwidth, length, posx, posy;
+        StringBuilder sb = new StringBuilder();
+        int height = 0, width = 0, Bheight, Bwidth, length, posx, posy, it;
 
         if((char)b[0] != 'P' || (char)b[1] != '6') throw new JPEGException("Format de fitxer no suportat ");
-
-        int it = 3;
+        it = 3;
         char c = (char) b[it];
         StringBuilder str = new StringBuilder();
-        while(c == '#') {
-            while(c != '\n') {
-                c = (char) b[++it];
-                System.out.println("Char comentari: " + c);
-            }
-        } // Skip comentaris
+        while(c == '#') while(c != '\n') c = (char) b[++it]; // Skip comentaris
+
 
         c = (char) b[++it];
         while( c != '\n'){
@@ -292,12 +266,14 @@ public class JPEG {
                 str = new StringBuilder();
             }
             c = (char) b[++it];
-            System.out.println("Char: " + c);
         }
 
         height = Integer.parseInt(str.toString());
         System.out.println("Width: " + width);
         System.out.println("Height: " + height);
+
+        sb.append(width).append(" ").append(height).append("\n");
+        sb.append(this.quality).append("\n");
 
         int[][][] YCbCr = new int[3][height][width];
         //Read ints
@@ -316,43 +292,44 @@ public class JPEG {
 
 
 
-        long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis(); //Comença a comptar el temps
         System.out.println("Comença la compressió");
-        long midafinal = 0;
+
+        long mida = 0;
+        int[][] m = new int[8][8];
+        String s;
+
+        Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
+        Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
 
         for (int a = 0; a < 3; ++a) {
-
             if(a < 2) computeQ2(quality, a != 0);
-
-            height = YCbCr[a].length;
-            width = YCbCr[a][0].length;
-            Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
-            Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
-            buff[a] = new int[Bheight * Bwidth][];
-            System.out.println("Mida del buff: " + buff[a].length);
-            midafinal = 3;
 
             for (int i = 0; i < Bheight; ++i) {
                 for (int j = 0; j < Bwidth; ++j) {
-                    int[][] m = new int[8][8];
+                    /* int[][] m = new int[8][8]; Línia treta per estalviar reiniciar matriu cada cop */
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
 
                             posx = j * 8 + x;
                             posy = i * 8 + y;
-                            if (posx >= width) m[y][x] = m[y][x - 1]; //Repeteix últim bloc
-                            else if (posy >= height) m[y][x] = m[y - 1][x]; //Repeteix últim bloc
+                            if (posx >= width) m[y][x] = m[y][x - 1]; //Repeteix últim pixel de padding
+                            else if (posy >= height) m[y][x] = m[y - 1][x]; //Repeteix últim pixel de padding
                             else m[y][x] = YCbCr[a][posy][posx];
-                        }
 
+                        }
                     }
-                    buff[a][i * Bwidth + j] = compress8(m, i==0 && j == 0);
+
+                    s = compress8(m, i==0 && j == 0);
+                    mida += s.length;
+
+                    sb.append(s);
                     /*if(i==0 && j==0) {
                         for(int z = 0; z < buff[a][0].length; ++z) System.out.printf( "%d ", buff[a][0][z]);
                         System.out.println();
                     }*/
 
-                    midafinal += buff[a][i * Bwidth + j].length;
+
 
                 }
             }
@@ -360,7 +337,7 @@ public class JPEG {
         }
         long end = System.currentTimeMillis();
         this.time = (end - start) / 1000F;
-        this.rate = 1 - (double) midafinal /(double) (height * width + 3);
+        this.rate = 1 - (double) mida /(double) (height * width + 1);
         return buff;
     }
 
@@ -375,8 +352,6 @@ public class JPEG {
         //Decodificar height, width i quality a partir del buffer de bytes
 
         System.out.println("Comença la descompressió");
-
-
 
 
         int[][][] buff = new int[0][0][0];
@@ -413,7 +388,7 @@ public class JPEG {
         sb.append("255\n");
 
         //YCbCr to RGB and write
-        int r,g,b;
+        int red,green,blue;
         double y, cb, cr;
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
@@ -422,17 +397,17 @@ public class JPEG {
                 cb = YCbCr[1][i][j];
                 cr = YCbCr[2][i][j];
 
-                r = (int) (y + 1.40200 * (cr - 0x80));
-                g = (int) (y - 0.34414 * (cb - 0x80) - 0.71414 * (cr - 0x80));
-                b = (int) (y + 1.77200 * (cb - 0x80));
+                red = (int) (y + 1.40200 * (cr - 0x80));
+                green = (int) (y - 0.34414 * (cb - 0x80) - 0.71414 * (cr - 0x80));
+                blue = (int) (y + 1.77200 * (cb - 0x80));
 
-                r = Math.max(Math.min(r, 255), 0);
-                g = Math.max(Math.min(g, 255), 0);
-                b = Math.max(Math.min(b, 255), 0);
+                red = Math.max(Math.min(red, 255), 0);
+                green = Math.max(Math.min(green, 255), 0);
+                blue = Math.max(Math.min(blue, 255), 0);
 
-                sb.append(r);
-                sb.append(g);
-                sb.append(b);
+                sb.append(red);
+                sb.append(green);
+                sb.append(blue);
 
             }
         }
