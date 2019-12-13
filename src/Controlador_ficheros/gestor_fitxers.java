@@ -15,6 +15,7 @@ public class gestor_fitxers {
     private String nom_fitxer;
     private String extensio;
     private String Path_original;
+    private String []extensiones = new String[]{".txt",".ppm",".f8",".fW",".fS",".fG",".FW",".FS",".F8"};
 
 
     //PRE: Cert
@@ -22,6 +23,11 @@ public class gestor_fitxers {
     public gestor_fitxers(){
 
     }
+    
+     public String[] extensiones_validas(){
+        return extensiones;
+    }
+
     
      public String path_if_null(){
         return Path_original;
