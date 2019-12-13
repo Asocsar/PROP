@@ -1,7 +1,11 @@
 
 
 package Algoritmes.JPEG;
+import Algoritmes.JPEG.Huffman.HuffmanTables;
+
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class JPEG {
@@ -45,6 +49,31 @@ public class JPEG {
             {7, 5}, {6, 6}, {5, 7},
             {6, 7}, {7, 6},
             {7, 7}};
+
+    private HashMap<String,String> HuffmanTables = new HashMap<String,String>() {{
+        put("0,0", "1010");
+        put("0,1", "00");put("0,2", "01");put("0,3", "100");put("0,4", "1011");put("0,5", "11010");
+        put("0,6", "1111000");put("0,7", "11111000");put("0,8", "1111110110");put("0,9", "1111111110000010");put("0,10", "1111111110000011");
+        put("1,1", "1100");put("1,2", "11011");put("1,3", "1111001");put("1,4", "111110110");put("1,5", "11111110110");
+        put("1,6", "1111111110000100");put("1,7", "1111111110000101");put("1,8", "1111111110000110");put("1,9", "1111111110000111");put("1,10","1111111110001000");
+        put("2,1", "11100");put("2,2", "11111001");put("2,3", "1111110111");put("2,4", "111111110100");put("2,5", "1111111110001001");
+        put("2,6", "1111111110001010");put("2,7", "1111111110001011");put("2,8", "1111111110001100");put("2,9", "1111111110001101");put("2,10","1111111110001110");
+        put("3,1", "111010");put("3,2", "111110111");put("3,3", "111111110101");put("3,4", "1111111110001111");put("3,5", "1111111110010000");
+        put("3,6", "1111111110010001");put("3,7", "1111111110010010");put("3,8", "1111111110010011");put("3,9", "1111111110010100");put("3,10","1111111110010101");
+        put("4,1", "111011");put("4,2", "1111111000");put("4,3", "1111111110010110");put("4,4", "1111111110010111");put("4,5", "1111111110011000");
+        put("4,6", "1111111110011001");put("4,7", "1111111110011010");put("4,8", "1111111110011011");put("4,9", "1111111110011100");put("4,10","1111111110011101");
+        put("5,1", "1111010");put("5,2", "11111110111");put("5,3", "1111111110011110");put("5,4", "1111111110011111");put("5,5", "1111111110100000");
+        put("5,6", "1111111110100001");put("5,7", "1111111110100010");put("5,8", "1111111110100011");put("5,9", "1111111110100100");put("5,10","1111111110100101");
+        put("6,1", "1111011");put("6,2", "111111110110");put("6,3", "1111111110100110");put("6,4", "1111111110100111");put("6,5", "1111111110101000");
+        put("6,6", "1111111110101001");put("6,7", "1111111110101010");put("6,8", "1111111110101011");put("6,9", "1111111110101100");put("6,10","1111111110101101");
+        put("7,1", "11111010");put("7,2", "111111110111");put("7,3", "1111111110101110");put("7,4", "1111111110101111");put("7,5", "1111111110110000");
+        put("7,6", "1111111110110001");put("7,7", "1111111110110010");put("7,8", "1111111110110011");put("7,9", "1111111110110100");put("7,10","1111111110110101");
+        put("8,1", "111111000");put("8,2", "111111111000000");put("8,3", "1111111110110110");put("8,4", "1111111110110111");put("8,5", "1111111110111000");
+        put("8,6", "1111111110111001");put("8,7", "1111111110111010");put("8,8", "1111111110111011");put("8,9", "1111111110111100");put("8,10","1111111110111101");
+        put("9,1", "111111001");put("9,2", "1111111110111110");put("9,3", "1111111110111111");put("9,4", "1111111111000000");put("9,5", "1111111111000001");
+        put("9,6", "1111111111000010");put("9,7", "1111111111000011");put("9,8", "1111111111000100");put("9,9", "1111111111000101");put("9,10", "1111111111000110");
+        put("10,1", "111111010");
+    }};
 
 
     //Qualitat de la compressió
@@ -167,41 +196,49 @@ public class JPEG {
     //transformació DCT, la quantització i l'encoding fet amb RLE.
     // Per aconseguir l'encoding de RLE, ho guardem en una llista
     //i després ho passem a un array de ints
-    private String compress8(int[][] m) {
+    public String compress8(int[][] m) {
 
-
+        computeQ2(50,false );
         //DCT Transform
         double[][] D = this.dct(m);
+
 
         //Quantitzation
         int[][] B = new int[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
                 B[i][j] = (int) Math.round(D[i][j] / (double) Q2[i][j]);
+                System.out.printf("%d ", B[i][j]);
             }
+            System.out.println();
         }
 
+        System.out.println((int) (Math.log(26)/Math.log(2)) + 1);
         //Encoding ZigZag (RLE)
-        ArrayList<Integer> list = new ArrayList<>();
-        int last = B[0][0];
-        int count = 1, curr;
-        for (int i = 1; i < 64; i++) {
-            curr = B[ZigZag[i][0]][ZigZag[i][1]];
-            if (curr == last) count++;
-            else {
-                list.add(count);
-                list.add(last);
-                count = 1;
-                last = curr;
+        ArrayList<String> list = new ArrayList<>();
+        String s;
+        StringBuilder sb = new StringBuilder();
+        int count = 0, curr;
+        //curr = B[0][0]; //Tractament DCT
 
+        for (int i = 0; i < 64; i++) { //Canviar 0 per 1 per a tractar different DC de AC coefficients
+            curr = B[ZigZag[i][0]][ZigZag[i][1]];
+            if (curr == 0) count++;
+            else {
+                s = HuffmanTables.get(count + "," + ((int) (Math.log(Math.abs(curr))/ Math.log(2) +1 )));
+                sb.append(s).append();
+                count = 0;
             }
         }
+
+
         //We have to add the DC coefficient and the 63 other values
-        //With RLE and Hufmann (RUNLENGTH, SIZE) (AMPLITUDE)
+        //With RLE and Hufmann (RUNLENTH, SIZE) (AMPLITUDE)
 
-        StringBuilder sb = new StringBuilder();
+        for (String e : list) System.out.printf("%s ", e);
+
+
         return sb.toString();
-
 
     }
 
@@ -217,9 +254,9 @@ public class JPEG {
         int[][] B = new int[8][8];
         int c = 0, curr, count;
 
-        for (int i = 0; i < buff.length; i+=2) {
-            count = buff[i];
-            curr = buff[i+1];
+        for (int i = 0; i < s.length(); i+=2) {
+            count = s.charAt(i);
+            curr = s.charAt(i+1);
             for(int j = 0; j < count; ++j) {
                 B[ZigZag[c + j][0]][ZigZag[c + j][1]] = curr;
             }
@@ -320,14 +357,10 @@ public class JPEG {
                         }
                     }
 
-                    s = compress8(m, i==0 && j == 0);
-                    mida += s.length;
+                    s = compress8(m);
+                    mida += s.length();
 
                     sb.append(s);
-                    /*if(i==0 && j==0) {
-                        for(int z = 0; z < buff[a][0].length; ++z) System.out.printf( "%d ", buff[a][0][z]);
-                        System.out.println();
-                    }*/
 
 
 
@@ -335,10 +368,12 @@ public class JPEG {
             }
 
         }
+
         long end = System.currentTimeMillis();
         this.time = (end - start) / 1000F;
         this.rate = 1 - (double) mida /(double) (height * width + 1);
-        return buff;
+
+        return new byte[2];
     }
 
     //Pre: Cert
@@ -348,11 +383,32 @@ public class JPEG {
     //descomprimint-los obté la submatriu que afegeix q la matriu
     //general.
     public byte[] descompress(byte[] b) {
-        int height = 0, width = 0;
+
+        int height, width = 0, quality, it = 0;
         //Decodificar height, width i quality a partir del buffer de bytes
+        StringBuilder sb = new StringBuilder();
+        char c = (char) b[it];
+        while( c != '\n'){
+            if(c != ' ') sb.append(c);
+            else {
+                width = Integer.parseInt(sb.toString());
+                sb = new StringBuilder();
+            }
+            c = (char) b[++it];
+        }
+        height = Integer.parseInt(sb.toString());
+        sb = new StringBuilder();
+        c = (char) b[++it];
+        while( c != '\n') {
+            sb.append(c);
+            c = (char) b[++it];
+        }
+        quality = Integer.parseInt(sb.toString());
+
+        //Decodificar taules huffmann
+
 
         System.out.println("Comença la descompressió");
-
 
         int[][][] buff = new int[0][0][0];
         int[][][] YCbCr = new int[3][height][width];
@@ -369,7 +425,7 @@ public class JPEG {
                 for(int j = 0; j < width; j+=8) {
                     //System.out.println("Nou bloc");
 
-                    m = decompress8( buff[a][i/8 * Bwidth + j/8]);
+                    m = decompress8("a");
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
                             posx = j + x;
@@ -382,7 +438,7 @@ public class JPEG {
             }
         }
 
-        StringBuilder sb  = new StringBuilder();
+        sb  = new StringBuilder();
         sb.append("P6\n");
         sb.append(width).append(" ").append(height).append("\n");
         sb.append("255\n");

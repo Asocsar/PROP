@@ -19,6 +19,22 @@ public class Driver_JPEG {
      */
     public static void main(String[] args) {
         try {
+
+            //Provar compress per fer l'exemple d wikipedia'
+            JPEG J = new JPEG(50);
+            int[][] m = {
+                    {52, 55, 61, 66, 70, 61, 64, 73},
+                    {63, 59, 55, 90, 109, 85, 69, 72},
+                    {62, 59, 68, 113, 144, 104, 66, 73},
+                    {63, 58, 71, 122, 154, 106, 70, 69},
+                    {67, 61, 68, 104, 126, 88, 68, 70},
+                    {79, 65, 60, 70, 77, 68, 58, 75},
+                    {85, 71, 64, 59, 55, 61, 65, 83},
+                    {87, 79, 69, 68, 65, 76, 78, 94}};
+
+            J.compress8(m);
+            
+            /*
             Scanner S = new Scanner(System.in);
             System.out.println("Introdueix el path del fitxer a comprimir");
             System.out.println("Exemple: /home/usr/fitxer");
@@ -57,9 +73,11 @@ public class Driver_JPEG {
             fo = new FileOutputStream (f2);
             fo.write(buffout);
             fo.close();
+            */
 
             System.out.println("JPEG acabat amb èxit.");
 
+            /*
         } catch (FileNotFoundException e) {
             System.out.println("L'adreça no ha estat trobada");
 
@@ -68,7 +86,13 @@ public class Driver_JPEG {
             System.out.println("Error en la Entrada - Sortida");
 
 
-    } catch (JPEG.JPEGException e) {
+        } catch (JPEG.JPEGException e) {
+            e.printStackTrace();
+        }
+
+             */
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+}
