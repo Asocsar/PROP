@@ -4,9 +4,15 @@ package Controlador_Compressio_Descompressio;
 import Algoritmes.*;
 import Controlador_ficheros.controlador_gestor_fitxer;
 import Estadístiques.Estadistiques;
+import javafx.beans.property.StringPropertyBase;
 
+
+import javax.swing.text.StringContent;
+import java.awt.datatransfer.StringSelection;
 import java.io.*;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Cont_CD {
 
@@ -15,31 +21,52 @@ public class Cont_CD {
     private static double time;
     private static double rate;
     private static String id;
+    private Map<String, List<String>> Asoc = new HashMap<String,List<String>>();
+    private List<String> Alg = new ArrayList<>();
 
-    public Cont_CD (){
+    public Cont_CD () {
+        controlador_gestor_fitxer c = new controlador_gestor_fitxer();
+        Alg.add("LZW");
+        Alg.add("LZ78");
+        Alg.add("LZSS");
+        Alg.add("JPEG");
+        List<String> Ext = Arrays.asList(c.extensiones_validas());
+        for (String Ex : Alg) {
+            String ch = Ex.charAt(Ex.length()-1)+"";
+            Predicate<String> a = String -> String.contains(ch.toUpperCase());
+            List<String> fil = new ArrayList<>();
+            fil.add(".txt");
+            if (!Ex.equals("JPEG")) fil.add(".ppm");
+            fil.addAll(Ext.stream().filter(a).collect(Collectors.toList()));
+            Asoc.put(Ex, fil);
+        }
     }
+
+    public Map<String,List<String >> getAsoc () {return this.Asoc;}
+    public double getTime () {return this.time;}
+    public double getRate () {return this.rate;}
 
 
     // Pre : Cert
     // Post: Retorna el resultat d'aplicar compressió o descompressió d'algun algorisme
-    private  Object action (String path_o, String id, boolean comprimir, controlador_gestor_fitxer I)  {
-        Object L = null;
-        try {
+    private  byte[] action (String path_o, String id, boolean comprimir, controlador_gestor_fitxer I) throws controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido, IOException {
+        byte[] L = null;
             Estadistiques E = new Estadistiques();
+            byte [] b = I.get_buffer(path_o, comprimir, id);
             switch (id) {
                 // Es decideix quin algorisme utilitzar i quina accio pendre
                 case "LZ78":
                     LZ78 L8 = new LZ78();
                     if (comprimir) {
                         System.out.println("LZ78 compression ejecutado");
-                        L = L8.compress((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = L8.compress(b);
                         //s'actualitzen les estadístiques i es guarda temps i rati
                         time = L8.get_Time();
                         rate = L8.get_Rate();
                         E.act8(time, rate);
                     } else {
                         System.out.println("LZ78 descompression ejecutado");
-                        L = L8.descompress((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = L8.descompress(b);
                         time = L8.get_Time();
                     }
 
@@ -48,21 +75,21 @@ public class Cont_CD {
                     LZSS LS = new LZSS();
                     if (comprimir) {
                         System.out.println("LZSS compression ejecutado");
-                        L = LS.compress((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = LS.compress(b);
                         time = LS.getTime();
                         rate = LS.getRate();
                         E.actS(time, rate);
                     } else {
                         System.out.println("LZSS descompression ejecutado");
-                        L = LS.descompress((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = LS.descompress(b);
                         time = LS.getTime();
+                        E.actS(time, -1);
                     }
                     break;
                 case "LZW":
                     LZW LW = new LZW();
                     if (comprimir) {
                         System.out.println("LZW compression ejecutado");
-                        byte [] b = (byte[]) I.get_buffer(path_o, comprimir, id);
                         L = LW.compress(b);
                         time = LW.getTime();
                         rate = LW.getRate();
@@ -70,7 +97,7 @@ public class Cont_CD {
 
                     } else {
                         System.out.println("LZW descompression ejecutado");
-                        L = LW.descompress((byte[]) I.get_buffer(path_o, comprimir, id));
+                        L = LW.descompress(b);
                         time = LW.getTime();
 
                     }
@@ -93,22 +120,15 @@ public class Cont_CD {
                 }
                 break;*/
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (controlador_gestor_fitxer.FicheroCompressionNoValido ficheroCompressionNoValido) {
-            System.out.println("Muy mal con intentar comprimir un fichero no valido cacho cabron");
-        } catch (controlador_gestor_fitxer.FicheroDescompressionNoValido ficheroDescompressionNoValido) {
-            System.out.println("Bastante mal con intentar descomprimir un fichero no valido cacho perro");
-        }
         return  L;
     }
 
     // Pre: Cert
     // Post: Comprimeix el fitxer situat al path_o i el desa al path_d
-    public void compressio_fitxer (String path_o, String path_d, String algoritme) throws IOException {
+    public void compressio_fitxer (String path_o, String path_d, String algoritme) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         id = algoritme;
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
-        Object L = action(path_o, id, true, I);
+        byte[] L = action(path_o, id, true, I);
         path1 = path_o;
         path2 = path1.substring(0, path1.length()-4) + ".fW";
         I.writeFile(L, path_o, path_d);
@@ -116,7 +136,7 @@ public class Cont_CD {
 
     // Pre: Cert
     // Post: Comprimeix el fitxer situat al path_o i el desa al path_d
-    public void compressio_carpeta (String path_o, String path_d, String algoritme) throws IOException {
+    public void compressio_carpeta (String path_o, String path_d, String algoritme) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         id = algoritme;
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         I.folder(path_o);
@@ -129,7 +149,7 @@ public class Cont_CD {
 
     // Pre: Cert
     // Post: Descomprimeix el fitxer situat al path_o i el desa al path_d
-    public void descompressio_fitxer (String path_o, String path_d) throws IOException {
+    public void descompressio_fitxer (String path_o, String path_d) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         id = I.getAlgoritme(path_o);
         Object L = action(path_o, id, false, I);
@@ -138,7 +158,7 @@ public class Cont_CD {
 
     // Pre: Cert
     // Post: Descomprimeix el fitxer situat al path_o i el desa al path_d
-    public void descompressio_carpeta (String path_o, String path_d) throws IOException {
+    public void descompressio_carpeta (String path_o, String path_d) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         id = I.getAlgoritme(path_o);
         Object L = action(path_o, id, false, I);
@@ -150,7 +170,7 @@ public class Cont_CD {
 
     // Pre : Hi ha hagut com a mínim una compressió des de que s'ha iniciat el programa
     // Post: Mostra el contingut del fitxer original i el resultat després d'haver comprimit aquest
-    public String [] comparar() throws IOException {
+    public String [] comparar() throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         String [] K = new String[2];
         if (path1.equals("")) {
             // AQUI TENGO QUE PONER UNA EXCEPCION QUE UN NO HE HECHO
