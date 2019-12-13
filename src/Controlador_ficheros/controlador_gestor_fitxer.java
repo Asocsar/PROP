@@ -41,6 +41,10 @@ public class controlador_gestor_fitxer {
         gestor= new gestor_fitxers();
     }
     
+    public String[] extensiones_validas(){
+        return gestor.extensiones_validas();
+    }
+    
      public String path_if_null(){ 
         return gestor.path_if_null();
     }
