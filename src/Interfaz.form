@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Interfaz">
-  <grid id="27dc6" binding="Panel" layout-manager="GridLayoutManager" row-count="7" column-count="8" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="Panel" layout-manager="GridLayoutManager" row-count="6" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
       <xy x="20" y="54" width="1440" height="366"/>
     </constraints>
-    <properties/>
+    <properties>
+      <foreground color="-4511232"/>
+    </properties>
     <border type="none"/>
     <children>
       <vspacer id="6e7aa">
@@ -20,13 +22,13 @@
       </vspacer>
       <component id="4cbcb" class="Interfaz$JFilePicker" binding="Picker2" custom-create="true">
         <constraints>
-          <grid row="1" column="1" row-span="1" col-span="7" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
       </component>
       <component id="f18eb" class="Interfaz$JFilePicker" binding="Picker1" custom-create="true">
         <constraints>
-          <grid row="0" column="1" row-span="1" col-span="7" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
       </component>
@@ -35,22 +37,6 @@
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
-      <component id="eb46" class="javax.swing.JRadioButton" binding="LZW">
-        <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="LZW"/>
-        </properties>
-      </component>
-      <component id="6f14c" class="javax.swing.JRadioButton" binding="JPEG">
-        <constraints>
-          <grid row="3" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="JPEG"/>
-        </properties>
-      </component>
       <vspacer id="3726b">
         <constraints>
           <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
@@ -58,7 +44,7 @@
       </vspacer>
       <component id="9da68" class="javax.swing.JButton" binding="Sortir">
         <constraints>
-          <grid row="6" column="5" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <horizontalAlignment value="0"/>
@@ -67,49 +53,12 @@
           <verticalAlignment value="1"/>
         </properties>
       </component>
-      <hspacer id="6320f">
-        <constraints>
-          <grid row="2" column="7" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </hspacer>
-      <component id="8d86" class="javax.swing.JButton" binding="Compare">
-        <constraints>
-          <grid row="5" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Comparar"/>
-        </properties>
-      </component>
-      <component id="e9c6f" class="javax.swing.JButton" binding="Globales">
-        <constraints>
-          <grid row="5" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Estadisticas Globales"/>
-        </properties>
-      </component>
       <component id="edf5f" class="javax.swing.JButton" binding="Accion">
         <constraints>
-          <grid row="6" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Comprimir"/>
-        </properties>
-      </component>
-      <component id="e0a3" class="javax.swing.JRadioButton" binding="LZSS">
-        <constraints>
-          <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="LZSS"/>
-        </properties>
-      </component>
-      <component id="634cb" class="javax.swing.JRadioButton" binding="LZ78">
-        <constraints>
-          <grid row="3" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="LZ78"/>
         </properties>
       </component>
       <hspacer id="bfefd">
@@ -119,49 +68,64 @@
       </hspacer>
       <hspacer id="40ad2">
         <constraints>
-          <grid row="3" column="6" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
       </hspacer>
       <hspacer id="bbd7">
         <constraints>
-          <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
       </hspacer>
-      <grid id="e468a" binding="Auxiliar" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+      <component id="e9c6f" class="javax.swing.JButton" binding="Globales">
         <constraints>
-          <grid row="5" column="4" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Estadisticas Globales"/>
+        </properties>
+      </component>
+      <component id="8d86" class="javax.swing.JButton" binding="Compare">
+        <constraints>
+          <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Visualizar ultima Compression"/>
+        </properties>
+      </component>
+      <hspacer id="6320f">
+        <constraints>
+          <grid row="3" column="5" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <component id="a3135" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="a7416" class="javax.swing.JSlider" binding="slider1" default-binding="true">
+        <constraints>
+          <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <enabled value="true"/>
+          <extent value="0"/>
+          <inverted value="false"/>
+          <majorTickSpacing value="10"/>
+          <minorTickSpacing value="5"/>
+          <paintLabels value="true"/>
+          <paintTicks value="true"/>
+          <paintTrack value="true"/>
+          <snapToTicks value="false"/>
+          <toolTipText value=""/>
+          <valueIsAdjusting value="false"/>
         </properties>
-        <border type="none"/>
-        <children>
-          <component id="a7416" class="javax.swing.JSlider" binding="slider1" default-binding="true">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <enabled value="true"/>
-              <extent value="0"/>
-              <inverted value="false"/>
-              <majorTickSpacing value="10"/>
-              <minorTickSpacing value="5"/>
-              <paintLabels value="true"/>
-              <paintTicks value="true"/>
-              <paintTrack value="true"/>
-              <snapToTicks value="false"/>
-              <toolTipText value=""/>
-              <valueIsAdjusting value="false"/>
-            </properties>
-            <clientProperties>
-              <JSlider.isFilled class="java.lang.Boolean" value="true"/>
-              <Slider.paintThumbArrowShape class="java.lang.Boolean" value="true"/>
-              <html.disable class="java.lang.Boolean" value="false"/>
-            </clientProperties>
-          </component>
-        </children>
-      </grid>
+        <clientProperties>
+          <JSlider.isFilled class="java.lang.Boolean" value="true"/>
+          <Slider.paintThumbArrowShape class="java.lang.Boolean" value="true"/>
+          <html.disable class="java.lang.Boolean" value="false"/>
+        </clientProperties>
+      </component>
     </children>
   </grid>
 </form>

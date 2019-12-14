@@ -1,21 +1,22 @@
 
 import Controlador_Compressio_Descompressio.Cont_CD;
 import Controlador_ficheros.controlador_gestor_fitxer;
+import com.sun.deploy.panel.JSmartTextArea;
 
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
+import java.util.List;
 
 public class Interfaz extends JFrame {
 
@@ -144,25 +145,31 @@ public class Interfaz extends JFrame {
     private JButton Sortir;
     private JFilePicker Picker1;
     private JFilePicker Picker2;
-    private JRadioButton LZW;
-    private JRadioButton LZSS;
-    private JRadioButton LZ78;
-    private JRadioButton JPEG;
     private JButton Compare;
     private JButton Globales;
     private JButton Accion;
     private JSlider slider1;
-    private JPanel Auxiliar;
+    private JComboBox comboBox1;
     private static JFrame frame;
     private static int metodo = 0;
     private boolean directorio = false;
-    private JRadioButton [] L = new JRadioButton[] {LZW, LZSS, LZ78, JPEG};
-    HashMap<Integer, String> M = new HashMap<Integer, String>();
+    private static Cont_CD cont = new Cont_CD();
+    private static controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
+    private static HashMap<Integer, String> M = new HashMap<Integer, String>();
+    private static Map<String, List<String>> Asoc = cont.getAsoc();
 
     private void createUIComponents () {
         Picker1 = new JFilePicker("Elemento a Comprimir/Descomprimir", "Busca");
         Picker1.setMode(JFilePicker.MODE_SAVE);
         Picker1.getFileChooser().setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        List<String> S = new ArrayList<>();
+        for (String Alg : Asoc.keySet()){
+            for (String e : Asoc.get(Alg))
+                if (!S.contains(e) && !e.equals("folder")) S.add(e);
+        }
+        String [] F = new String[S.size()];
+        int i = 0;
+        for (String p : S) F[i++] = p;
         String [] ext = new String[] {".txt", ".ppm", ".fw", ".fs", ".f8", ".fg", ".FW", ".FS", ".F8"};
         Picker1.addFileTypeFilter(ext, "Archivo");
 
@@ -205,8 +212,33 @@ public class Interfaz extends JFrame {
         }
     }
 
+    public void LZW_option() {
+        metodo = 0;
+        slider1.setVisible(false);
+        slider1.setMaximumSize(new Dimension(0,0));
+    }
+
+    public void LZSS_option() {
+        metodo = 1;
+        slider1.setVisible(false);
+        slider1.setMaximumSize(new Dimension(0,0));
+    }
+
+    public void LZ78_option() {
+        metodo = 2;
+        slider1.setVisible(false);
+        slider1.setMaximumSize(new Dimension(0,0));
+    }
+
+    public void JPEG_option() {
+        metodo = 3;
+        slider1.setVisible(true);
+        slider1.setMaximumSize(new Dimension(30,50));
+    }
+
 
     public Interfaz() {
+        getContentPane().setBackground(Color.magenta);
         frame.setSize(40, 40);
         frame.addComponentListener(new ResizeListener());
         Picker1.gettextf().setColumns(frame.getSize().width);
@@ -220,12 +252,6 @@ public class Interfaz extends JFrame {
         M.put(1, "LZSS");
         M.put(2, "LZ78");
         M.put(3, "JPEG");
-        ButtonGroup group1 = new ButtonGroup();
-        group1.add(LZ78);
-        group1.add(LZW);
-        group1.add(LZSS);
-        group1.add(JPEG);
-        for (JRadioButton b : L) b.setEnabled(false);
         Sortir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -253,32 +279,52 @@ public class Interfaz extends JFrame {
                 String p = Picker1.getSelectedFilePath();
                 File f = new File(p);
                 directorio = f.isDirectory();
+                for (ActionListener a : comboBox1.getActionListeners()) comboBox1.removeActionListener(a);
+                comboBox1.removeAllItems();
+                comboBox1.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String S = (String) comboBox1.getSelectedItem();
+                        switch (S) {
+                            case "LZW" : LZW_option();
+                                break;
+                            case "LZ78" : LZ78_option();
+                                break;
+                            case "LZSS" : LZSS_option();
+                                break;
+                            default: JPEG_option();
+                        }
+
+                    }
+                });
                 if (directorio) {
                     Accion.setText("Comprimir");
-                    for (JRadioButton b : L) b.setEnabled(true);
-                    L[metodo].doClick();
-                    JPEG.setEnabled(false);
-                    if (M.get(metodo).equals("JPEG")) {
-                        metodo = 0;
-                        L[metodo].doClick();
+                    String substring = "folder";
+                    for (String Alg : Asoc.keySet()) {
+                        if (Asoc.get(Alg).contains(substring)) comboBox1.addItem(Alg);
                     }
+                    comboBox1.setSelectedIndex(metodo);
                 }
                 else {
-                    if (p.substring(p.length()-4).equals(".txt") && !p.substring(p.length()-4).equals(".ppm")) {
+                    String substring = p.substring(p.length() - 4);
+                    boolean comprimir = substring.equals(".txt") || substring.equals(".ppm");
+                    if (comprimir) {
                         Accion.setText("Comprimir");
-                        for (JRadioButton b : L) b.setEnabled(true);
-                        JPEG.setEnabled(false);
-                        L[metodo].doClick();
-                    }
-                    else if (p.substring(p.length()-4).equals(".txt") || p.substring(p.length()-4).equals(".ppm")) {
-                        Accion.setText("Comprimir");
-                        for (JRadioButton b : L) b.setEnabled(true);
-                        L[metodo].doClick();
+                        List<String> S = new ArrayList<>();
+
+                        for (String Alg : Asoc.keySet()) {
+                            if (Asoc.get(Alg).contains(substring)) {
+                                comboBox1.addItem(Alg);
+                            }
+                        }
+                        comboBox1.setSelectedIndex(0);
                     }
                     else {
                         Accion.setText("Descomprimir");
-                        group1.clearSelection();
-                        for (JRadioButton b : L) b.setEnabled(false);
+                        comboBox1.removeAllItems();
+                        slider1.setVisible(false);
+                        slider1.setMaximumSize(new Dimension(0,0));
+
                     }
                 }
             }
@@ -290,6 +336,7 @@ public class Interfaz extends JFrame {
                 Cont_CD C = new Cont_CD();
                 if (Accion.getText().equals("Comprimir/Descomprimir")) {
                     JOptionPane.showMessageDialog(frame, "Escoge antes un Elemento a comprimir o descomprimir");
+
                 } else {
                     try {
                         if (!directorio)
@@ -316,54 +363,18 @@ public class Interfaz extends JFrame {
                 Cont_CD C = new Cont_CD();
                 try {
                     String[] S = C.comparar();
-
-                    Framepop p = new Framepop(S[0], S[1]);
-                    p.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    p.setSize(300, 300);
+                    Comparacion dialog = new Comparacion(S[0], S[1]);
+                    dialog.pack();
+                    dialog.setVisible(true);
+                    dialog.setMaximumSize(new Dimension(500, 500));
 
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido ficheroCompressionNoValido) {
                     JOptionPane.showMessageDialog(frame, ficheroCompressionNoValido.getMessage());
+                } catch (BadLocationException ex) {
+                    ex.printStackTrace();
                 }
-            }
-        });
-
-
-
-        LZW.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                metodo = 0;
-                slider1.setVisible(false);
-                slider1.setMaximumSize(new Dimension(0,0));
-            }
-        });
-
-        LZSS.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                metodo = 1;
-                slider1.setVisible(false);
-                slider1.setMaximumSize(new Dimension(0,0));
-            }
-        });
-
-        LZ78.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                metodo = 2;
-                slider1.setVisible(false);
-                slider1.setMaximumSize(new Dimension(0,0));
-            }
-        });
-
-        JPEG.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                metodo = 3;
-                slider1.setVisible(true);
-                slider1.setMaximumSize(new Dimension(30,50));
             }
         });
 
