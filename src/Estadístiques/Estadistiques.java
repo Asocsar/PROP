@@ -342,7 +342,7 @@ public class Estadistiques {
      */
 
     public static double getDQuantLZSS() {
-        return lzss.get(7);
+        return lzss.get(8);
     }
 
 
@@ -454,7 +454,7 @@ public class Estadistiques {
      */
 
     public static double getDQuantJPEG() {
-        return jpeg.get(7);
+        return jpeg.get(8);
     }
 
 
@@ -526,12 +526,21 @@ public class Estadistiques {
      \pre  ti > 0 & gr > 0
      \post S'han actualitzat les estadistiques globals de l'algorisme LZW
      */
-    public static void actW(double ti, double gr, boolean C) {
-        timeLZW = ti;
-        GtimeLZW += ti;
-        ratioLZW = gr;
-        GratioLZW += gr;
-        QuantLZW++;
+
+    public static void actW(double ti, double gr, double vel, boolean comp) {
+        if (comp) {
+            lzw.set(0,ti);
+            lzw.set(1,lzw.get(1)+ti);
+            lzw.set(4,gr);
+            lzw.set(5,lzw.get(4)+gr);
+            lzw.set(6,vel);
+            lzw.set(7,lzw.get(7)+1);
+        }
+        else{
+            lzw.set(2,ti);
+            lzw.set(3,lzw.get(3)+ti);
+            lzw.set(8,lzw.get(8)+1);
+        }
         setLastAlg("LZW");
     }
 
@@ -539,41 +548,68 @@ public class Estadistiques {
      \pre  ti > 0 i gr > 0
      \post S'han actualitzat les estadistiques globals de l'algorisme LZSS
      */
-    public static void actS(double ti, double gr) {
-        timeLZSS = ti;
-        GtimeLZSS += ti;
-        ratioLZSS = gr;
-        GratioLZSS += gr;
-        QuantLZSS++;
+    public static void actS(double ti, double gr, double vel, boolean comp) {
+        if (comp) {
+            lzss.set(0,ti);
+            lzss.set(1,lzss.get(1)+ti);
+            lzss.set(4,gr);
+            lzss.set(5,lzss.get(4)+gr);
+            lzss.set(6,vel);
+            lzss.set(7,lzss.get(7)+1);
+        }
+        else{
+            lzss.set(2,ti);
+            lzss.set(3,lzss.get(3)+ti);
+            lzss.set(8,lzss.get(8)+1);
+        }
         setLastAlg("LZSS");
     }
+
 
     /** \brief Update estadistiques LZ78
      \pre  ti > 0 i gr > 0
      \post S'han actualitzat les estadistiques globals de l'algorisme LZ78
      */
-    public static void act8(double ti, double gr) {
-        timeLZ78 = ti;
-        GtimeLZ78 += ti;
-        ratioLZ78 = gr;
-        GratioLZ78 += gr;
-        QuantLZ78++;
+    public static void act8(double ti, double gr, double vel, boolean comp) {
+        if (comp) {
+            lz78.set(0,ti);
+            lz78.set(1,lz78.get(1)+ti);
+            lz78.set(4,gr);
+            lz78.set(5,lz78.get(4)+gr);
+            lz78.set(6,vel);
+            lz78.set(7,lz78.get(7)+1);
+        }
+        else{
+            lz78.set(2,ti);
+            lz78.set(3,lz78.get(3)+ti);
+            lz78.set(8,lz78.get(8)+1);
+        }
         setLastAlg("LZ78");
     }
+
 
     /** \brief Update estadistiques JPEG
      \pre  ti > 0 i gr > 0
      \post S'han actualitzat les estadistiques globals de l'algorisme JPEG
      */
 
-    public static void actG(double ti, double gr) {
-        timeJPEG = ti;
-        GtimeJPEG += ti;
-        ratioJPEG = gr;
-        GratioJPEG += gr;
-        QuantJPEG++;
+    public static void actG(double ti, double gr, double vel, boolean comp) {
+        if (comp) {
+            jpeg.set(0,ti);
+            jpeg.set(1,jpeg.get(1)+ti);
+            jpeg.set(4,gr);
+            jpeg.set(5,jpeg.get(4)+gr);
+            jpeg.set(6,vel);
+            jpeg.set(7,jpeg.get(7)+1);
+        }
+        else{
+            jpeg.set(2,ti);
+            jpeg.set(3,jpeg.get(3)+ti);
+            jpeg.set(8,jpeg.get(8)+1);
+        }
         setLastAlg("JPEG");
     }
+
 
 
 }
