@@ -6,12 +6,14 @@ import Algoritmes.JPEG.Huffman.HuffmanTables;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class JPEG {
 
     //Matriu de quantificació de la luminància, forma part de la part lossy.
-    private static final int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
+    private final int[][] Q = {{16, 11, 12, 16, 24, 40, 51, 61},
             {12, 12, 14, 19, 26, 58, 60, 55},
             {14, 13, 16, 24, 40, 57, 69, 56},
             {14, 17, 22, 29, 51, 87, 80, 62},
@@ -74,13 +76,18 @@ public class JPEG {
         put("9,6", "1111111111000010");put("9,7", "1111111111000011");put("9,8", "1111111111000100");put("9,9", "1111111111000101");put("9,10", "1111111111000110");
         put("10,1", "111111010");
     }};
-
+/*
+    private HashMap<String, String> mapInversed =
+            HuffmanTables.entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(HashMap.Entry::getValue, HuffmanTables.Entry::getKey));*/
 
     //Qualitat de la compressió
     private int quality;
 
     //temps de l'ultima compressió / descompressió
     private double time;
+
 
     //rati de compressió assolit en la última compressió
     private double rate;
@@ -218,24 +225,29 @@ public class JPEG {
         ArrayList<String> list = new ArrayList<>();
         String s;
         StringBuilder sb = new StringBuilder();
-        int count = 0, curr;
+        int count = 0, curr, num, mask;
+        String st;
         //curr = B[0][0]; //Tractament DCT
 
         for (int i = 0; i < 64; i++) { //Canviar 0 per 1 per a tractar different DC de AC coefficients
             curr = B[ZigZag[i][0]][ZigZag[i][1]];
+            System.out.println("Curr: " + curr);
             if (curr == 0) count++;
             else {
-                s = HuffmanTables.get(count + "," + ((int) (Math.log(Math.abs(curr))/ Math.log(2) +1 )));
-                sb.append(s).append();
+
+                st = Integer.toBinaryString(Math.abs(curr));
+                mask = st.length();
+                if(curr < 0) st = Integer.toBinaryString(--curr).substring(32 -mask);
+                System.out.println("count: " + count + ", mask: " +  mask + " : " + HuffmanTables.get(count+ "," + mask));
+                System.out.println("Binary for curr: " + st);
+                sb.append(HuffmanTables.get(count+ "," + mask)).append(st);
+
                 count = 0;
             }
         }
 
-
         //We have to add the DC coefficient and the 63 other values
         //With RLE and Hufmann (RUNLENTH, SIZE) (AMPLITUDE)
-
-        for (String e : list) System.out.printf("%s ", e);
 
 
         return sb.toString();
@@ -249,8 +261,9 @@ public class JPEG {
     // A RLE c es el Nint [0..63] inici i count són les repeticions del caràcter curr
     private int[][] decompress8(String s) {
 
-        //Decoding ZigZag (RLE)
 
+
+        //Decoding ZigZag (RLE)
         int[][] B = new int[8][8];
         int c = 0, curr, count;
 
@@ -362,8 +375,6 @@ public class JPEG {
 
                     sb.append(s);
 
-
-
                 }
             }
 
@@ -405,7 +416,6 @@ public class JPEG {
         }
         quality = Integer.parseInt(sb.toString());
 
-        //Decodificar taules huffmann
 
 
         System.out.println("Comença la descompressió");
@@ -425,7 +435,14 @@ public class JPEG {
                 for(int j = 0; j < width; j+=8) {
                     //System.out.println("Nou bloc");
 
-                    m = decompress8("a");
+                    sb = new StringBuilder();
+                    c = (char) b[++it];
+                    while( c != '\n') {
+                        sb.append(c);
+                        c = (char) b[++it];
+                    }
+                    m = decompress8(sb.toString());
+
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
                             posx = j + x;
