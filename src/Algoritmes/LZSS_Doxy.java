@@ -18,8 +18,9 @@ public class LZSS {
     */
 
     public LZSS() { 
-        this.time = 0;
-        this.rate = 0;
+        this.CompressTime = 0.0;
+        this.CompressRatio = 0.0;
+		this.search_buffer = 0;
     }
 
 
@@ -55,7 +56,7 @@ public class LZSS {
     */
 
 
-    public  List<Byte> compress(byte[] file)  {
+    public  byte[] compress(byte[] file)  {
         double startTime = System.currentTimeMillis();
         int match, offset, SB, LAB,LABini;
         match = 0;
@@ -69,13 +70,25 @@ public class LZSS {
         List<Byte> result = new ArrayList<>(); //Llista temporal
         List<Byte> encoded = new ArrayList<>(); // Llista definitiva
         if (file.length <= 0) {
-            return result;
+            byte [] retur = new byte [result.size()];
+            int i = 0;
+            for (Byte b : result) {
+                retur[i] = b.byteValue();
+                ++i;
+            }
+            return retur;
         }
         else {
 
             if (file.length < 4) {
                 for (byte f : file) result.add(f);
-                return result;
+                byte [] retur = new byte [result.size()];
+                int i = 0;
+                for (Byte b : result) {
+                    retur[i] = b.byteValue();
+                    ++i;
+                }
+                return retur;
                 
             }
 
@@ -171,14 +184,21 @@ public class LZSS {
                 }
             }
         }
-       // if (encoded.size() > 1) encoded = encoded.subList(0,encoded.size());
-        //Byte[] byteencoding = encoded.toArray(new Byte[encoded.size()]); //Convertim la llista a un byte[]
-
+        
         double endTime = System.currentTimeMillis();
         CompressTime = (endTime - startTime);                       //Càlcul del temps de compressió i assignació a variable global
         CompressRatio = (double)encoded.size()/(double)file.length; //Càlcul del ratio de compressió i assignació a variable global
-        return encoded;
+        
+        // Conversió de la llista a un byte[]
+        byte [] retur = new byte [result.size()];
+        int i = 0;
+        for (Byte b : encoded) {
+            retur[i] = b.byteValue();
+            ++i;
+        }
+        return retur;
     }
+
 
     /** \brief Codificació en una sola llista d'una màscara i els elements corresponents als bits d'aquesta
         \pre Cert
@@ -206,14 +226,24 @@ public class LZSS {
         \post Retorna una List<Byte> corresponent a la descodificació d' encoded
     */
     
-    public  List<Byte> decompress (List<Byte> encoded)  {
-        //List<Byte> encoded = Arrays.asList(Bencoded);
+    public byte[] descompress(byte[] entrada)  {
+        List<Byte> encoded = new ArrayList<Byte>(entrada.length);
+        for (byte b : entrada) {
+            encoded.add(b);
+        }
         List<Byte> result = new ArrayList<>();
-        //StringBuilder result = new StringBuilder();
         int resultindex = 0;
         while (encoded.size() < 4 && resultindex < encoded.size()) {
             result.add(encoded.get(resultindex++));
-            if (resultindex == encoded.size()) return result;
+            if (resultindex == encoded.size()) {
+                byte [] retur = new byte [result.size()];
+                int i = 0;
+                for (Byte b : result) {
+                    retur[i] = b.byteValue();
+                    ++i;
+                }
+                return retur;
+            }
         }
         //Recorrem els bytes codificats
         for (int i = 0; i < encoded.size();) {
@@ -251,7 +281,13 @@ public class LZSS {
                 }
             }
         }
-        return result;
+        byte [] retur = new byte [result.size()];
+        int i = 0;
+        for (Byte b : result) {
+            retur[i] = b.byteValue();
+            ++i;
+        }
+        return retur;
     }
 
 
