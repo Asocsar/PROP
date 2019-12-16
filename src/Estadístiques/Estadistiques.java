@@ -1,12 +1,17 @@
 package Estadístiques;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Estadistiques {
+
+    public  Estadistiques(){
+        /*this.est = new HashMap<>();
+        this.lzw = new ArrayList<>();
+        this.lz78 = new ArrayList<>();
+        this.lzss = new ArrayList<>();
+        this.jpeg = new ArrayList<>();*/
+    };
 
     private static String[] noms_est = {"Temps de l'última compressió", "Temps de compressió global" ,"Temps de l'última descompressió", "Temps de descompressió global",
             "Ratio de l'última compressió", "Ratio de compressió global",  "Velocitat de compressió", "Número de compressions" ,
@@ -20,7 +25,7 @@ public class Estadistiques {
 
 
     /***************************
-     ********** LZW ************
+     *********** LZW ***********
      ***************************/
 
     /** \var LLista amb les estadístiques d'execució amb LZW*/
@@ -548,6 +553,7 @@ public class Estadistiques {
      \pre  ti > 0 i gr > 0
      \post S'han actualitzat les estadistiques globals de l'algorisme LZSS
      */
+
     public static void actS(double ti, double gr, double vel, boolean comp) {
         if (comp) {
             lzss.set(0,ti);
@@ -570,6 +576,7 @@ public class Estadistiques {
      \pre  ti > 0 i gr > 0
      \post S'han actualitzat les estadistiques globals de l'algorisme LZ78
      */
+
     public static void act8(double ti, double gr, double vel, boolean comp) {
         if (comp) {
             lz78.set(0,ti);
@@ -610,6 +617,21 @@ public class Estadistiques {
         setLastAlg("JPEG");
     }
 
+
+    /***************************
+     *****MÈTODES AUXILIARS*****
+     **************************/
+
+
+    /** \brief Unificador d'estadistiques
+     \pre  (tots els paràmetres) >= 0
+     \post Es retorna una llista amb els valors passats per paràmetre
+     */
+
+    public static List<Double> act (double tcl, double tcg, double tdl, double tdg, double rl, double rg, double vel, double numc, double numd){
+        List<Double> actalg = new ArrayList<>(Arrays.asList(tcl,tcg,tdl,tdg,rl,rg,vel,numc,numd));
+        return actalg;
+    }
 
 
 }
