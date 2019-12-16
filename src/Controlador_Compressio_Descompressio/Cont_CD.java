@@ -4,7 +4,7 @@ package Controlador_Compressio_Descompressio;
 import Algoritmes.*;
 import Controlador_ficheros.controlador_gestor_fitxer;
 import Estadístiques.Estadistiques;
-import javafx.beans.property.StringPropertyBase;
+//import javafx.beans.property.StringPropertyBase;
 
 
 import javax.swing.text.StringContent;
@@ -28,6 +28,11 @@ public class Cont_CD {
         public NoCompress (String message) {super(message);}
     }
 
+    /** \brief Creadora
+     \pre Cert
+     \post S'ha creat una instancia inicialitzada del Controlador CD
+     */
+
     public Cont_CD () {
         controlador_gestor_fitxer c = new controlador_gestor_fitxer();
         Alg.add("LZW");
@@ -49,8 +54,25 @@ public class Cont_CD {
         }
     }
 
+    /** \brief Asociació path-algorismes
+     \pre Cert
+     \post S'han associat els paths amb els corresponents algorismes
+     */
+
     public Map<String,List<String >> getAsoc () {return this.Asoc;}
+
+    /** \brief Temps
+     \pre Cert
+     \post S'ha retornat el temps de l'última execució
+     */
+
     public double getTime () {return this.time;}
+
+    /** \brief Ratio de compressió
+     \pre Cert
+     \post S'ha retornat el ratio de compressió de l'última execució
+     */
+
     public double getRate () {return this.rate;}
 
 
@@ -76,47 +98,49 @@ public class Cont_CD {
                     //s'actualitzen les estadístiques i es guarda temps i rati
                     time = L8.get_Time();
                     rate = L8.get_Rate();
-                    E.act8(time, rate);
+                    E.act8(time, rate, b.length/time, true);
                 } else {
                     System.out.println("LZ78 descompression ejecutado");
                     L = L8.descompress(b);
                     time = L8.get_Time();
+                    E.act8(time, -1, b.length/time, false);
                 }
 
                 break;
-                case "LZSS":
-                    LZSS LS = new LZSS();
-                    if (comprimir) {
-                        System.out.println("LZSS compression ejecutado");
-                        L = LS.compress(b);
-                        time = LS.getTime();
-                        rate = LS.getRate();
-                        E.actS(time, rate);
-                    } else {
-                        System.out.println("LZSS descompression ejecutado");
-                        L = LS.descompress(b);
-                        time = LS.getTime();
-                        E.actS(time, -1);
-                    }
-                    break;
-                case "LZW":
-                    LZW LW = new LZW();
-                    if (comprimir) {
-                        System.out.println("LZW compression ejecutado");
-                        L = LW.compress(b);
-                        time = LW.getTime();
-                        rate = LW.getRate();
-                        E.actW(time, rate);
+            case "LZSS":
+                LZSS LS = new LZSS();
+                if (comprimir) {
+                    System.out.println("LZSS compression ejecutado");
+                    L = LS.compress(b);
+                    time = LS.getTime();
+                    rate = LS.getRate();
+                    E.actS(time, rate, b.length/time, true);
+                } else {
+                    System.out.println("LZSS descompression ejecutado");
+                    L = LS.descompress(b);
+                    time = LS.getTime();
+                    E.actS(time, -1, b.length/time, false);
+                }
+                break;
+            case "LZW":
+                LZW LW = new LZW();
+                if (comprimir) {
+                    System.out.println("LZW compression ejecutado");
+                    L = LW.compress(b);
+                    time = LW.getTime();
+                    rate = LW.getRate();
+                    E.actW(time, rate, b.length/time, true);
 
-                    } else {
-                        System.out.println("LZW descompression ejecutado");
-                        L = LW.descompress(b);
-                        time = LW.getTime();
+                } else {
+                    System.out.println("LZW descompression ejecutado");
+                    L = LW.descompress(b);
+                    time = LW.getTime();
+                    E.actW(time, -1, b.length/time, false);
 
-                    }
+                }
 
-                    break;
-                default:
+                break;
+            default:
 /*
                 JPEG JG = new JPEG();
                 if (comprimir) {
@@ -132,7 +156,7 @@ public class Cont_CD {
                     time = JG.getTime();
                 }
                 break;*/
-            }
+        }
         return  L;
     }
 
