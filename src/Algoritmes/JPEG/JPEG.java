@@ -252,7 +252,7 @@ public class JPEG {
     // Descripció: Es fa la conversió de l'array d'enters a un bloc mitjançant l'aplicació
     //del decodint del RLE, la desquantització i la DCT inversa.
     // A RLE c es el Nint [0..63] inici i count són les repeticions del caràcter curr
-    public int[][] decompress8(byte[] b) {
+    public int[][] decompress8(String s) {
 
         //Decoding ZigZag (RLE)
         String[] RS;
@@ -261,7 +261,7 @@ public class JPEG {
         long l;
         String numbin, se, mask = "11111111111111111111111111111111";
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < b.length; ++i) {
+        for (int i = 0; i < s.length(); ++i) {
             String runsize = mapInversed.get(sb.append(s.charAt(i)).toString());
             if(runsize != null){
                 //System.out.println(sb.toString() + " " + runsize);
@@ -460,10 +460,12 @@ public class JPEG {
                 for(int j = 0; j < width; j+=8) {
                     //System.out.println("Nou bloc");
 
-                    while( Diferent de EOB){
-                        out.write(b[++it]);
+
+                    while( (char) b[++it] != '\n'){
+                        out.write(b[it]);
                     }
-                    m = decompress8(out.toByteArray());
+                    System.out.println(out.toString());
+                    m = decompress8(out.toString());
 
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
