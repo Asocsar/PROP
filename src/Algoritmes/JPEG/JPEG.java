@@ -4,10 +4,12 @@ package Algoritmes.JPEG;
 import Algoritmes.JPEG.Huffman.HuffmanTables;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 public class JPEG {
@@ -76,11 +78,10 @@ public class JPEG {
         put("9,6", "1111111111000010");put("9,7", "1111111111000011");put("9,8", "1111111111000100");put("9,9", "1111111111000101");put("9,10", "1111111111000110");
         put("10,1", "111111010");
     }};
-/*
-    private HashMap<String, String> mapInversed =
-            HuffmanTables.entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(HashMap.Entry::getValue, HuffmanTables.Entry::getKey));*/
+
+    private HashMap<String, String> mapInversed = new HashMap<String, String>(){{
+        for (HashMap.Entry<String, String> entry : HuffmanTables.entrySet()) put(entry.getValue(),entry.getKey());
+    }};
 
     //Qualitat de la compressió
     private int quality;
@@ -203,24 +204,20 @@ public class JPEG {
     //transformació DCT, la quantització i l'encoding fet amb RLE.
     // Per aconseguir l'encoding de RLE, ho guardem en una llista
     //i després ho passem a un array de ints
-    public String compress8(int[][] m) {
+    public byte[] compress8(int[][] m) {
 
-        computeQ2(50,false );
+
         //DCT Transform
         double[][] D = this.dct(m);
-
 
         //Quantitzation
         int[][] B = new int[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
-                B[i][j] = (int) Math.round(D[i][j] / (double) Q2[i][j]);
-                System.out.printf("%d ", B[i][j]);
+                B[i][j] = (int) Math.min(Math.max(-127, Math.round(D[i][j] / (double) Q2[i][j])), 128);
             }
-            System.out.println();
         }
 
-        System.out.println((int) (Math.log(26)/Math.log(2)) + 1);
         //Encoding ZigZag (RLE)
         ArrayList<String> list = new ArrayList<>();
         String s;
@@ -231,17 +228,15 @@ public class JPEG {
 
         for (int i = 0; i < 64; i++) { //Canviar 0 per 1 per a tractar different DC de AC coefficients
             curr = B[ZigZag[i][0]][ZigZag[i][1]];
-            System.out.println("Curr: " + curr);
-            if (curr == 0) count++;
+            //System.out.println("Curr: " + curr);
+            if (curr == 0 && count < 9) count++;
             else {
 
                 st = Integer.toBinaryString(Math.abs(curr));
                 mask = st.length();
                 if(curr < 0) st = Integer.toBinaryString(--curr).substring(32 -mask);
-                System.out.println("count: " + count + ", mask: " +  mask + " : " + HuffmanTables.get(count+ "," + mask));
-                System.out.println("Binary for curr: " + st);
+                if(HuffmanTables.get(count+ "," + mask) == null) System.out.println("curr: " +curr +", count: " + count + " ,mask: " + mask);
                 sb.append(HuffmanTables.get(count+ "," + mask)).append(st);
-
                 count = 0;
             }
         }
@@ -249,9 +244,7 @@ public class JPEG {
         //We have to add the DC coefficient and the 63 other values
         //With RLE and Hufmann (RUNLENTH, SIZE) (AMPLITUDE)
 
-
-        return sb.toString();
-
+        return new BigInteger(sb.toString(), 2).toByteArray();
     }
 
     // Pre : Cert
@@ -259,22 +252,45 @@ public class JPEG {
     // Descripció: Es fa la conversió de l'array d'enters a un bloc mitjançant l'aplicació
     //del decodint del RLE, la desquantització i la DCT inversa.
     // A RLE c es el Nint [0..63] inici i count són les repeticions del caràcter curr
-    private int[][] decompress8(String s) {
-
-
+    public int[][] decompress8(byte[] b) {
 
         //Decoding ZigZag (RLE)
+        String[] RS;
         int[][] B = new int[8][8];
-        int c = 0, curr, count;
+        int c = 0, nbytes, count, z;
+        long l;
+        String numbin, se, mask = "11111111111111111111111111111111";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < b.length; ++i) {
+            String runsize = mapInversed.get(sb.append(s.charAt(i)).toString());
+            if(runsize != null){
+                //System.out.println(sb.toString() + " " + runsize);
+                RS = runsize.split(",");
+                count = Integer.parseInt(RS[0]);
+                nbytes = Integer.parseInt(RS[1]);
 
-        for (int i = 0; i < s.length(); i+=2) {
-            count = s.charAt(i);
-            curr = s.charAt(i+1);
-            for(int j = 0; j < count; ++j) {
-                B[ZigZag[c + j][0]][ZigZag[c + j][1]] = curr;
+                for(int j= 0; j < count; ++j)  B[ZigZag[c + j][0]][ZigZag[c + j][1]] = 0;
+                c+= count;
+
+
+                numbin = s.substring(i+1, i+1 + nbytes);
+                //System.out.println(numbin);
+                if(numbin.charAt(0) == '1') z = Integer.parseInt(numbin, 2);
+                else{
+                    se = mask.substring(numbin.length()) + numbin;
+                    l = Long.parseLong(se, 2) + 1;
+                    z = (int) l;
+                }
+
+                //System.out.println( "Posició c: " +c + " " + z);
+                B[ZigZag[c][0]][ZigZag[c][1]] = z;
+                sb = new StringBuilder();
+                i += nbytes;
+                ++c;
             }
-            c+=count;
+
         }
+
 
         int[][] D = new int[8][8];
         for (int i = 0; i < 8; ++i) {
@@ -286,6 +302,7 @@ public class JPEG {
         //DCT Transform
         return idct(D);
 
+
     }
 
 
@@ -296,19 +313,23 @@ public class JPEG {
     //tantes posicions com NBlocs hi han. I per cada NBlock guardem el
     //resultat codificat, que té longitud variable segons la compressió que
     //aconseguim. De padding utilitzem repetició el caràcter si posx o posy són mes grans que la imatge
-    public byte[] compress(byte[] b) throws JPEGException {
+    public byte[] compress(byte[] b) throws JPEGException, IOException {
 
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
         StringBuilder sb = new StringBuilder();
+        byte[] bs;
         int height = 0, width = 0, Bheight, Bwidth, length, posx, posy, it;
 
         if((char)b[0] != 'P' || (char)b[1] != '6') throw new JPEGException("Format de fitxer no suportat ");
         it = 3;
         char c = (char) b[it];
         StringBuilder str = new StringBuilder();
-        while(c == '#') while(c != '\n') c = (char) b[++it]; // Skip comentaris
+        while(c == '#'){
+            while(c != '\n') c = (char) b[++it]; // Skip comentaris
+            c = (char) b[++it];
+        }
 
 
-        c = (char) b[++it];
         while( c != '\n'){
             if(c != ' ') str.append(c);
             else {
@@ -322,8 +343,12 @@ public class JPEG {
         System.out.println("Width: " + width);
         System.out.println("Height: " + height);
 
-        sb.append(width).append(" ").append(height).append("\n");
-        sb.append(this.quality).append("\n");
+        sb.append(width).append(' ').append(height).append('\n');
+        output.write(sb.toString().getBytes());
+        sb = new StringBuilder();
+        sb.append(this.quality).append('\n');
+        output.write(sb.toString().getBytes());
+
 
         int[][][] YCbCr = new int[3][height][width];
         //Read ints
@@ -339,7 +364,6 @@ public class JPEG {
                 YCbCr[2][i][j] = (int) (128 + 0.5 * red - 0.4187 * green - 0.0813 * blue);
             }
         }
-
 
 
         long start = System.currentTimeMillis(); //Comença a comptar el temps
@@ -370,10 +394,11 @@ public class JPEG {
                         }
                     }
 
-                    s = compress8(m);
-                    mida += s.length();
 
-                    sb.append(s);
+                    bs = compress8(m);
+                    mida += bs.length;
+                    //System.out.println("String: " + s);
+                    output.write(bs);
 
                 }
             }
@@ -384,7 +409,7 @@ public class JPEG {
         this.time = (end - start) / 1000F;
         this.rate = 1 - (double) mida /(double) (height * width + 1);
 
-        return new byte[2];
+        return output.toByteArray();
     }
 
     //Pre: Cert
@@ -393,12 +418,15 @@ public class JPEG {
     //imatge bloc a bloc, llegint els buffers de longitud variable i
     //descomprimint-los obté la submatriu que afegeix q la matriu
     //general.
-    public byte[] descompress(byte[] b) {
+    public byte[] descompress(byte[] b) throws IOException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         int height, width = 0, quality, it = 0;
         //Decodificar height, width i quality a partir del buffer de bytes
         StringBuilder sb = new StringBuilder();
         char c = (char) b[it];
+        System.out.println(c);
         while( c != '\n'){
             if(c != ' ') sb.append(c);
             else {
@@ -416,18 +444,15 @@ public class JPEG {
         }
         quality = Integer.parseInt(sb.toString());
 
-
-
         System.out.println("Comença la descompressió");
 
-        int[][][] buff = new int[0][0][0];
+
         int[][][] YCbCr = new int[3][height][width];
         int Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
         int Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
         int posx, posy;
         int[][] m;
-        System.out.println("Midaesperada " + Bwidth*Bheight);
-        System.out.println("Midabuff: " + buff[0].length);
+
         for(int a = 0; a < 3; a++) {
             if(a < 2) computeQ2(quality, a != 0);
 
@@ -435,13 +460,10 @@ public class JPEG {
                 for(int j = 0; j < width; j+=8) {
                     //System.out.println("Nou bloc");
 
-                    sb = new StringBuilder();
-                    c = (char) b[++it];
-                    while( c != '\n') {
-                        sb.append(c);
-                        c = (char) b[++it];
+                    while( Diferent de EOB){
+                        out.write(b[++it]);
                     }
-                    m = decompress8(sb.toString());
+                    m = decompress8(out.toByteArray());
 
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
@@ -456,9 +478,11 @@ public class JPEG {
         }
 
         sb  = new StringBuilder();
+        out = new ByteArrayOutputStream();
         sb.append("P6\n");
         sb.append(width).append(" ").append(height).append("\n");
         sb.append("255\n");
+        out.write(sb.toString().getBytes());
 
         //YCbCr to RGB and write
         int red,green,blue;
@@ -478,14 +502,14 @@ public class JPEG {
                 green = Math.max(Math.min(green, 255), 0);
                 blue = Math.max(Math.min(blue, 255), 0);
 
-                sb.append(red);
-                sb.append(green);
-                sb.append(blue);
+                out.write(red);
+                out.write(green);
+                out.write(blue);
 
             }
         }
 
-        return sb.toString().getBytes();
+        return out.toByteArray();
     }
 
 }
