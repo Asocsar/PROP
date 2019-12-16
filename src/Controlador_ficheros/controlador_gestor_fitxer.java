@@ -15,18 +15,18 @@ import java.util.List;
 
 public class controlador_gestor_fitxer {
 
-    private static String path_fitxer_carpeta;
-    private static Boolean C_P;
-    private static String id_a;
-    private static gestor_fitxers gestor;
-    private static Integer num_arxius;
+    private String path_fitxer_carpeta;
+    private  Boolean C_P;
+    private String id_a;
+    private gestor_fitxers gestor;
+    private Integer num_arxius;
 
 
 
     //EXCEPCIONS
 
     //Excepció que salta quan un fitxer introduit per a comprimir no és vàlid o no és compatible amb l'algorisme
-    public static class FicheroCompressionNoValido extends Exception {
+    public class FicheroCompressionNoValido extends Exception {
 
         public FicheroCompressionNoValido(String message) {
             super(message);
@@ -34,7 +34,7 @@ public class controlador_gestor_fitxer {
     }
 
     //Excepció que salta quan un fitxer introduit per a comprimir no és vàlid
-    public static class FicheroDescompressionNoValido extends Exception {
+    public class FicheroDescompressionNoValido extends Exception {
 
         public FicheroDescompressionNoValido(String message) {
             super(message);
@@ -47,19 +47,19 @@ public class controlador_gestor_fitxer {
         gestor = new gestor_fitxers();
     }
 
-    public static String get_extensio(){return gestor.get_extensio();}
+    public String get_extensio(){return gestor.get_extensio();}
 
-    public static String path_if_null(){
+    public  String path_if_null(){
         return gestor.path_if_null();
     }
 
-    public static boolean dir_or_arch(String path){ return gestor.dir_or_arch(path);}
+    public boolean dir_or_arch(String path){ return gestor.dir_or_arch(path);}
 
-    public static List<String> getPaths_no_valids(){ return gestor.getPaths_no_valids();}
+    public List<String> getPaths_no_valids(){ return gestor.getPaths_no_valids();}
 
 
     //COMPRESIO DE CARPETES:
-    public static List<String> get_paths_carpeta(String Path_o, String path_desti, String id) throws IOException {
+    public List<String> get_paths_carpeta(String Path_o, String path_desti, String id) throws IOException {
         List<String> paths_fitxers;
         String exten =getExtensio(id);
         String path_dest;
@@ -79,7 +79,7 @@ public class controlador_gestor_fitxer {
 
 
 
-    public static void write_c_folder(String Path_o, byte[] encoded) throws IOException {
+    public void write_c_folder(String Path_o, byte[] encoded) throws IOException {
         gestor.write_compressed_folder(encoded, Path_o,path_fitxer_carpeta);
 
     }
@@ -88,24 +88,24 @@ public class controlador_gestor_fitxer {
 
     public void reset_bytes_llegits(){gestor.reset_bytes_llegits();}
 
-    public static String find_path(String a){
+    public String find_path(String a){
         return gestor.find_path(a);
     }
 
-    public static Integer read_tamany(String path_fitxer_carpeta) throws IOException {
+    public Integer read_tamany(String path_fitxer_carpeta) throws IOException {
         return gestor.read_tamany(path_fitxer_carpeta);
     }
 
 
 
-    public static String[] extensiones_validas(){
+    public String[] extensiones_validas(){
         return gestor.extensiones_validas();
     }
 
 
     //PRE: Path_original ha de ser vàlid
     //POST: Retorna l’estructura de dades necessària obtinguda del fitxer del path_original, depenent de si és una compressió o descompressió i de l’algorisme que s’utilitzarà.
-    public static byte[] get_buffer(String Path_original, Boolean c_p, String id) throws IOException, FicheroCompressionNoValido, FicheroDescompressionNoValido {
+    public byte[] get_buffer(String Path_original, Boolean c_p, String id) throws IOException, FicheroCompressionNoValido, FicheroDescompressionNoValido {
         C_P = c_p;
         id_a = id;
         byte b[] = null;
@@ -137,7 +137,7 @@ public class controlador_gestor_fitxer {
 
     //PRE: path_og ha de ser vàlid
     //POST: Crea un fitxer amb el resultat de la compressió o descompressió passat per paràmetre.
-    public static void writeFile(Object write, String Path_desti) throws IOException {
+    public void writeFile(Object write, String Path_desti) throws IOException {
         if (!C_P) {
             gestor.c_e_fichero_descomp(Path_desti, write);
         } else gestor.c_e_fichero_comp(Path_desti, write);
@@ -145,11 +145,11 @@ public class controlador_gestor_fitxer {
 
     //PRE: Cert
     //POST: Retorna el contingut del fitxer en el path "path" en un string
-    public static String obtenir_fitxer(String path) throws IOException {
+    public String obtenir_fitxer(String path) throws IOException {
         return gestor.read_file(path);
     }
 
-    public static String getAlgoritme(String path_o) {
+    public String getAlgoritme(String path_o) {
         String aux = path_o.substring(path_o.length() - 2);
         switch (aux) {
             case "f8" :
@@ -178,7 +178,7 @@ public class controlador_gestor_fitxer {
         return null;
     }
 
-    private static String getExtensio(String id_s) {
+    private String getExtensio(String id_s) {
         switch (id_s) {
             case "LZ78":
                 return ".F8";
