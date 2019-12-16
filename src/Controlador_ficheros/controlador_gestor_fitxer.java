@@ -1,11 +1,6 @@
 package Controlador_ficheros;
 
 
-
-
-import Gestor_fitxeros.gestor_fitxers;
-
-
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -88,9 +83,9 @@ public class controlador_gestor_fitxer {
 
     public void reset_bytes_llegits(){gestor.reset_bytes_llegits();}
 
-    public String find_path(String a){
+   /* public String find_path(String a){
         return gestor.find_path(a);
-    }
+    }*/
 
     public Integer read_tamany(String path_fitxer_carpeta) throws IOException {
         return gestor.read_tamany(path_fitxer_carpeta);
@@ -207,21 +202,21 @@ public class controlador_gestor_fitxer {
     }
 
     public String path_dest_carpeta(String path_carpeta_comprimida, String path_destino){
-       return gestor.path_dest_carpeta(path_carpeta_comprimida,path_destino);
+        return gestor.path_dest_carpeta(path_carpeta_comprimida,path_destino);
     }
 
     public void  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit) throws IOException {
         gestor.write_fitxer_carpeta_desc(path_c_og,path_dest_c,path_fichero,fdescomprimit);
     }
- 
+
     public void crea_dir_desc(String path_destino_carpeta) throws IOException {
         gestor.create_dir_comp(path_destino_carpeta);
     }
-    
+
     public String read_path(String path_fitxer_carpeta) throws IOException {
-       return gestor.read_path(path_fitxer_carpeta);
+        return gestor.read_path(path_fitxer_carpeta);
     }
-    
+
     public byte[] read_file_compressed(Integer bytesfichero, String path_fitxer_carpeta) throws IOException {
         return gestor.read_file_compressed(bytesfichero,path_fitxer_carpeta);
     }
