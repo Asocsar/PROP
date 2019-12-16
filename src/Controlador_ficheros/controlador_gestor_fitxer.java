@@ -3,6 +3,9 @@ package Controlador_ficheros;
 
 
 
+import Gestor_fitxeros.gestor_fitxers;
+
+
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,6 +85,8 @@ public class controlador_gestor_fitxer {
     }
 
     //DESCOMPRESIO DE CARPETES:
+
+    public void reset_bytes_llegits(){gestor.reset_bytes_llegits();}
 
     public static String find_path(String a){
         return gestor.find_path(a);
@@ -201,74 +206,25 @@ public class controlador_gestor_fitxer {
         return gestor.compare_g(aux, id);
     }
 
-    public void path_dest_carpeta(String path_carpeta_comprimida, String path_destino){
-        gestor.path_dest_carpeta(path_carpeta_comprimida,path_destino);
+    public String path_dest_carpeta(String path_carpeta_comprimida, String path_destino){
+       return gestor.path_dest_carpeta(path_carpeta_comprimida,path_destino);
     }
-   /* public static void main(String[] args) throws IOException, FicheroDescompressionNoValido, FicheroCompressionNoValido {
-        gestor= new gestor_fitxers();
-        String path_carpeta = "/home/pau/Escritorio/X";
-        String path_desti = "";
-        List<String> a= get_paths_carpeta(path_carpeta,path_desti,"LZ78");
-        for(int i=0; i < a.size(); ++i){
-            byte[] aux_testeo= get_buffer(a.get(i),true,"LZ78");
-            write_c_folder(a.get(i),aux_testeo);
-        }
 
-        String path_carpeta_com= "/home/pau/Escritorio/X.F8";
-
-        String b= find_path(path_carpeta_com);
-        gestor.reset_bytes_llegits();
-        Integer i= read_tamany(b);
-        String path_fitxer= gestor.read_path(b);
-
-        Integer i_a= read_tamany(b);
-
-        byte[] aux= gestor.read_file_compressed(i_a,b);
-        System.out.println();
-        File file = new File("/home/pau/Escritorio/tmp.txt");
-        if (file.createNewFile()) {
-            FileOutputStream fop= new FileOutputStream(file);
-            fop.write(aux);
-            fop.flush();
-            fop.close();
-        }
-    }*/
-
-    /*EL CONTROLADOR C/D DEBERIA HACER:
-
-    COMPROVACION DE DIRETORIO O FITXERO: I.dir_or_arch(paht_origen)
-
-    --PARA COMPRESION:
-       List<Srting> a=  I.get_paths_carpeta(path_origen_carpeta, path_destino, id_algorismo)
-       for(i < a.size){
-           bool jpeg= I.es_jpeg(a.get(i));
-           byte[] aux= I.get_buffer(a.get(i), true, id_algorismo);
-            I.write_c_folder(a.get(i), aux);
-       }
-
-     -- PARA DESCOMPRESION:
-        (ANTES DE EMPEZAR) I.reset_bytes_llegits();
-        String id_algorismo= I.getAlgoritme(path_carpeta_comprimida)
-        String path_fitxer_carpeta_comprimida= I.find_path(path_carpeta_comprimida)
-        String path_destino_carpeta = I.path_dest_carpeta(path_carpeta_comprimida, path_destino)
-        I.crea_dir_desc(path_destino_carpeta)
-        int numerodeficheros= I.read_tamany(path_fitxer_carpeta)
-        for(i < numerodeficheros){
-            String pathdelfichero= I.read_path(path_fitxer_carpeta);
-            I.cc_directori(pathdelfichero)                                                                                //MIRA SI EL DIRECTORIO DEL FICHERO EXISTE Y SI NO LO CREA
-            bool jpeg= I.es_jpeg(path_del_fichero);                                                                       //SI ES VERDAD ES QUE SE HA DE DESCOMPRIMIR CON JPEG
-            Int bytesfichero= I.read_tamany(path_fitxer_carpeta);
-            byte[] encoded= I.read_file_compressed(bytesfichero, path_fitxer_carpeta);
-
-            PASSAR ENCODED A DESCOMPRIMIR CON EL ALGORITMO EN CUESTION
-
-            I.write_fitxer_carpeta_desc(path_carpeta_comprimida, path_destino_carpeta, pathdelfichero, fdescomprimit)
-
-        }
-
-
-
-     */
+    public void  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit) throws IOException {
+        gestor.write_fitxer_carpeta_desc(path_c_og,path_dest_c,path_fichero,fdescomprimit);
+    }
+ 
+    public void crea_dir_desc(String path_destino_carpeta) throws IOException {
+        gestor.create_dir_comp(path_destino_carpeta);
+    }
+    
+    public String read_path(String path_fitxer_carpeta) throws IOException {
+       return gestor.read_path(path_fitxer_carpeta);
+    }
+    
+    public byte[] read_file_compressed(Integer bytesfichero, String path_fitxer_carpeta) throws IOException {
+        return gestor.read_file_compressed(bytesfichero,path_fitxer_carpeta);
+    }
 
 }
 
