@@ -58,6 +58,8 @@ public class Interfaz extends JFrame {
                 }
             });
 
+
+
             add(label);
             add(textField);
             add(button);
@@ -339,7 +341,7 @@ public class Interfaz extends JFrame {
 
                 } else {
                     try {
-                        if (!directorio)
+                        if (!directorio && Picker1.getSelectedFilePath().substring(Picker1.getSelectedFilePath().length()-2).charAt(0) != 'F')
                             if (Accion.getText().equals("Comprimir"))
                                 C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo));
                             else
@@ -370,7 +372,7 @@ public class Interfaz extends JFrame {
 
                 } catch (IOException ex) {
                     ex.printStackTrace();
-                } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido ficheroCompressionNoValido) {
+                } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido | Cont_CD.NoCompress ficheroCompressionNoValido) {
                     JOptionPane.showMessageDialog(frame, ficheroCompressionNoValido.getMessage());
                 } catch (BadLocationException ex) {
                     ex.printStackTrace();
