@@ -1,4 +1,11 @@
-package Algorismes.LZW;
+/**
+ * /file LZW.java
+ * /author Daniel Cano
+ * /title Algorisme LZW
+ */
+
+package Algoritmes;
+
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -7,41 +14,41 @@ import java.lang.Math;
 
 /** \class LZW */
 
-public class LZW {
+public class LZW extends Algoritmes {
 
     //diccionaris que contenen la assosiació entre una seqüència de bytes i un enter
     private Map<List<Byte>, Integer> Alfabet = new HashMap<List<Byte>, Integer>();
     //diccionari que té associat a cada identificador una seqüència de Bytes
     private Map<Integer, List<Byte>> Alfabet_inv = new HashMap<Integer, List<Byte>>();
 
-  
+
 
     /** \brief Obtenció del temps de compressió
-        \pre Cert
-        \post Es retorna el temps de l'última compressió.
-    */
+     \pre Cert
+     \post Es retorna el temps de l'última compressió.
+     */
     public double getTime () {return  super.time;}
-    
+
     /** \brief Obtenció del ratio de compressió
-        \pre Cert
-        \post Es retorna el ratio de l'última compressió.
-    */
-    public double getRate () {return  super.rate;}
+     \pre Cert
+     \post Es retorna el ratio de l'última compressió.
+     */
+    public double getRate () {return  super.grade;}
 
     /** \brief Creadora
-        \pre Cert
-        \post Es crea una instància de la classe LZW
-    */
+     \pre Cert
+     \post Es crea una instància de la classe LZW
+     */
     public LZW () {
         create_alfa();
         super.time = 0;
-        super.rate = 0;
+        super.grade = 0;
     }
 
     /** \brief Alfabets
-        \pre Cert
-        \post S'inicialitzen les variables Alfabet i Alfabet_inv
-    */
+     \pre Cert
+     \post S'inicialitzen les variables Alfabet i Alfabet_inv
+     */
     private void create_alfa() {
         int aux = 0;
         byte n = 0;
@@ -57,12 +64,12 @@ public class LZW {
     }
 
 
-     /** \brief Codificació de l'arxiu font en byte[] amb l'algorisme_LZW
-        \pre Cert
-        \post Retorna un byte[] representant el fitxer comprimt
-    */
-    
-   public byte[] compress(byte [] file)  {
+    /** \brief Codificació de l'arxiu font en byte[] amb l'algorisme_LZW
+     \pre Cert
+     \post Retorna un byte[] representant el fitxer comprimt
+     */
+
+    public byte[] compress(byte [] file)  {
         long start = System.currentTimeMillis();
         // Creem el diccionari de forma local a la funció per un acces més ràpid
         Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
@@ -121,9 +128,9 @@ public class LZW {
 
 
     /** \brief Descompressió LZ78
-        \pre Cert
-        \post Retorna un byte[] corresponent a la decodificació de l'arxiu comprimit.
-    */
+     \pre Cert
+     \post Retorna un byte[] corresponent a la decodificació de l'arxiu comprimit.
+     */
     public byte[] descompress (byte[] bytes) {
         if (bytes.length == 0) {
             return new byte[0];

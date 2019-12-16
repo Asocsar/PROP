@@ -1,10 +1,18 @@
-package Algorismes.LZ78;
+/**
+ * /file LZ78.java
+ * /author Pau Frederic Bujons
+ * /title Algorisme LZ78
+ */
+
+package Algoritmes;
+
+import Algoritmes.Algoritmes;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.String;
 
-public class LZ78 {
+public class LZ78 extends Algoritmes {
     
 
     /** \brief Creadora
@@ -20,7 +28,7 @@ public class LZ78 {
         \pre Cert
         \post Es retorna el temps de l'última compressió.
     */
-    public double get_time() {
+    public double get_Time() {
 
         return super.time;
     }
@@ -29,7 +37,7 @@ public class LZ78 {
         \pre Cert
         \post Es retorna el ratio de l'última compressió.
     */
-    public double get_ratio() {
+    public double get_Rate() {
         return super.grade;
     }
     
@@ -137,7 +145,7 @@ public class LZ78 {
         \post Retorna un byte[] corresponent a la decodificació de l'arxiu comprimit
     */
 
-    public static byte[] descompress(byte[] aux) {
+    public  byte[] descompress(byte[] aux) {
             double starttime = System.currentTimeMillis();
             int x=0;
             Byte[] file = new Byte[aux.length];
