@@ -4,13 +4,15 @@
  * /title Algorisme LZSS
  */
 
-package Algoritmes.LZSS;
+package Algoritmes;
+import Algoritmes.Algoritmes;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 import java.lang.*;
 
-public class LZSS {
+public class LZSS extends Algoritmes {
 
     /** \brief Creadora
      \pre Cert
@@ -183,7 +185,7 @@ public class LZSS {
 
         double endTime = System.currentTimeMillis();
         super.time = (endTime - startTime);                                               //Càlcul del temps de compressió i assignació a variable de la superclasse
-        (file.length > 0) ? super.grade = (double)encoded.size()/(double)file.length : 0; //Càlcul del ratio de compressió i assignació a variable de la superclasse
+        if(file.length > 0) super.grade = (double)encoded.size()/(double)file.length;     //Càlcul del ratio de compressió i assignació a variable de la superclasse
 
         // Conversió de la llista a un byte[]
         byte [] retur = new byte [result.size()];
