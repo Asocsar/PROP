@@ -137,11 +137,17 @@ public class gestor_fitxers {
     }
 
     //A PARTIR D'EL PATH D'UN FITXER, COMPROVA SI EL DIRECTORI ON ESTA EXISTEIX, I EN CAS DE QUE NO, EL CREA
-    private void cc_directori(String path_fitxer){
+    private String cc_directori(String path_fitxer, String path_c_original, String path_desti){
         int pos= path_fitxer.lastIndexOf("/");
         String dir= path_fitxer.substring(0,pos);
-        File dire = new File(dir);
+        String new_dir;
+        if (!(dir == path_c_original)){
+            new_dir= path_desti + path_c_original.substring(path_fitxer.length());
+        }
+        else new_dir= dir;
+        File dire = new File(new_dir);
         dire.mkdir();
+        return new_dir;
     }
 
     //CREA UN DIRECTORI
@@ -156,7 +162,6 @@ public class gestor_fitxers {
         File file= new File(path_fitxer_carpeta);
         FileInputStream fip= new FileInputStream(file);
         List<Byte> file_readed= new ArrayList<>();
-        int x= bytes_llegits;
         fip.skip(bytes_llegits);
         for(int i=0; i < tam_fitxer; ++i){
             byte ax=(byte)fip.read();
@@ -406,8 +411,21 @@ public class gestor_fitxers {
         else{
             String aux= get_nom_carpeta(path_carpeta_comprimida);
             Path dest= Paths.get(path_destino,aux);
+            crea_dir_desc(dest.toString());
             return dest.toString();
         }
+    }
+
+    public void  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit) throws IOException {
+        String dest_final=  cc_directori(path_fichero,path_c_og,path_dest_c);
+        String nom_f= path_fichero.substring(path_fichero.lastIndexOf("/"));
+        Path direccio = Paths.get(dest_final,nom_f);
+        File file= new File(direccio.toString());
+        file.createNewFile();
+        FileOutputStream fop= new FileOutputStream(file);
+        fop.write(fdescomprimit);
+        fop.flush();
+        fop.close();
     }
 
 
