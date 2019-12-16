@@ -1,44 +1,55 @@
-package Algoritmes;
+/**
+ * /file LZSS.java
+ * /author Alexandre Sánchez
+ * /title Algorisme LZSS
+ */
+
+package Algoritmes.LZSS;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 import java.lang.*;
 
-public class LZSS extends Algoritmes {
+public class LZSS {
 
-    public LZSS() { }
+    /** \brief Creadora
+     \pre Cert
+     \post Es crea una instància de la classe LZSS
+     */
 
+    public LZSS() {
+        super.time = 0.0;
+        super.grade = 0.0;
+        this.search_buffer = 0;
+    }
 
-    private  double CompressTime;
-
-    private double CompressRatio;
 
     private int search_buffer;
 
-    //DESCRIPCIÓ DEL MÈTODE : Obtenim el ratio de compressió
-    //PRE: Cert
-    //POST: Es retorna el ratio de compressió.
-    //EXCEPCIONS:
-
+    /** \brief Obtenció del ratio de compressió
+     \pre Cert
+     \post Es retorna el ratio de l'última compressió.
+     */
     public  double getRate() {
-        return CompressRatio;
+        return super.time;
     }
 
 
-    //DESCRIPCIÓ DEL MÈTODE : Obtenim el temps de compressió
-    //PRE: Cert
-    //POST: Es retorna el temps de compressió.
-    //EXCEPCIONS:
+    /** \brief Obtenció del temps de compressió
+     \pre Cert
+     \post Es retorna el temps d l'última compressió.
+     */
 
     public  double getTime() {
-        return CompressTime;
+        return super.grade;
     }
 
 
-    //DESCRIPCIÓ DEL MÈTODE : Codifiació de l'arxiu font en un array de bytes amb l'algorisme LZSS
-    //PRE: file.size() > 3
-    //POST: Es retorna un array de bytes amb els elements codificats
-    //EXCEPCIONS: file.size() <= 3
+    /** \brief Compressió en LZSS
+     \pre: file.size() > 3
+     \post: Es retorna un array de bytes amb els elements codificats segons LZSS
+     \throw "fitxer de mida no comprimible" si file.size() < 3
+     */
 
 
     public  byte[] compress(byte[] file)  {
@@ -74,8 +85,7 @@ public class LZSS extends Algoritmes {
                     ++i;
                 }
                 return retur;
-                /*Byte[] lilsize = result.toArray(new Byte[file.length]);
-                return lilsize;*/
+
             }
 
             if (file.length <= 4095) search_buffer = 0;
@@ -170,12 +180,12 @@ public class LZSS extends Algoritmes {
                 }
             }
         }
-        // if (encoded.size() > 1) encoded = encoded.subList(0,encoded.size());
-        //Byte[] byteencoding = encoded.toArray(new Byte[encoded.size()]); //Convertim la llista a un byte[]
 
         double endTime = System.currentTimeMillis();
-        CompressTime = (endTime - startTime);                       //Càlcul del temps de compressió i assignació a variable global
-        CompressRatio = (double)encoded.size()/(double)file.length; //Càlcul del ratio de compressió i assignació a variable global
+        super.time = (endTime - startTime);                                               //Càlcul del temps de compressió i assignació a variable de la superclasse
+        (file.length > 0) ? super.grade = (double)encoded.size()/(double)file.length : 0; //Càlcul del ratio de compressió i assignació a variable de la superclasse
+
+        // Conversió de la llista a un byte[]
         byte [] retur = new byte [result.size()];
         int i = 0;
         for (Byte b : encoded) {
@@ -185,10 +195,11 @@ public class LZSS extends Algoritmes {
         return retur;
     }
 
-    //DESCRIPCIÓ DEL MÈTODE : Codificació en una sola llista d'una màscara i els elements corresponents als bits d'aquesta
-    //PRE: Cert
-    //POST: Es retorna una llista composta per un byte de màscara i els elements als qui fa referència
-    //EXCEPCIONS:
+
+    /** \brief Codificació en una sola llista d'una màscara i els elements corresponents als bits d'aquesta
+     \pre Cert
+     \post Es retorna una llista composta per un byte de màscara i els elements als qui fa referència
+     */
 
     private  List<Byte> encode(String mask, List<Byte> current) {
         //Codifiquem en una sola llista la màscara actual i els elements corresponents a aquesta màscara
@@ -206,20 +217,17 @@ public class LZSS extends Algoritmes {
 
 
 
-    //DESCRIPCIÓ DEL MÈTODE: Descodifiquem en un string l'array de bytes de l'arxiu comprimit
-    //PRE: Bencoded és un arxiu codificat segons LZSS
-    //POST: És retorna la cadena de caràcters corresponent a la descodificació de Bencoded
-    //EXCEPCIONES:
-
+    /** \brief Descompressió en LZSS
+     \pre encoded és un arxiu codificat segons LZSS
+     \post Retorna una List<Byte> corresponent a la descodificació d' encoded
+     */
 
     public byte[] descompress(byte[] entrada)  {
         List<Byte> encoded = new ArrayList<Byte>(entrada.length);
         for (byte b : entrada) {
             encoded.add(b);
         }
-        //List<Byte> encoded = Arrays.asList(Bencoded);
         List<Byte> result = new ArrayList<>();
-        //StringBuilder result = new StringBuilder();
         int resultindex = 0;
         while (encoded.size() < 4 && resultindex < encoded.size()) {
             result.add(encoded.get(resultindex++));
