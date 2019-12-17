@@ -1,9 +1,13 @@
 package Algoritmes.JPEG;
 
 
+import com.sun.org.apache.bcel.internal.generic.IFLE;
+
 import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -19,11 +23,12 @@ public class Driver_JPEG {
         3. El path destí del fitxer descomprimit PPM, per comparar-lo amb l'original.
 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         try {
             /*
             //Provar compress per fer l'exemple d wikipedia'
             JPEG J = new JPEG(50);
+
 
             int[][] m = {
                     {52, 55, 61, 66, 70, 61, 64, 73},
@@ -34,6 +39,15 @@ public class Driver_JPEG {
                     {79, 65, 60, 70, 77, 68, 58, 75},
                     {85, 71, 64, 59, 55, 61, 65, 83},
                     {87, 79, 69, 68, 65, 76, 78, 94}};
+
+            byte[] b = J.compress8(m);
+            System.out.println("Length: "+ b.length);
+            System.out.println(new String(b));
+
+
+
+
+
 
 
             //System.out.println(s);
@@ -46,16 +60,22 @@ public class Driver_JPEG {
                 System.out.println();
             }
             
+
             */
+
             Scanner S = new Scanner(System.in);
+            /*
             System.out.println("Introdueix el path del fitxer a comprimir");
             System.out.println("Exemple: /home/usr/fitxer");
             String path = S.next();
+            */
+            String path = "/home/maller/Downloads/PROP/codi/JPEG/Jocsdeprova/internet/compressed/vuit.ppm";
+
             File infile = new File(path);
 
             System.out.println("Introdueix la qualitat de compressió (0-100)");
             int quality =  Integer.parseInt(S.next());
-            JPEG J = new JPEG(quality);
+            JPEG J  = new JPEG(quality);
 
 
             byte [] buffin = Files.readAllBytes(infile.toPath());
@@ -101,6 +121,34 @@ public class Driver_JPEG {
         } catch (JPEG.JPEGException e) {
             e.printStackTrace();
         }
+
+             /*
+
+            String outfile = "/home/maller/Downloads/PROP/codi/JPEG/Jocsdeprova/internet/compressed/vuit.ppm";
+            FileOutputStream fo = new FileOutputStream(outfile);
+            ByteArrayOutputStream out;
+            StringBuilder sb  = new StringBuilder();
+            out = new ByteArrayOutputStream();
+
+            sb.append("P6\n");
+            sb.append(8).append(" ").append(8).append("\n");
+            sb.append("255\n");
+            out.write(sb.toString().getBytes());
+
+            for (int i = 0; i < 8; ++i) {
+                for (int j = 0; j < 8; ++j) {
+                    for(int a = 0; a < 3; ++a) {
+                        out.write(m[i][j]);
+                    }
+                }
+            }
+
+            fo.write(out.toByteArray());
+            fo.close();
+
+            */
+
+
 
     }
 }
