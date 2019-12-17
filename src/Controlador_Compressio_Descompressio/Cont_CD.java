@@ -178,6 +178,7 @@ public class Cont_CD {
         \post Comprimeix la carpeta situat al path_o i el desa al path_d
     */
     public void compressio_carpeta (String path_o, String path_d,String id) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
+        public void compressio_carpeta (String path_o, String path_d,String id) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         List<String> a =  I.get_paths_carpeta(path_o, path_d, id);
         for (String s : a) {
@@ -194,24 +195,18 @@ public class Cont_CD {
         \pre path_o ha de ser vàlid
         \post Descomprimeix la carpeta situat al path_o i el desa al path_d
     */
-    public void descompressio_carpeta (String path_o, String path_d) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
+     public void descompressio_carpeta (String path_o, String path_d) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         I.reset_bytes_llegits();
-        String id_algorismo = I.getAlgoritme(path_o);
-        String path_fitxer_carpeta_comprimida = path_o;
+        String algoritmo_usado = I.getAlgoritme(path_o);
+        String path_fitxer_carpeta_comprimida = I.read_path(path_o);
         String path_destino_carpeta = I.path_dest_carpeta(path_o, path_d);
-        //I.crea_dir_desc(path_destino_carpeta);
-        int numerodeficheros = I.read_tamany(path_fitxer_carpeta_comprimida);
+        int numerodeficheros = I.read_tamany(path_o);
         for (int i = 0; i < numerodeficheros; ++i) {
-            String pathdelfichero = I.read_path(path_fitxer_carpeta_comprimida);
-            //MIRA SI EL DIRECTORIO DEL FICHERO EXISTE Y SI NO LO CREA
-            boolean jpeg = I.is_jpeg(path_fitxer_carpeta_comprimida);                                                                //SI ES VERDAD ES QUE SE HA DE DESCOMPRIMIR CON JPEG
-            String algoritmo_usado = id_algorismo;
-            if (jpeg) algoritmo_usado = "JPEG";
-            int bytesfichero = I.read_tamany(path_fitxer_carpeta_comprimida);
-            byte[] encoded = I.read_file_compressed(bytesfichero, path_fitxer_carpeta_comprimida);
-            //PASSAR ENCODED A DESCOMPRIMIR CON EL ALGORITMO EN CUESTION
-            byte[] fdescomprimit = action(path_fitxer_carpeta_comprimida, algoritmo_usado, false, I, bytesfichero);
+            String pathdelfichero = I.read_path(path_o);
+            if (I.is_jpeg(pathdelfichero)) algoritmo_usado = "JPEG";
+            int bytesfichero = I.read_tamany(path_o);
+            byte[] fdescomprimit = action(path_o, algoritmo_usado, false, I, bytesfichero);
             I.write_fitxer_carpeta_desc(path_fitxer_carpeta_comprimida, path_destino_carpeta, pathdelfichero, fdescomprimit);
         }
     }
