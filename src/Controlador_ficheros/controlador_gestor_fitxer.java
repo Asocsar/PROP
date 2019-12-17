@@ -14,7 +14,7 @@ public class controlador_gestor_fitxer {
     private  Boolean C_P;
     private String id_a;
     private gestor_fitxers gestor;
-    private Integer num_arxius;
+
 
 
 
@@ -57,10 +57,11 @@ public class controlador_gestor_fitxer {
     public List<String> get_paths_carpeta(String Path_o, String path_desti, String id) throws IOException {
         List<String> paths_fitxers;
         String exten =getExtensio(id);
+        gestor.act_path_carpeta_og(Path_o);
         String path_dest;
         if(path_desti.equals("")) path_dest = Path_o + exten;
         else{
-            String s_aux= gestor.get_nom_carpeta(Path_o) + exten;
+            String s_aux= gestor.get_nom_carpeta2(Path_o) + exten;
             Path p_aux= Paths.get(path_desti,s_aux);
             path_dest = p_aux.toString();
         }
@@ -72,7 +73,9 @@ public class controlador_gestor_fitxer {
         return paths_fitxers;
     }
 
-
+    public String getNom_fitxer(){
+        return gestor.getNom_fitxer();
+    }
 
     public void write_c_folder(String Path_o, byte[] encoded) throws IOException {
         gestor.write_compressed_folder(encoded, Path_o,path_fitxer_carpeta);
@@ -222,4 +225,3 @@ public class controlador_gestor_fitxer {
     }
 
 }
-
