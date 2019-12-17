@@ -18,14 +18,17 @@ public class Cont_Est {
      \throw IOException
      */
 
-    public static void Stats_Update() throws  IOException {
+    public void Stats_Update() throws  IOException {
 
         //Update stats from last compression
 
         Estadistiques E = new Estadistiques();
-        File out = new File("/home/clums/Escriptori/UpdateEstadisticas.txt");
+        File out = new File("Estadisticas.txt");
         if (!out.exists()) out.createNewFile();
         PrintWriter pw = new PrintWriter(new FileWriter(out));
+        pw.print("");
+        pw.close();
+        pw = new PrintWriter(new FileWriter(out));
 
         List<Double>  actalg = new ArrayList<>();
 
@@ -35,7 +38,7 @@ public class Cont_Est {
         E.setLZW(actalg);
 
 
-        pw.print(0+"," + actalg.get(0) +","+ actalg.get(1) +","+ actalg.get(2) + ","+ actalg.get(3) +","+ actalg.get(4) + actalg.get(5) + actalg.get(6) + actalg.get(7) + actalg.get(8) + "\n");
+        pw.print(0+"," + actalg.get(0) +","+ actalg.get(1) +","+ actalg.get(2) + ","+ actalg.get(3) +","+ actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
 
         // Save Stats LZSS
 
@@ -43,7 +46,7 @@ public class Cont_Est {
         E.setLZSS(actalg);
 
 
-        pw.print(1+"," + actalg.get(0) +","+ actalg.get(1) +","+ actalg.get(2) + ","+ actalg.get(3) +","+ actalg.get(4) + actalg.get(5) + actalg.get(6) + actalg.get(7) + actalg.get(8) + "\n");
+        pw.print(1+"," + actalg.get(0) +","+ actalg.get(1) +","+ actalg.get(2) + ","+ actalg.get(3) +","+ actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
 
 
         // Save Stats LZ78
@@ -51,7 +54,7 @@ public class Cont_Est {
         actalg = Estadistiques.act(E.getTimeLZ78(),E.getGlobTimeLZ78(),E.getDTimeLZ78(),E.getDGlobTimeLZ78(),E.getRatioLZ78(),E.getGlobRatioLZ78(),E.getVelLZ78(),E.getQuantLZ78(),E.getDQuantLZ78());
         E.setLZ78(actalg);
 
-        pw.print(2+"," + actalg.get(0) +","+ actalg.get(1) +","+ actalg.get(2) + ","+ actalg.get(3) +","+ actalg.get(4) + actalg.get(5) + actalg.get(6) + actalg.get(7) + actalg.get(8) + "\n");
+        pw.print(2+"," + actalg.get(0) +","+ actalg.get(1) +","+ actalg.get(2) + ","+ actalg.get(3) +","+ actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
 
 
         // Save Stats JPEG
@@ -59,7 +62,7 @@ public class Cont_Est {
         actalg = Estadistiques.act(E.getTimeJPEG(),E.getGlobTimeJPEG(),E.getDTimeJPEG(),E.getDGlobTimeJPEG(),E.getRatioJPEG(),E.getGlobRatioJPEG(),E.getVelJPEG(),E.getQuantJPEG(),E.getDQuantJPEG());
         E.setJPEG(actalg);
 
-        pw.print(3+"," + actalg.get(0) +","+ actalg.get(1) +","+ actalg.get(2) + ","+ actalg.get(3) +","+ actalg.get(4) + actalg.get(5) + actalg.get(6) + actalg.get(7) + actalg.get(8) + "\n");
+        pw.print(3+"," + actalg.get(0) +","+ actalg.get(1) +","+ actalg.get(2) + ","+ actalg.get(3) +","+ actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
 
         //Save Last Algorithm
 
@@ -79,10 +82,10 @@ public class Cont_Est {
      */
 
 
-    public static void GetStats () throws IOException{ //Set stats from file to classes
+    public void GetStats () throws IOException{ //Set stats from file to classes
 
 
-        File OldStats = new File("/home/clums/Escriptori/NuevasEstadisticas.txt");
+        File OldStats = new File("Estadisticas.txt");
 
         //Creation of the file if needed
 
@@ -94,7 +97,7 @@ public class Cont_Est {
                     pw.print("1" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZSS
                     pw.print("2" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZ78
                     pw.print("3" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //JPEG
-                    pw.print("4" + "," + "null");                                                                                                       //LAST ALGORITHM USED
+                    pw.print("4" + "," + "Cap");                                                                                                       //LAST ALGORITHM USED
                     pw.close();
                 }
             }
@@ -110,7 +113,7 @@ public class Cont_Est {
         String line = "";
         int id;
         while ((act = file.read()) != -1) {
-
+            act = Double.valueOf(Character.toString((char) act));
             if (act == 0 | act == 1 | act == 2 | act == 3 | act == 4) {
                 id = (int)act;
                 line = file.readLine();
@@ -118,13 +121,17 @@ public class Cont_Est {
                 // Get numeric values from file : timelast,timeglob,ratelast,rateglob,quant
 
                 List<Double> values = new ArrayList<>(9);
+                String cas_especial = "";
                 for (int i = 0; i < line.length(); ++i) {
                     String actnumber = "";
-                    while (line.charAt(i) != ',') {
+                    while (i < line.length() && line.charAt(i) != ',') {
                         actnumber += line.charAt(i);
                         ++i;
+                        //System.out.println(i);
                     }
-                    values.add(Double.parseDouble(actnumber));
+                    if (actnumber.equals("Cap")) actnumber = "-1";
+                    if (id == 4) cas_especial = actnumber;
+                    else if (actnumber != "") values.add(Double.parseDouble(actnumber));
                 }
 
                 // Set stats to algorithms
@@ -151,7 +158,7 @@ public class Cont_Est {
 
                     case 4: //LastAlgorithmUsed
 
-                        oldE.setLastAlg(line);
+                        oldE.setLastAlg(cas_especial);
 
                     default:
                         break;
