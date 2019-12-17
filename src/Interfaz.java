@@ -1,6 +1,7 @@
 
 import Controlador_Compressio_Descompressio.Cont_CD;
 import Controlador_ficheros.controlador_gestor_fitxer;
+import Estadístiques.Estadistiques;
 import com.sun.deploy.panel.JSmartTextArea;
 
 
@@ -50,6 +51,7 @@ public class Interfaz extends JFrame {
             textField = new JTextField(20);
             textField.setEditable(false);
             button = new JButton(buttonLabel);
+            this.button.setBackground(Color.decode("#F0F6F7"));
 
             button.addActionListener(new ActionListener() {
                 @Override
@@ -189,31 +191,6 @@ public class Interfaz extends JFrame {
         }
     }
 
-
-    public class Framepop extends JFrame {
-        JFrame Frame = new JFrame();
-        TextField tf1 = new TextField();
-        TextField tf2 = new TextField();
-
-        public Framepop (String s1, String s2) {
-            super("Comparacion");
-            Frame.setEnabled(true);
-            Frame.setVisible(true);
-            Frame.setSize(300, 300);
-            tf1.setEnabled(true);
-            tf2.setEnabled(true);
-            tf1.setEditable(false);
-            tf2.setEditable(false);
-            tf1.setVisible(true);
-            tf2.setVisible(true);
-            tf1.setText(s1);
-            tf2.setText(s2);
-            Frame.add(tf1);
-            Frame.add(tf2);
-            Frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        }
-    }
-
     public void LZW_option() {
         metodo = 0;
         slider1.setVisible(false);
@@ -239,7 +216,9 @@ public class Interfaz extends JFrame {
     }
 
 
-    public Interfaz() {
+    public Interfaz()  {
+        Estadistiques.inicialitzar();
+        Map<String, List<Double>> MP = Estadistiques.getparam();
         getContentPane().setBackground(Color.magenta);
         frame.setSize(40, 40);
         frame.addComponentListener(new ResizeListener());
@@ -254,9 +233,14 @@ public class Interfaz extends JFrame {
         M.put(1, "LZSS");
         M.put(2, "LZ78");
         M.put(3, "JPEG");
+        Compare.setBorder(BorderFactory.createRaisedBevelBorder());
+        Accion.setBorder(BorderFactory.createRaisedBevelBorder());
+        Sortir.setBorder(BorderFactory.createRaisedBevelBorder());
+        Globales.setBorder(BorderFactory.createRaisedBevelBorder());
         Sortir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Estadistiques.finalitza();
                 frame.dispose();
             }
         });
@@ -377,6 +361,15 @@ public class Interfaz extends JFrame {
                 } catch (BadLocationException ex) {
                     ex.printStackTrace();
                 }
+            }
+        });
+
+        Globales.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Estadisticas E = new Estadisticas(Asoc.keySet());
+                E.pack();
+                E.setVisible(true);
             }
         });
 
