@@ -20,6 +20,7 @@ public class gestor_fitxers {
     private List<String> paths_no_valids = new ArrayList<>();
     private Integer num_fitxers;
     private Integer bytes_llegits;
+    private String path_carpeta_og;
 
     //PRE: Cert
     //POST: Crea una instancia de la classe gestor_fitxers
@@ -33,6 +34,8 @@ public class gestor_fitxers {
     public void act_num_f( Integer i){
         num_fitxers= i;
     }
+
+    public void act_path_carpeta_og(String p){path_carpeta_og=p;}
 
     //OBTENCIO DE TOTS ELS PATHS DE LA CARPETA
     //FUNCIONA CORRECTAMENT
@@ -61,6 +64,9 @@ public class gestor_fitxers {
         File file = new File(Path_dir);
         file.createNewFile();
         FileOutputStream fop = new FileOutputStream(file);
+        byte[] path= path_carpeta_og.getBytes();
+        fop.write(path);
+        fop.write((byte)10);
         List<Byte> char_seq= int_to_byte(num_fitxers);
         for(byte c : char_seq) {
             fop.write(c);
@@ -80,8 +86,9 @@ public class gestor_fitxers {
         byte[] path= path_original.getBytes();
         fop.write(path);
         fop.write((byte)10);
-        Integer ax= aux.length;
-        List<Byte> char_seq= int_to_byte(aux.length);
+        List<Byte> char_seq= new ArrayList<>();
+        if(aux.length== 0) char_seq.add((byte)0);
+        else char_seq= int_to_byte(aux.length);
         for(byte c : char_seq) {
             fop.write(c);
         }
@@ -135,15 +142,15 @@ public class gestor_fitxers {
 
     //A PARTIR D'EL PATH D'UN FITXER, COMPROVA SI EL DIRECTORI ON ESTA EXISTEIX, I EN CAS DE QUE NO, EL CREA
     private String cc_directori(String path_fitxer, String path_c_original, String path_desti){
-        int pos= path_fitxer.lastIndexOf("\\");
+        int pos= path_fitxer.lastIndexOf("/");
         String dir= path_fitxer.substring(0,pos);
         String new_dir;
-        if (!(dir == path_c_original)){
-            new_dir= path_desti + path_c_original.substring(path_fitxer.length());
+        if (!dir.equals(path_c_original)){
+            new_dir= path_desti + path_fitxer.substring(dir.lastIndexOf('/'), path_fitxer.lastIndexOf('/'));
+            File dire = new File(new_dir);
+            dire.mkdir();
         }
-        else new_dir= dir;
-        File dire = new File(new_dir);
-        dire.mkdir();
+        else new_dir= path_desti;
         return new_dir;
     }
 
@@ -174,7 +181,7 @@ public class gestor_fitxers {
     //PRE: Id ha de ser un id d’algorisme vàlid. El path_og ha de ser vàlid.
     //POST: Retorna un objecte amb l’estructura de dades necessària per la compressió de l’arxiu demanat per l’algorisme seleccionat.
     public byte[] get_f_compressio(String path_og, String id_a) throws IOException {
-        int pos= path_og.lastIndexOf('\\');
+        int pos= path_og.lastIndexOf('/');
         Path_original= path_og.substring(0,pos);
         nombre_fichero(path_og);
         ex_comp(id_a);
@@ -228,7 +235,7 @@ public class gestor_fitxers {
     //PRE: El path_og ha de ser vàlid.
     //POST: Retorna un objecte amb l’estructura de dades necessària per la descompressió de l’arxiu demanat.
     public byte[] conversio_fitxer_desc(String path_og) throws IOException {
-        int pos= path_og.lastIndexOf('\\');
+        int pos= path_og.lastIndexOf('/');
         Path_original= path_og.substring(0,pos);
         id_ex_desc(path_og);
         nombre_fichero(path_og);
@@ -312,9 +319,16 @@ public class gestor_fitxers {
     }
 
     //OBTÉ EL NOM D'UNA CARPETA
-    public String get_nom_carpeta(String Path_o){
-        int pos = Path_o.lastIndexOf("\\");
+    public String get_nom_carpeta2(String Path_o){
+        int pos = Path_o.lastIndexOf("/");
         String aux= Path_o.substring(pos);
+        return aux;
+    }
+
+    //OBTÉ EL NOM D'UNA CARPETA
+    public String get_nom_carpeta(String Path_o){
+        int pos = Path_o.lastIndexOf("/");
+        String aux= Path_o.substring(pos,Path_o.lastIndexOf("."));
         return aux;
     }
 
@@ -328,7 +342,9 @@ public class gestor_fitxers {
         bytes_llegits=0;
     }
 
-
+    public String getNom_fitxer(){
+        return nom_fitxer;
+    }
 
 
     //PRIVATES
@@ -415,7 +431,7 @@ public class gestor_fitxers {
 
     public void  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit) throws IOException {
         String dest_final=  cc_directori(path_fichero,path_c_og,path_dest_c);
-        String nom_f= path_fichero.substring(path_fichero.lastIndexOf("\\"));
+        String nom_f= path_fichero.substring(path_fichero.lastIndexOf("/"));
         Path direccio = Paths.get(dest_final,nom_f);
         File file= new File(direccio.toString());
         file.createNewFile();
@@ -423,6 +439,7 @@ public class gestor_fitxers {
         fop.write(fdescomprimit);
         fop.flush();
         fop.close();
+        ++bytes_llegits;
     }
 
 
