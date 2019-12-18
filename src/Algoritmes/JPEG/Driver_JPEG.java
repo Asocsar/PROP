@@ -64,12 +64,12 @@ public class Driver_JPEG {
             */
 
             Scanner S = new Scanner(System.in);
-            /*
+
             System.out.println("Introdueix el path del fitxer a comprimir");
             System.out.println("Exemple: /home/usr/fitxer");
             String path = S.next();
-            */
-            String path = "/home/maller/Downloads/PROP/codi/JPEG/Jocsdeprova/internet/compressed/vuit.ppm";
+
+            //String path = "/home/maller/Downloads/PROP/codi/JPEG/Jocsdeprova/internet/compressed/vuit.ppm";
 
             File infile = new File(path);
 
