@@ -212,8 +212,6 @@ public class JPEG {
         //DCT Transform
         double[][] D = this.dct(m);
 
-        computeQ2(false);
-
         //Quantitzation
         int[][] B = new int[8][8];
         for (int i = 0; i < 8; ++i) {
@@ -222,10 +220,7 @@ public class JPEG {
             }
         }
 
-
         //Encoding ZigZag (RLE)
-        ArrayList<String> list = new ArrayList<>();
-        String s;
         StringBuilder sb = new StringBuilder();
         int count = 0, curr, num, mask;
         String st;
@@ -249,7 +244,8 @@ public class JPEG {
                 count = 0;
             }
         }
-        sb.append('\n');
+        sb.append('\n');//Añadir salto de línea para separar bloques
+
         //We have to add the DC coefficient and the 63 other values
         //With RLE and Hufmann (RUNLENTH, SIZE) (AMPLITUDE)
         System.out.println(sb.toString());
@@ -281,15 +277,13 @@ public class JPEG {
                 RS = runsize.split(",");
                 count = Integer.parseInt(RS[0]);
                 nbytes = Integer.parseInt(RS[1]);
-                if(nbytes == 0 && count == 0) count = 10; //Escriure 10 zeros (0,0)
+                if(nbytes == 0 && count == 0) count = 9; //Escriure 10 zeros (0,0)
                 //for(int j= 0; j < count; ++j)  B[ZigZag[c + j][0]][ZigZag[c + j][1]] = 0;
-                c+= count;
+                c += count;
                 //System.out.println("count: " + count);
-
-
                 numbin = s.substring(i+1, i+1 + nbytes);
                 //System.out.println(numbin);
-                if(!numbin.isEmpty() && numbin.charAt(0) == '1') z = Integer.parseInt(numbin, 2);
+                if(!numbin.isEmpty() && numbin.charAt(0) == '1') z = Integer.parseInt(numbin, 2); //Número positiu
                 else{
                     se = mask.substring(numbin.length()) + numbin;
                     l = Long.parseLong(se, 2) + 1;
@@ -300,7 +294,7 @@ public class JPEG {
                 if(nbytes != 0) B[ZigZag[c][0]][ZigZag[c][1]] = z;
                 sb = new StringBuilder();
                 i += nbytes;
-                if(count != 10) ++c;
+                ++c;
             }
 
         }
@@ -371,7 +365,7 @@ public class JPEG {
         output.write(sb.toString().getBytes());
         sb = new StringBuilder();
         sb.append(this.quality).append('\n');
-        output.write(sb.toString().getBytes());
+        output.write(sb.toString().getBytes()); //Escriure Cabezera
 
 
         int[][][] YCbCr = new int[3][height][width];
@@ -424,7 +418,7 @@ public class JPEG {
                     bs = compress8(m); //Treure getBytes
                     mida += bs.length;
                     //System.out.println("String: " + s);
-                    output.write(bs);
+                    output.write(bs); //Escriure cada bloc en text !!
 
                 }
             }
