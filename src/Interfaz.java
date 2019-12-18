@@ -330,8 +330,18 @@ public class Interfaz extends JFrame {
                                 C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo));
                             else
                                 C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath());
-                        else if (Accion.getText().equals("Comprimir"))
-                            C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo));
+                        else if (Accion.getText().equals("Comprimir")) {
+                            List<String> N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), false);
+                            if (!N.get(0).equals("0")) {
+                                String message = "Si continues amb la compressió els següents archius seran ignorats\n\n";
+                                for (String neg : N) message += neg + "\n";
+                                String title = "Avís";
+                                int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                if (reply == JOptionPane.YES_OPTION) {
+                                    C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), true);
+                                }
+                            }
+                        }
                         else
                             C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath());
                     } catch (IOException ex) {

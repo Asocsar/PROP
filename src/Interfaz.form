@@ -73,7 +73,7 @@
             </constraints>
             <properties>
               <background color="-10052173"/>
-              <font name="Segoe Print"/>
+              <font name="Tahoma"/>
               <foreground color="-14080734"/>
               <text value="Comprimir"/>
             </properties>
@@ -84,7 +84,7 @@
             </constraints>
             <properties>
               <background color="-10052173"/>
-              <font name="Segoe Print"/>
+              <font name="Tahoma"/>
               <foreground color="-14080734"/>
               <text value="Visualizar ultima Compression"/>
             </properties>
@@ -95,7 +95,7 @@
             </constraints>
             <properties>
               <background color="-10052173"/>
-              <font name="Segoe Print"/>
+              <font name="Tahoma"/>
               <foreground color="-14080734"/>
               <text value="Estadisticas Globales"/>
             </properties>
@@ -106,7 +106,7 @@
             </constraints>
             <properties>
               <background color="-10052173"/>
-              <font name="Segoe Print"/>
+              <font name="Tahoma"/>
               <foreground color="-14080734"/>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>

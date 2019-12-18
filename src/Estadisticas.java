@@ -9,9 +9,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import  Estadístiques.*;
-import com.sun.org.apache.xpath.internal.operations.Number;
-import javafx.scene.layout.Border;
-import org.omg.CORBA.INTERNAL;
+
 
 
 public class Estadisticas extends JDialog {
@@ -26,7 +24,7 @@ public class Estadisticas extends JDialog {
     private int ini_x = 440;
     private int max_y = ini_y;
     private int max_x = ini_x;
-    private int post_y = max_y*2;
+    private int post_y = max_y + max_y/2 + max_y/4;
     private int post_x = max_x*2;
     private static Timer time = null;
     private JTextArea [] L = new JTextArea[] {Quad1, Quad2, Quad3, Quad4};
@@ -115,7 +113,7 @@ public class Estadisticas extends JDialog {
             A.setEditable(false);
             A.setEnabled(true);
             A.setVisible(false);
-            A.setBackground(Color.decode("#d0c4c4"));
+            A.setBackground(Color.decode("#6BBCD1"));
             A.setBorder(BorderFactory.createRaisedBevelBorder());
             A.setMaximumSize(new Dimension(360,300));
             A.setMinimumSize(new Dimension(360,300));
@@ -124,7 +122,6 @@ public class Estadisticas extends JDialog {
 
         Quad1.setVisible(true);
         Quad1.setForeground(Color.black);
-
         String[] M = Estadistiques.nom_atr();
         Map<String,List<Double>> MP = Estadistiques.getparam();
         List<Double> Ld = MP.get((String)comboBox1.getSelectedItem());
@@ -154,6 +151,7 @@ public class Estadisticas extends JDialog {
         comboBox1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 if (comboBox1.getSelectedItem().equals("Totes")) {
                     max_x = post_x;
                     max_y = post_y;
@@ -174,7 +172,7 @@ public class Estadisticas extends JDialog {
                         setSize(new Dimension(max_x, max_y));
                         for (JTextArea A : L) {
                             A.setVisible(false);
-                            A.setBackground(Color.decode("#d0c4c4"));
+                            A.setBackground(Color.decode("#6BBCD1"));
                         }
                     }
                     Quad1.setVisible(true);
