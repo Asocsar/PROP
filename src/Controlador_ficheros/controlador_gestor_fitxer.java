@@ -13,7 +13,8 @@ public class controlador_gestor_fitxer {
     private String path_fitxer_carpeta;
     private  Boolean C_P;
     private String id_a;
-    private gestor_fitxers gestor;
+    private static gestor_fitxers gestor;
+    private List<String> no_val = new ArrayList<>();
 
 
 
@@ -50,7 +51,7 @@ public class controlador_gestor_fitxer {
 
     public boolean dir_or_arch(String path){ return gestor.dir_or_arch(path);}
 
-    public List<String> getPaths_no_valids(){ return gestor.getPaths_no_valids();}
+    public List<String> getPaths_no_valids(){ return no_val;}
 
 
     //COMPRESIO DE CARPETES:
@@ -68,6 +69,7 @@ public class controlador_gestor_fitxer {
         paths_fitxers = new ArrayList<>();
         gestor.reset_num();
         paths_fitxers = gestor.get_paths_folder(Path_o, paths_fitxers);
+        no_val = gestor.getPaths_no_valids();
         gestor.act_num_f( paths_fitxers.size());
         path_fitxer_carpeta=  gestor.create_dir_comp(path_dest);
         return paths_fitxers;
