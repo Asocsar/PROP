@@ -7,8 +7,6 @@ import Estadístiques.Estadistiques;
 //import javafx.beans.property.StringPropertyBase;
 
 
-import javax.swing.text.StringContent;
-import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.util.*;
 import java.util.function.Predicate;
@@ -77,9 +75,9 @@ public class Cont_CD {
 
 
     /**\brief Acció
-        \pre cert
-        \post Retorna el resultat d'aplicar compressió o descompressió d'algun algorisme 
-    */
+     \pre cert
+     \post Retorna el resultat d'aplicar compressió o descompressió d'algun algorisme
+     */
     private  byte[] action (String path_o, String id, boolean comprimir, controlador_gestor_fitxer I, int bytes) throws controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido, IOException {
         byte[] L = null;
         byte[] b = null;
@@ -161,26 +159,29 @@ public class Cont_CD {
     }
 
     /**\brief Compressió de fitxers
-        \pre path_o ha de ser vàlid
-        \post Comprimeix el fitxer situat al path_o i el desa al path_d
-    */
+     \pre path_o ha de ser vàlid
+     \post Comprimeix el fitxer situat al path_o i el desa al path_d
+     */
     public void compressio_fitxer (String path_o, String path_d, String algoritme) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         id = algoritme;
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         byte[] L = action(path_o, id, true, I, -1);
         path1 = path_o;
-        path2 = path1.substring(0, path1.length()-4) + ".fW";
+        path2 = path_d + "\\" + I.getNom_fitxer() + I.get_extensio();
         I.writeFile(L, path_d);
     }
 
     /**\brief Compressió de carpetes
-        \pre path_o ha de ser vàlid
-        \post Comprimeix la carpeta situat al path_o i el desa al path_d
-    */
-    public void compressio_carpeta (String path_o, String path_d,String id) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
-        public void compressio_carpeta (String path_o, String path_d,String id) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
+     \pre path_o ha de ser vàlid
+     \post Comprimeix la carpeta situat al path_o i el desa al path_d
+     * @return
+     */
+    public List<String> compressio_carpeta (String path_o, String path_d, String id, boolean force) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
-        List<String> a =  I.get_paths_carpeta(path_o, path_d, id);
+        List<String> a = I.get_paths_carpeta(path_o, path_d, id);
+        List<String> basura = new ArrayList<String>(1);
+        basura.add("0");
+        if (I.getPaths_no_valids().size() > 0 && !force) return I.getPaths_no_valids();
         for (String s : a) {
             boolean jpeg = I.is_jpeg(s);
             String algoritmo_utilizado = id;
@@ -188,62 +189,63 @@ public class Cont_CD {
             byte[] aux = action(s, algoritmo_utilizado, true, I, -1);
             I.write_c_folder(s, aux);
         }
+        return basura;
     }
 
 
-    /**\brief Descompressió de carpetes
-        \pre path_o ha de ser vàlid
-        \post Descomprimeix la carpeta situat al path_o i el desa al path_d
-    */
-     public void descompressio_carpeta (String path_o, String path_d) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
-        controlador_gestor_fitxer I = new controlador_gestor_fitxer();
-        I.reset_bytes_llegits();
-        String algoritmo_usado = I.getAlgoritme(path_o);
-        String path_fitxer_carpeta_comprimida = I.read_path(path_o);
-        String path_destino_carpeta = I.path_dest_carpeta(path_o, path_d);
-        int numerodeficheros = I.read_tamany(path_o);
-        for (int i = 0; i < numerodeficheros; ++i) {
-            String pathdelfichero = I.read_path(path_o);
-            if (I.is_jpeg(pathdelfichero)) algoritmo_usado = "JPEG";
-            int bytesfichero = I.read_tamany(path_o);
-            byte[] fdescomprimit = action(path_o, algoritmo_usado, false, I, bytesfichero);
-            I.write_fitxer_carpeta_desc(path_fitxer_carpeta_comprimida, path_destino_carpeta, pathdelfichero, fdescomprimit);
-        }
-    }
-
-    /**\brief Descompressió
-        \pre path_o ha de ser vàlid
-        \post Descomprimeix el fitxer situat al path_o i el desa al path_d
-    */
-    public void descompressio_fitxer (String path_o, String path_d) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
-        controlador_gestor_fitxer I = new controlador_gestor_fitxer();
-        id = I.getAlgoritme(path_o);
-        Object L = action(path_o, id, false, I, -1);
-        I.writeFile(L, path_d);
-    }
-
-
-
-
-    /** \brief Comparar
-        \pre : Hi ha hagut com a mínim una compressió des de que s'ha iniciat el programa
-        \post: Mostra el contingut del fitxer original i el resultat després d'haver comprimit aquest
-    */
-    public String [] comparar() throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido, NoCompress {
-        String [] K = new String[2];
-        if (path1.equals("")) {
-            // AQUI TENGO QUE PONER UNA EXCEPCION QUE UN NO HE HECHO
-            throw new NoCompress("Debe realizar una compressión antes de intentar comparar");
-        }
-        else {
+        /**\brief Descompressió de carpetes
+         \pre path_o ha de ser vàlid
+         \post Descomprimeix la carpeta situat al path_o i el desa al path_d
+         */
+        public void descompressio_carpeta (String path_o, String path_d) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
             controlador_gestor_fitxer I = new controlador_gestor_fitxer();
-            //llegim el contingut del fitxer original
-            String S = I.obtenir_fitxer(path1);
-            K[0] = S;
-            //descomprimir el contingut del fitxer comprimit i el mostrem
-            byte[] L = (byte[]) action(path2, id, false, I, -1);
-            K[1] = I.compare(L, id);
+            I.reset_bytes_llegits();
+            String algoritmo_usado = I.getAlgoritme(path_o);
+            String path_fitxer_carpeta_comprimida = I.read_path(path_o);
+            String path_destino_carpeta = I.path_dest_carpeta(path_o, path_d);
+            int numerodeficheros = I.read_tamany(path_o);
+            for (int i = 0; i < numerodeficheros; ++i) {
+                String pathdelfichero = I.read_path(path_o);
+                if (I.is_jpeg(pathdelfichero)) algoritmo_usado = "JPEG";
+                int bytesfichero = I.read_tamany(path_o);
+                byte[] fdescomprimit = action(path_o, algoritmo_usado, false, I, bytesfichero);
+                I.write_fitxer_carpeta_desc(path_fitxer_carpeta_comprimida, path_destino_carpeta, pathdelfichero, fdescomprimit);
+            }
         }
-        return  K;
+
+        /**\brief Descompressió
+         \pre path_o ha de ser vàlid
+         \post Descomprimeix el fitxer situat al path_o i el desa al path_d
+         */
+        public void descompressio_fitxer (String path_o, String path_d) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
+            controlador_gestor_fitxer I = new controlador_gestor_fitxer();
+            id = I.getAlgoritme(path_o);
+            Object L = action(path_o, id, false, I, -1);
+            I.writeFile(L, path_d);
+        }
+
+
+
+
+        /** \brief Comparar
+         \pre : Hi ha hagut com a mínim una compressió des de que s'ha iniciat el programa
+         \post: Mostra el contingut del fitxer original i el resultat després d'haver comprimit aquest
+         */
+        public String [] comparar() throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido, NoCompress {
+            String [] K = new String[2];
+            if (path1.equals("")) {
+                // AQUI TENGO QUE PONER UNA EXCEPCION QUE UN NO HE HECHO
+                throw new NoCompress("Debe realizar una compressión antes de intentar comparar");
+            }
+            else {
+                controlador_gestor_fitxer I = new controlador_gestor_fitxer();
+                //llegim el contingut del fitxer original
+                String S = I.obtenir_fitxer(path1);
+                K[0] = S;
+                //descomprimir el contingut del fitxer comprimit i el mostrem
+                byte[] L = (byte[]) action(path2, id, false, I, -1);
+                K[1] = I.compare(L, id);
+            }
+            return  K;
+        }
     }
-}
