@@ -23,18 +23,6 @@ public class Estadistiques {
 
     public static Map<String, List<Double>> getparam () {return est;}
 
-
-    /***************************
-     ********** LZW ************
-     ***************************/
-
-    /** \var LLista amb les estadístiques d'execució amb LZW*/
-    private static List<Double> lzw  = new ArrayList<Double>() {{
-        for (int i = 0; i < 9; ++i) add(0.0);
-
-    }};
-
-
     public static void inicialitzar ()  {
         try {
             Cont_Est C = new Cont_Est();
@@ -52,6 +40,18 @@ public class Estadistiques {
             e.printStackTrace();
         }
     }
+
+
+    /***************************
+     ********** LZW ************
+     ***************************/
+
+    /** \var LLista amb les estadístiques d'execució amb LZW*/
+    private static List<Double> lzw  = new ArrayList<Double>() {{
+        for (int i = 0; i < 9; ++i) add(0.0);
+
+    }};
+
 
 
     /** \brief Recuperacio estadistiques
@@ -167,12 +167,12 @@ public class Estadistiques {
     }};
 
 
-
     /** \brief Recuperacio estadistiques
      \pre  Cert
      \post S'han assignat els valors de les estadistiques de LZ78
      \details A l'iniciar de nou el programa, recuperem les estadistiques fins al moment de l'execució actual, i les hi assignem a les variables de cada algorisme
      */
+
     public static void setLZ78(List<Double> estlz78){
         for (int i = 0; i < 9; ++i) lz78.set(i,estlz78.get(i));
         est.put("LZ78",lz78);
