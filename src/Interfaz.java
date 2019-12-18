@@ -233,10 +233,10 @@ public class Interfaz extends JFrame {
         M.put(1, "LZSS");
         M.put(2, "LZ78");
         M.put(3, "JPEG");
-        Compare.setBorder(BorderFactory.createRaisedBevelBorder());
-        Accion.setBorder(BorderFactory.createRaisedBevelBorder());
-        Sortir.setBorder(BorderFactory.createRaisedBevelBorder());
-        Globales.setBorder(BorderFactory.createRaisedBevelBorder());
+        Compare.setBorder(BorderFactory.createEtchedBorder());
+        Accion.setBorder(BorderFactory.createEtchedBorder());
+        Sortir.setBorder(BorderFactory.createEtchedBorder());
+        Globales.setBorder(BorderFactory.createEtchedBorder());
         Sortir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -333,7 +333,7 @@ public class Interfaz extends JFrame {
                         else if (Accion.getText().equals("Comprimir")) {
                             List<String> N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), false);
                             if (!N.get(0).equals("0")) {
-                                String message = "Si continues amb la compressió els següents archius seran ignorats\n\n";
+                                String message = "Si continues amb la compressió els següents arxius seran ignorats\n\n";
                                 for (String neg : N) message += neg + "\n";
                                 String title = "Avís";
                                 int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
@@ -345,8 +345,8 @@ public class Interfaz extends JFrame {
                         else
                             C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath());
                     } catch (IOException ex) {
-                        ex.printStackTrace();
-                    } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido ficheroCompressionNoValido) {
+                        JOptionPane.showMessageDialog(frame, "Error inesperado, por favor vuelva a intentar");
+                    } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido | Cont_CD.NoFiles ficheroCompressionNoValido) {
                         JOptionPane.showMessageDialog(frame, ficheroCompressionNoValido.getMessage());
                     }
                 }

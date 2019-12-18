@@ -66,12 +66,12 @@ public class Estadisticas extends JDialog {
             if (name.equals(last)) {
                 L[i].setBackground(Color.orange);
             }
-            actual_alg(L[i],name);
+            actual_alg(L[i],name, false);
             ++i;
         }
     }
 
-    public void actual_alg (JTextArea Q, String alg) {
+    public void actual_alg (JTextArea Q, String alg, boolean ultim) {
         String [] M = Estadistiques.nom_atr();
         Map<String, List<Double>> MP = Estadistiques.getparam();
         List<Double> L = MP.get(alg);
@@ -88,12 +88,14 @@ public class Estadisticas extends JDialog {
             Q.append(num);
             Q.append(" \n");
         }
-        Q.append("\n Ultim Algoritme Utilitzat : ");
-        Double d = MP.get("LAST ALGORITHM").get(0);
-        int n = d.intValue();
-        String [] lista = Estadistiques.asociacio_algoritmes();
-        if (n != -1) Q.append(lista[n]);
-        else Q.append("CAP\n");
+        if (ultim) {
+            Q.append("\n Ultim Algoritme Utilitzat : ");
+            Double d = MP.get("LAST ALGORITHM").get(0);
+            int n = d.intValue();
+            String[] lista = Estadistiques.asociacio_algoritmes();
+            if (n != -1) Q.append(lista[n]);
+            else Q.append("CAP\n");
+        }
     }
 
     public Estadisticas (Set<String> OPC) {
@@ -143,7 +145,7 @@ public class Estadisticas extends JDialog {
             }
         }
 
-        actual_alg(Quad1, (String) comboBox1.getSelectedItem());
+        actual_alg(Quad1, (String) comboBox1.getSelectedItem(), true);
 
 
 
@@ -159,7 +161,7 @@ public class Estadisticas extends JDialog {
                     setMinimumSize(new Dimension(max_x,max_y));
                     setMaximumSize(new Dimension(max_x,max_y));
                     setMaximumSize(new Dimension(max_x,max_y));
-                    actual(OPC, lista[n]);
+                    actual(OPC, (n != -1) ? lista[n] : "CAP");
                 }
                 else {
                     if (max_x == post_x && max_y == post_y) {
@@ -176,7 +178,7 @@ public class Estadisticas extends JDialog {
                         }
                     }
                     Quad1.setVisible(true);
-                    actual_alg(Quad1, (String) comboBox1.getSelectedItem());
+                    actual_alg(Quad1, (String) comboBox1.getSelectedItem(), true);
 
                 }
 
