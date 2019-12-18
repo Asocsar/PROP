@@ -4,6 +4,7 @@ package Controlador_Compressio_Descompressio;
 import Algoritmes.*;
 import Controlador_ficheros.controlador_gestor_fitxer;
 import Estadístiques.Estadistiques;
+import javafx.scene.shape.Path;
 //import javafx.beans.property.StringPropertyBase;
 
 
@@ -26,6 +27,9 @@ public class Cont_CD {
         public NoCompress (String message) {super(message);}
     }
 
+    public class NoFiles extends Exception {
+        public NoFiles (String message) {super (message);}
+    }
     /** \brief Creadora
      \pre Cert
      \post S'ha creat una instancia inicialitzada del Controlador CD
@@ -96,12 +100,12 @@ public class Cont_CD {
                     //s'actualitzen les estadístiques i es guarda temps i rati
                     time = L8.get_Time();
                     rate = L8.get_Rate();
-                    E.act8(time, rate, b.length/time, true);
+                    E.act8(time, rate, (time != 0) ? b.length/time : 0, true);
                 } else {
                     System.out.println("LZ78 descompression ejecutado");
                     L = L8.descompress(b);
                     time = L8.get_Time();
-                    E.act8(time, -1, b.length/time, false);
+                    E.act8(time, -1, (time != 0) ? b.length/time : 0, false);
                 }
 
                 break;
@@ -112,12 +116,12 @@ public class Cont_CD {
                     L = LS.compress(b);
                     time = LS.getTime();
                     rate = LS.getRate();
-                    E.actS(time, rate, b.length/time, true);
+                    E.actS(time, rate, (time != 0) ? b.length/time : 0, true);
                 } else {
                     System.out.println("LZSS descompression ejecutado");
                     L = LS.descompress(b);
                     time = LS.getTime();
-                    E.actS(time, -1, b.length/time, false);
+                    E.actS(time, -1, (time != 0) ? b.length/time : 0, false);
                 }
                 break;
             case "LZW":
@@ -127,13 +131,13 @@ public class Cont_CD {
                     L = LW.compress(b);
                     time = LW.getTime();
                     rate = LW.getRate();
-                    E.actW(time, rate, b.length/time, true);
+                    E.actW(time, rate, (time != 0) ? b.length/time : 0, true);
 
                 } else {
                     System.out.println("LZW descompression ejecutado");
                     L = LW.descompress(b);
                     time = LW.getTime();
-                    E.actW(time, -1, b.length/time, false);
+                    E.actW(time, -1, (time != 0) ? b.length/time : 0, false);
 
                 }
 
@@ -167,6 +171,7 @@ public class Cont_CD {
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         byte[] L = action(path_o, id, true, I, -1);
         path1 = path_o;
+        Path p = new Path();
         path2 = path_d + "\\" + I.getNom_fitxer() + I.get_extensio();
         I.writeFile(L, path_d);
     }
@@ -176,9 +181,10 @@ public class Cont_CD {
      \post Comprimeix la carpeta situat al path_o i el desa al path_d
      * @return
      */
-    public List<String> compressio_carpeta (String path_o, String path_d, String id, boolean force) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
+    public List<String> compressio_carpeta (String path_o, String path_d, String id, boolean force) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido, NoFiles {
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         List<String> a = I.get_paths_carpeta(path_o, path_d, id);
+        if (a.size() == 0) throw new NoFiles("No hi ha arxius, per tant s'avorta el procés de compressió");
         List<String> basura = new ArrayList<String>(1);
         basura.add("0");
         if (I.getPaths_no_valids().size() > 0 && !force) return I.getPaths_no_valids();
