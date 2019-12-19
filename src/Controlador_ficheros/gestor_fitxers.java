@@ -24,6 +24,8 @@ public class gestor_fitxers {
     private Integer bytes_llegits;
     private String path_carpeta_og;
 
+    private String path_absoluto;
+
     /** \brief Creadora
      \pre Cert
      \post Es crea una instància de la classe gestor_fitxers
@@ -167,20 +169,15 @@ public class gestor_fitxers {
     }
 
     //A PARTIR D'EL PATH D'UN FITXER, COMPROVA SI EL DIRECTORI ON ESTA EXISTEIX, I EN CAS DE QUE NO, EL CREA
-    private String cc_directori(String path_fitxer, String path_c_original, String path_desti, boolean force){
+    private String cc_directori(String path_fitxer, String path_c_original, String path_desti){
         Path p = Paths.get(path_fitxer);
         int pos= path_fitxer.lastIndexOf(p.getFileSystem().getSeparator());
         String dir= path_fitxer.substring(0,pos);
         String new_dir;
-        if (!dir.equals(path_c_original)){
-            new_dir= path_desti + path_fitxer.substring(dir.lastIndexOf(p.getFileSystem().getSeparator()), path_fitxer.lastIndexOf(p.getFileSystem().getSeparator()));
+        if (!dir.equals(path_c_original)) {
+            new_dir = path_desti + path_fitxer.substring(dir.lastIndexOf(p.getFileSystem().getSeparator()), path_fitxer.lastIndexOf(p.getFileSystem().getSeparator()));
             File dire = new File(new_dir);
-            boolean b= dire.mkdir();
-            if(force) {
-                dire.delete();
-                dire.mkdir();
-            }
-            if(!b) return null;
+            dire.mkdir();
         }
         else new_dir= path_desti;
         return new_dir;
@@ -191,9 +188,16 @@ public class gestor_fitxers {
      \pre Cert
      \post Crea un directori siutat al path path_carpeta
      */
-    private boolean crea_dir_desc(String path_carpeta){
+    private boolean crea_dir_desc(String path_carpeta, boolean force){
         File dire = new File(path_carpeta);
-        return dire.mkdir();
+        boolean b= dire.mkdir();
+        if(!b && !force) return false;
+        else if(!b && force){
+            dire.delete();
+            dire.mkdir();
+            return true;
+        }
+        return b;
     }
 
 
@@ -231,6 +235,9 @@ public class gestor_fitxers {
         return buscar_leer_archivo(path_og);
     }
 
+    public String getPath_absoluto(){
+        return path_absoluto;
+    }
 
     /** \brief Creadora
      \pre 0 < id < 4
@@ -240,7 +247,7 @@ public class gestor_fitxers {
         if (path_desti.equals("")) path_desti=Path_original;
         Path path_dest= Paths.get(path_desti,nom_fitxer);
         String nom_ex= path_dest + extensio;
-
+        path_absoluto= nom_ex;
         File file = new File(nom_ex);
         if (file.createNewFile() || force) {
             if(force){
@@ -377,11 +384,16 @@ public class gestor_fitxers {
         return Path_original;
     }
 
+    public boolean carpeta_des(String path){
+       if (path.substring(path.lastIndexOf("."),path.length()-1).equals(".F")) return true;
+       return false;
+    }
+
 
     //BOOL--> FALSE SI PATH ES DIRECTORI/ TRUE SI PATH ES FITXER
     public boolean dir_or_arch(String path){
         File file = new File(path);
-        if (file.isDirectory() || path.substring(path.lastIndexOf("."),path.length()-1).equals(".F")) return false;
+        if (file.isDirectory()) return false;
         else return true;
     }
 
@@ -499,23 +511,24 @@ public class gestor_fitxers {
         return new String(aux, Charset.defaultCharset());
     }
 
-    public String path_dest_carpeta(String path_carpeta_comprimida, String path_destino){
+    public String path_dest_carpeta(String path_carpeta_comprimida, String path_destino, boolean force){
         if(path_destino.equals("")) {
             String aux= path_carpeta_comprimida.substring(0,path_carpeta_comprimida.lastIndexOf("."));
-            crea_dir_desc(aux);
-            return aux;
+           boolean b=  crea_dir_desc(aux,force);
+           if(!b) return null;
+           return aux;
         }
         else{
             String aux= get_nom_carpeta(path_carpeta_comprimida);
             Path dest= Paths.get(path_destino,aux);
-            crea_dir_desc(dest.toString());
+            boolean b= crea_dir_desc(dest.toString(), force);
+            if(!b) return null;
             return dest.toString();
         }
     }
 
-    public boolean  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit, boolean force) throws IOException {
-        String dest_final=  cc_directori(path_fichero,path_c_og,path_dest_c,force);
-        if(dest_final.equals(null)) return false;
+    public boolean  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit) throws IOException {
+        String dest_final=  cc_directori(path_fichero,path_c_og,path_dest_c);
         Path p = Paths.get(path_fichero);
         String nom_f= path_fichero.substring(path_fichero.lastIndexOf(p.getFileSystem().getSeparator()));
         Path direccio = Paths.get(dest_final,nom_f);
