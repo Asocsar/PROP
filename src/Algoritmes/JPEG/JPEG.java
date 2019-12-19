@@ -2,16 +2,20 @@
 
 package Algoritmes.JPEG;
 import Algoritmes.JPEG.Huffman.HuffmanTables;
+//import com.sun.org.apache.xpath.internal.operations.String;
 
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.sql.Array;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.jar.JarOutputStream;
 
 
 public class JPEG {
@@ -206,29 +210,42 @@ public class JPEG {
     //transformació DCT, la quantització i l'encoding fet amb RLE.
     // Per aconseguir l'encoding de RLE, ho guardem en una llista
     //i després ho passem a un array de ints
-    public byte[] compress8(int[][] m) {
+    public byte[] compress8(/*int[][] m*/) {
 
+        int[][]m = {
+                {52, 55, 61, 66, 70, 61, 64, 73},
+                {63, 59, 55, 90, 109, 85, 69, 72},
+                {62, 59, 68, 113, 144, 104, 66, 73},
+                {63, 58, 71, 122, 154, 106, 70, 69},
+                {67, 61, 68, 104, 126, 88, 68, 70},
+                {79, 65, 60, 70, 77, 68, 58, 75},
+                {85, 71, 64, 59, 55, 61, 65, 83},
+                {87, 79, 69, 68, 65, 76, 78, 94}};
 
         //DCT Transform
         double[][] D = this.dct(m);
+        System.out.println();
 
         //Quantitzation
         int[][] B = new int[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
                 B[i][j] = (int) Math.min(Math.max(-127,Math.round(D[i][j] / (double) Q2[i][j])), 128);
+                System.out.printf("%d ", B[i][j]);
             }
+            System.out.println();
         }
+        System.out.println();
 
         //Encoding ZigZag (RLE)
         StringBuilder sb = new StringBuilder();
         int count = 0, curr, num, mask;
         String st;
-        //curr = B[0][0]; //Tractament DC
+
 
         for (int i = 0; i < 64; ++i) { //Canviar 0 per 1 per a tractar different DC de AC coefficients
             curr = B[ZigZag[i][0]][ZigZag[i][1]];
-            //System.out.println("Curr: " + curr);
+            //System.out.println("n. " + i + "c: " + curr + " count: " + count);
             if (curr == 0 && count < 9) ++count;
             else if (curr == 0) {
                 sb.append("1010");
@@ -244,12 +261,46 @@ public class JPEG {
                 count = 0;
             }
         }
-        sb.append('\n');//Añadir salto de línea para separar bloques
+        if(count > 0) sb.append("1010");
+        //sb.append('\n');//Añadir salto de línea para separar bloques
 
         //We have to add the DC coefficient and the 63 other values
         //With RLE and Hufmann (RUNLENTH, SIZE) (AMPLITUDE)
-        System.out.println(sb.toString());
-        return sb.toString().getBytes();
+
+
+        String aux = sb.toString();
+        System.out.println(aux);
+        System.out.println("Length: " +sb.toString().length());
+        int residu = aux.length()%8;
+        int nume = (residu == 0) ? aux.length()/8 : aux.length()/8 +1;
+        //if (sb.toString().length()%8 != 0) nume += 1;
+        byte[] b = new byte [nume+3];
+
+        int k = 0;
+        int j = 0;
+        for (int i = 0; i < aux.length()-1; i += 8) {
+            byte res = 0;
+            int elev = 7;
+            for (j = i; j < i+8 && j < aux.length(); ++j) {
+                byte bi = (byte) aux.charAt(j);
+                char c = (char)bi;
+                bi = Byte.parseByte( c + "");
+                res += (bi << elev);
+                --elev;
+            }
+
+            b[k] = res;
+            ++k;
+        }
+
+        b[nume] = 10; //Afegir salt de línea
+        b[nume+1] = 10;
+        b[nume+2] = 10;
+        System.out.println(Arrays.toString(b));
+
+        //for(int i = 0; i < b2.length; ++i) if(b2[i] != b[i]) System.out.println( "b2: "+ b2[i] + " || b:"  + b[i]);
+
+        return b;
 
     }
 
@@ -268,7 +319,7 @@ public class JPEG {
         String numbin, se, mask = "11111111111111111111111111111111";
         StringBuilder sb = new StringBuilder();
 
-        System.out.println(s);
+        System.out.println(s); //Imprimir string descomprimit
 
         for (int i = 0; i < s.length(); ++i) {
             String runsize = mapInversed.get(sb.append(s.charAt(i)).toString());
@@ -291,7 +342,7 @@ public class JPEG {
                 }
 
                 System.out.println( "Posició c: " +c + " " + z);
-                if(nbytes != 0) B[ZigZag[c][0]][ZigZag[c][1]] = z;
+                if(nbytes != 0 && c < 64) B[ZigZag[c][0]][ZigZag[c][1]] = z;
                 sb = new StringBuilder();
                 i += nbytes;
                 ++c;
@@ -391,7 +442,6 @@ public class JPEG {
         System.out.println("Comença la compressió");
 
         long mida = 0;
-        int[][] m = new int[8][8];
         String s;
 
         Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
@@ -401,7 +451,7 @@ public class JPEG {
             if(a < 2) computeQ2( a != 0);
             for (int i = 0; i < Bheight; ++i) {
                 for (int j = 0; j < Bwidth; ++j) {
-                    /* int[][] m = new int[8][8]; Línia treta per estalviar reiniciar matriu cada cop */
+                    int[][] m = new int[8][8];
                     for (int y = 0; y < 8; ++y) {
                         for (int x = 0; x < 8; ++x) {
 
@@ -415,7 +465,7 @@ public class JPEG {
                     }
 
 
-                    bs = compress8(m); //Treure getBytes
+                    bs = compress8(); //Treure getBytes
                     mida += bs.length;
                     //System.out.println("String: " + s);
                     output.write(bs); //Escriure cada bloc en text !!
@@ -469,9 +519,16 @@ public class JPEG {
         int length_bytes = b.length -1 -it;
         System.out.println("Length bytes: " + length_bytes);
         byte[] b2 = new byte[length_bytes];
-        System.arraycopy(b, it, b2, 0, length_bytes );
-        String[] blocks = new String(b2).split("\n");
+        System.arraycopy(b, it, b2, 0, length_bytes);
+        sb = new StringBuilder();
+        String s;
+        for(int i = 0; i < length_bytes; ++i) {
+            s = String.format("%8s", Integer.toBinaryString(b2[i] & 0xFF)).replace(' ', '0');
+            sb.append(s);
+        }
+        String[] blocks = sb.toString().split("000010100000101000001010"); //Separar per byte '\n'
         System.out.println("NBlocks: " + blocks.length);
+
 
         int[][][] YCbCr = new int[3][height][width];
         int Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
