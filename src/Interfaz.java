@@ -321,7 +321,7 @@ public class Interfaz extends JFrame {
 *   2. get_temp_imagen
 *   3: dir_or_arch
 *   4: get_ext_file
-*   5: a_comprimir*/
+*   5: a_comprimir */
 
     /** \brief Instancia la ventana principal
      \pre  Cert
