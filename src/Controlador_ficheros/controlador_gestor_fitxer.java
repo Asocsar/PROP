@@ -47,6 +47,10 @@ public class controlador_gestor_fitxer {
     public  String path_if_null(){
         return gestor.path_if_null();
     }
+    
+    public boolean carpeta_des(String path){
+        return gestor.carpeta_des(path);
+    }
 
     public boolean dir_or_arch(String path){ return gestor.dir_or_arch(path);}
 
