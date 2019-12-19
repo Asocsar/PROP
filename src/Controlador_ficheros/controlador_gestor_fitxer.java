@@ -14,7 +14,7 @@ public class controlador_gestor_fitxer {
     private  Boolean C_P;
     private String id_a;
     private gestor_fitxers gestor;
-    private Integer num_arxius;
+
 
 
 
@@ -54,13 +54,16 @@ public class controlador_gestor_fitxer {
 
 
     //COMPRESIO DE CARPETES:
-    public List<String> get_paths_carpeta(String Path_o, String path_desti, String id) throws IOException {
+
+    //SI EL FICHERO NO SE HA CREADO LIST<STRINGS> VA A TENER UN -1 AL PRINCIPIO
+    public List<String> get_paths_carpeta(String Path_o, String path_desti, String id, boolean force) throws IOException {
         List<String> paths_fitxers;
         String exten =getExtensio(id);
+        gestor.act_path_carpeta_og(Path_o);
         String path_dest;
         if(path_desti.equals("")) path_dest = Path_o + exten;
         else{
-            String s_aux= gestor.get_nom_carpeta(Path_o) + exten;
+            String s_aux= gestor.get_nom_carpeta2(Path_o) + exten;
             Path p_aux= Paths.get(path_desti,s_aux);
             path_dest = p_aux.toString();
         }
@@ -68,11 +71,17 @@ public class controlador_gestor_fitxer {
         gestor.reset_num();
         paths_fitxers = gestor.get_paths_folder(Path_o, paths_fitxers);
         gestor.act_num_f( paths_fitxers.size());
-        path_fitxer_carpeta=  gestor.create_dir_comp(path_dest);
+        path_fitxer_carpeta=  gestor.create_dir_comp(path_dest, force);
+        if(path_fitxer_carpeta== null) {
+            paths_fitxers = new ArrayList<>();
+            paths_fitxers.add("-1");
+        }
         return paths_fitxers;
     }
 
-
+    public String getNom_fitxer(){
+        return gestor.getNom_fitxer();
+    }
 
     public void write_c_folder(String Path_o, byte[] encoded) throws IOException {
         gestor.write_compressed_folder(encoded, Path_o,path_fitxer_carpeta);
@@ -83,9 +92,6 @@ public class controlador_gestor_fitxer {
 
     public void reset_bytes_llegits(){gestor.reset_bytes_llegits();}
 
-   /* public String find_path(String a){
-        return gestor.find_path(a);
-    }*/
 
     public Integer read_tamany(String path_fitxer_carpeta) throws IOException {
         return gestor.read_tamany(path_fitxer_carpeta);
@@ -132,10 +138,11 @@ public class controlador_gestor_fitxer {
 
     //PRE: path_og ha de ser vàlid
     //POST: Crea un fitxer amb el resultat de la compressió o descompressió passat per paràmetre.
-    public void writeFile(Object write, String Path_desti) throws IOException {
+    //SI DEVUELVE FALSO NO SE HA CREADO EL FICHERO
+    public boolean writeFile(Object write, String Path_desti,boolean force) throws IOException {
         if (!C_P) {
-            gestor.c_e_fichero_descomp(Path_desti, write);
-        } else gestor.c_e_fichero_comp(Path_desti, write);
+            return gestor.c_e_fichero_descomp(Path_desti, write, force);
+        } else return gestor.c_e_fichero_comp(Path_desti, write,force);
     }
 
     //PRE: Cert
@@ -198,19 +205,21 @@ public class controlador_gestor_fitxer {
     }
 
     public String compare(byte[] aux, String id) throws IOException {
-        return gestor.compare_g(aux, id);
+        return gestor.compare_g(aux);
     }
 
     public String path_dest_carpeta(String path_carpeta_comprimida, String path_destino){
         return gestor.path_dest_carpeta(path_carpeta_comprimida,path_destino);
     }
 
-    public void  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit) throws IOException {
-        gestor.write_fitxer_carpeta_desc(path_c_og,path_dest_c,path_fichero,fdescomprimit);
+    //SI DEVUELVE FALSO NO SE HA CREADO EL FICHERO
+    public boolean  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit, boolean force) throws IOException {
+        return gestor.write_fitxer_carpeta_desc(path_c_og,path_dest_c,path_fichero,fdescomprimit,force);
     }
 
-    public void crea_dir_desc(String path_destino_carpeta) throws IOException {
-        gestor.create_dir_comp(path_destino_carpeta);
+    //SI DEVUELVE NULL NO SE HA CREADO EL FICHERO
+    public String crea_dir_desc(String path_destino_carpeta, boolean force) throws IOException {
+        return gestor.create_dir_comp(path_destino_carpeta,force);
     }
 
     public String read_path(String path_fitxer_carpeta) throws IOException {
@@ -221,5 +230,12 @@ public class controlador_gestor_fitxer {
         return gestor.read_file_compressed(bytesfichero,path_fitxer_carpeta);
     }
 
-}
+    public void create_img_aux1 (String name, String path) throws IOException {
+        gestor.create_img_aux1(name, path);
+    }
 
+    public boolean a_comprimir (String path) {return gestor.a_comprimir(path);}
+
+    public String get_ext_file (String path) {return gestor.get_ext_file(path);}
+
+}
