@@ -22,6 +22,8 @@ public class Comparacion extends JDialog {
     private JButton buttonCancel;
     private JTextPane textArea1;
     private JTextPane textArea2;
+    private JTextField fitxerOriginalTextField;
+    private JTextField fitxerComprimitTextField;
     private String file1;
     private String file2;
 
@@ -37,6 +39,8 @@ public class Comparacion extends JDialog {
         setSize(new Dimension(600, 400));
         setModal(false);
         getRootPane().setDefaultButton(buttonCancel);
+        fitxerOriginalTextField.setBorder(BorderFactory.createEmptyBorder());
+        fitxerComprimitTextField.setBorder(BorderFactory.createEmptyBorder());
 
         if (!image) {
 

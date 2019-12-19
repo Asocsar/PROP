@@ -220,6 +220,7 @@ public class Interfaz extends JFrame {
     private JButton Accion;
     private JSlider slider1;
     private JComboBox comboBox1;
+    private JTextField qualitatDImatgeTextField;
     private static JFrame frame;
     private static int metodo = 0;
     private boolean directorio = false;
@@ -279,6 +280,7 @@ public class Interfaz extends JFrame {
      */
     public void LZW_option() {
         metodo = 0;
+        qualitatDImatgeTextField.setVisible(false);
         slider1.setVisible(false);
         slider1.setMaximumSize(new Dimension(0,0));
     }
@@ -290,6 +292,7 @@ public class Interfaz extends JFrame {
      */
     public void LZSS_option() {
         metodo = 1;
+        qualitatDImatgeTextField.setVisible(false);
         slider1.setVisible(false);
         slider1.setMaximumSize(new Dimension(0,0));
     }
@@ -301,6 +304,7 @@ public class Interfaz extends JFrame {
      */
     public void LZ78_option() {
         metodo = 2;
+        qualitatDImatgeTextField.setVisible(false);
         slider1.setVisible(false);
         slider1.setMaximumSize(new Dimension(0,0));
     }
@@ -312,6 +316,7 @@ public class Interfaz extends JFrame {
      */
     public void JPEG_option() {
         metodo = 3;
+        qualitatDImatgeTextField.setVisible(true);
         slider1.setVisible(true);
         slider1.setMaximumSize(new Dimension(30,50));
     }
@@ -330,6 +335,8 @@ public class Interfaz extends JFrame {
      */
     public Interfaz()  {
         Estadistiques.inicialitzar();
+        qualitatDImatgeTextField.setBorder(BorderFactory.createEmptyBorder());
+        qualitatDImatgeTextField.setVisible(false);
         Map<String, List<Double>> MP = Estadistiques.getparam();
         getContentPane().setBackground(Color.magenta);
         frame.setSize(40, 40);
@@ -435,6 +442,7 @@ public class Interfaz extends JFrame {
                     else {
                         Accion.setText("Descomprimir");
                         comboBox1.removeAllItems();
+                        qualitatDImatgeTextField.setVisible(false);
                         slider1.setVisible(false);
                         slider1.setMaximumSize(new Dimension(0,0));
 
