@@ -188,7 +188,7 @@ public class LZSS extends Algoritmes {
         if(file.length > 0) super.grade = (double)encoded.size()/(double)file.length;     //Càlcul del ratio de compressió i assignació a variable de la superclasse
 
         // Conversió de la llista a un byte[]
-        byte [] retur = new byte [result.size()];
+        byte [] retur = new byte [encoded.size()];
         int i = 0;
         for (Byte b : encoded) {
             retur[i] = b.byteValue();
