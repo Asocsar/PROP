@@ -210,17 +210,7 @@ public class JPEG {
     //transformació DCT, la quantització i l'encoding fet amb RLE.
     // Per aconseguir l'encoding de RLE, ho guardem en una llista
     //i després ho passem a un array de ints
-    public byte[] compress8(/*int[][] m*/) {
-
-        int[][]m = {
-                {52, 55, 61, 66, 70, 61, 64, 73},
-                {63, 59, 55, 90, 109, 85, 69, 72},
-                {62, 59, 68, 113, 144, 104, 66, 73},
-                {63, 58, 71, 122, 154, 106, 70, 69},
-                {67, 61, 68, 104, 126, 88, 68, 70},
-                {79, 65, 60, 70, 77, 68, 58, 75},
-                {85, 71, 64, 59, 55, 61, 65, 83},
-                {87, 79, 69, 68, 65, 76, 78, 94}};
+    private byte[] compress8(int[][] m) {
 
         //DCT Transform
         double[][] D = this.dct(m);
@@ -309,7 +299,7 @@ public class JPEG {
     // Descripció: Es fa la conversió de l'array d'enters a un bloc mitjançant l'aplicació
     //del decodint del RLE, la desquantització i la DCT inversa.
     // A RLE c es el Nint [0..63] inici i count són les repeticions del caràcter curr
-    public int[][] decompress8(String s) {
+    private int[][] decompress8(String s) {
 
         //Decoding ZigZag (RLE)
         String[] RS;
@@ -321,7 +311,7 @@ public class JPEG {
 
         System.out.println(s); //Imprimir string descomprimit
 
-        for (int i = 0; i < s.length(); ++i) {
+        for (int i = 0; i < s.length() && c < 64; ++i) {
             String runsize = mapInversed.get(sb.append(s.charAt(i)).toString());
             if(runsize != null){
                 System.out.println(sb.toString() + " " + runsize);
@@ -341,8 +331,8 @@ public class JPEG {
                     z = (int) l;
                 }
 
-                System.out.println( "Posició c: " +c + " " + z);
-                if(nbytes != 0 && c < 64) B[ZigZag[c][0]][ZigZag[c][1]] = z;
+                System.out.println( "Posició c: " +c + " , " + z +  " count: " + count);
+                if(nbytes != 0) {B[ZigZag[c][0]][ZigZag[c][1]] = z;}
                 sb = new StringBuilder();
                 i += nbytes;
                 ++c;
@@ -465,7 +455,7 @@ public class JPEG {
                     }
 
 
-                    bs = compress8(); //Treure getBytes
+                    bs = compress8(m); //Treure getBytes
                     mida += bs.length;
                     //System.out.println("String: " + s);
                     output.write(bs); //Escriure cada bloc en text !!
@@ -526,6 +516,7 @@ public class JPEG {
             s = String.format("%8s", Integer.toBinaryString(b2[i] & 0xFF)).replace(' ', '0');
             sb.append(s);
         }
+        System.out.println(sb.toString());
         String[] blocks = sb.toString().split("000010100000101000001010"); //Separar per byte '\n'
         System.out.println("NBlocks: " + blocks.length);
 
