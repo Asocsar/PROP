@@ -11,9 +11,9 @@ public class Estadistiques {
     private static String[] noms_est = {"Temps de l'última compressió", "Temps de l'última descompressió" ,"Ratio de l'última compressió", "Velocitat de compressió",
             "Temps de compressió global", "Temps de descompressió global",  "Ratio de compressió global", "Número de compressions" ,
             "Número de descompressions"};
-    /**< Noms de les estadístiques : Les 9 posicions es corresponen a :  0/ Temps de l'última compressió. 1/Temps de compressió global.
-     * 2/Temps de l'última descompressió. 3/Temps de descompressió global. 4/Ratio de l'última compressió. 5/ Ratio de compressió global.
-     * 6/Velocitat de compressió. 7/Número de compressions. 8/Número de descompressions. */
+    /**< Noms de les estadístiques : Les 9 posicions es corresponen a :  0/ Temps de l'última compressió. 1/Temps de l'última descompressió.
+     * 2/Ratio de l'última compressió.. 3/Velocitat de compressió.  4/Temps de compressió global. 5/ Temps de descompressió global
+     * 6/Ratio de compressió global. 7/Número de compressions. 8/Número de descompressions. */
 
     private static Map<String,List<Double>> est = new HashMap<String, List<Double>>(); /**<Estadístiques Globals : les estadistiques de cada algorisme es troben contenides en una List<Double>, identificat amb al seu nom en un Map.
      * El nom de l'estadística en la posició i-èssima es correspon amb el nom contingut en la posició i-èssima de l'String[] "noms_est". També conté com a clau l'últim algorisme usat, acopmanyat de l'id d'aquest*/
@@ -52,7 +52,24 @@ public class Estadistiques {
 
     }};
 
+    /** \brief Obtenció d'estadístiques LZW
+     \pre  Cert
+     \post Es retornen totes les estadístiques de LZW
+     */
 
+    public static List<Double> getstatsLZW(){
+        List<Double> tmpstats = new ArrayList<>();
+        tmpstats.add(lzw.get(0));
+        tmpstats.add(lzw.get(1));
+        tmpstats.add(lzw.get(2));
+        tmpstats.add(lzw.get(3));
+        if (lzw.get(7) != 0) tmpstats.add(lzw.get(4)/lzw.get(7));
+        if (lzw.get(8) != 0) tmpstats.add(lzw.get(5)/lzw.get(8));
+        if (lzw.get(7) != 0) tmpstats.add(lzw.get(6)/lzw.get(7));
+        tmpstats.add(lzw.get(7));
+        tmpstats.add(lzw.get(8));
+        return tmpstats;
+    }
 
     /** \brief Recuperacio estadistiques
      \pre  Cert
@@ -66,95 +83,6 @@ public class Estadistiques {
     }
 
 
-    /** \brief Last compress time LZW
-     \pre  Cert
-     \post Retorna el temps de l'útlima execució amb LZW
-     */
-
-    public static double getTimeLZW() {
-        return lzw.get(0);
-    }
-
-
-    /** \brief Temps de compressió Global LZW
-     \pre  Cert
-     \post Retorna la mitjana de temps d'execució amb LZW
-     */
-
-    public static double getGlobTimeLZW() {
-        return (lzw.get(7) != 0) ? lzw.get(4)/lzw.get(7): 0;
-    }
-
-
-    /** \brief Last decompress time LZW
-     \pre  Cert
-     \post Retorna el temps de l'útlima descompressió amb LZW
-     */
-
-    public static double getDTimeLZW() {
-        return lzw.get(1);
-    }
-
-
-    /** \brief Temps de descompressió Global LZW
-     \pre  Cert
-     \post Retorna la mitjana de temps de descompressió amb LZW
-     */
-
-    public static double getDGlobTimeLZW() {
-        return (lzw.get(8) != 0) ? lzw.get(5)/lzw.get(8): 0;
-    }
-
-
-    /** \brief Last compress ratio LZW
-     \pre  Cert
-     \post Retorna el ratio de compressió de l'útlima execució amb LZW
-     */
-
-    public static double getRatioLZW() {
-        return lzw.get(2);
-    }
-
-
-    /** \brief Ratio global LZW
-     \pre  Cert
-     \post Retorna el ratio de compressió global amb LZW
-     */
-
-    public static double getGlobRatioLZW() {
-        return (lzw.get(7) != 0) ? lzw.get(6)/lzw.get(7) : 0;
-    }
-
-
-    /** \brief Velocitat de compressio LZW
-     \pre  Cert
-     \post Retorna la mitjana de la velocitat de compressió de LZW
-     */
-
-    public static double getVelLZW(){
-        return lzw.get(3);
-    }
-
-
-    /** \brief Quantitat de compressions LZW
-     \pre  Cert
-     \post Retorna el número d'usos en la compressió de LZW
-     */
-
-    public static double getQuantLZW() {
-        return lzw.get(7);
-    }
-
-
-    /** \brief Quantitat de Descompressions LZW
-     \pre  Cert
-     \post Retorna el número d'usos en la descompressió amb LZW
-     */
-
-    public static double getDQuantLZW() {
-        return lzw.get(8);
-    }
-
 
     /***************************
      ********** LZ78 ************
@@ -166,6 +94,24 @@ public class Estadistiques {
 
     }};
 
+    /** \brief Obtenció d'estadístiques LZ78
+     \pre  Cert
+     \post Es retornen totes les estadístiques de LZ78
+     */
+
+    public static List<Double> getstatsLZ78(){
+        List<Double> tmpstats = new ArrayList<>();
+        tmpstats.add(lz78.get(0));
+        tmpstats.add(lz78.get(1));
+        tmpstats.add(lz78.get(2));
+        tmpstats.add(lz78.get(3));
+        if (lz78.get(7) != 0) tmpstats.add(lz78.get(4)/lz78.get(7));
+        if (lz78.get(8) != 0) tmpstats.add(lz78.get(5)/lz78.get(8));
+        if (lz78.get(7) != 0) tmpstats.add(lz78.get(6)/lz78.get(7));
+        tmpstats.add(lz78.get(7));
+        tmpstats.add(lz78.get(8));
+        return tmpstats;
+    }
 
     /** \brief Recuperacio estadistiques
      \pre  Cert
@@ -179,94 +125,6 @@ public class Estadistiques {
     }
 
 
-    /** \brief Last compress time LZ78
-     \pre  Cert
-     \post Retorna el temps de l'útlima execució amb LZ78
-     */
-
-    public static double getTimeLZ78() {
-        return lz78.get(0);
-    }
-
-
-    /** \brief Temps Global LZ78
-     \pre  Cert
-     \post Retorna la mitjana de temps d'execució amb LZ78
-     */
-
-    public static double getGlobTimeLZ78() {
-        return (lz78.get(7) != 0) ? lz78.get(4)/lz78.get(7): 0;
-    }
-
-
-    /** \brief Last decompress time LZ78
-     \pre  Cert
-     \post Retorna el temps de l'útlima descompressió amb LZ78
-     */
-
-    public static double getDTimeLZ78() {
-        return lz78.get(1);
-    }
-
-
-    /** \brief Temps de descompressió Global LZ78
-     \pre  Cert
-     \post Retorna la mitjana de temps de descompressió amb LZ78
-     */
-
-    public static double getDGlobTimeLZ78() {
-        return (lz78.get(8) != 0) ? lz78.get(5)/lz78.get(8): 0;
-    }
-
-
-    /** \brief Last ratio LZ78
-     \pre  Cert
-     \post Retorna el ratio de compressió de l'útlima execució amb LZ78
-     */
-
-    public static double getRatioLZ78() {
-        return lz78.get(2);
-    }
-
-    /** \brief Ratio global LZ78
-     \pre  Cert
-     \post Retorna la mitjana de ratios de compressió global amb LZ78
-     */
-
-    public static double getGlobRatioLZ78() {
-        return (lz78.get(7) != 0) ? lz78.get(6)/lz78.get(7) : 0;
-    }
-
-
-    /** \brief Velocitat de compressio LZ78
-     \pre  Cert
-     \post Retorna la mitjana de la velocitat de compressió de LZ78
-     */
-
-    public static double getVelLZ78(){
-        return lz78.get(3);
-    }
-
-
-    /** \brief Quantitat d'usos LZ78
-     \pre  Cert
-     \post Retorna el número d'usos de LZ78
-     */
-
-    public static double getQuantLZ78() {
-        return lz78.get(7);
-    }
-
-
-    /** \brief Quantitat de Descompressions LZ78
-     \pre  Cert
-     \post Retorna el número d'usos en la descompressió amb LZ78
-     */
-
-    public static double getDQuantLZ78() {
-        return lz78.get(8);
-    }
-
 
     /***************************
      ********** LZSS ***********
@@ -277,6 +135,25 @@ public class Estadistiques {
         for (int i = 0; i < 9; ++i) add(0.0);
 
     }};
+
+    /** \brief Obtenció d'estadístiques LZSS
+     \pre  Cert
+     \post Es retornen totes les estadístiques de LZSS
+     */
+
+    public static List<Double> getstatsLZSS(){
+        List<Double> tmpstats = new ArrayList<>();
+        tmpstats.add(lzss.get(0));
+        tmpstats.add(lzss.get(1));
+        tmpstats.add(lzss.get(2));
+        tmpstats.add(lzss.get(3));
+        if (lzss.get(7) != 0) tmpstats.add(lzss.get(4)/lzss.get(7));
+        if (lzss.get(8) != 0) tmpstats.add(lzss.get(5)/lzss.get(8));
+        if (lzss.get(7) != 0) tmpstats.add(lzss.get(6)/lzss.get(7));
+        tmpstats.add(lzss.get(7));
+        tmpstats.add(lzss.get(8));
+        return tmpstats;
+    }
 
 
 
@@ -292,95 +169,6 @@ public class Estadistiques {
     }
 
 
-    /** \brief Last compress time LZSS
-     \pre  Cert
-     \post Retorna el temps de l'útlima execució amb LZSS
-     */
-
-    public static double getTimeLZSS() {
-        return lzss.get(0);
-    }
-
-    /** \brief Temps Global LZSS
-     \pre  Cert
-     \post Retorna la mitjana de temps d'execució amb LZSS
-     */
-
-    public static double getGlobTimeLZSS() {
-        return (lzss.get(7) != 0) ? lzss.get(4)/lzss.get(7): 0;
-    }
-
-
-    /** \brief Last decompress time LZSS
-     \pre  Cert
-     \post Retorna el temps de l'útlima descompressió amb LZSS
-     */
-
-    public static double getDTimeLZSS() {
-        return lzss.get(1);
-    }
-
-
-    /** \brief Temps de descompressió Global LZSS
-     \pre  Cert
-     \post Retorna la mitjana de temps de descompressió amb LZSS
-     */
-
-    public static double getDGlobTimeLZSS() {
-        return (lzss.get(8) != 0) ? lzss.get(5)/lzss.get(8): 0;
-    }
-
-
-    /** \brief Last ratio LZSS
-     \pre  Cert
-     \post Retorna el ratio de compressió de l'útlima execució amb LZSS
-     */
-
-    public static double getRatioLZSS() {
-        return lzss.get(2);
-    }
-
-
-    /** \brief Ratio global LZSS
-     \pre  Cert
-     \post Retorna el ratio de compressió global amb LZSS
-     */
-
-    public static double getGlobRatioLZSS() {
-        return (lzss.get(7) != 0) ? lzss.get(6)/lzss.get(7) : 0;
-    }
-
-
-    /** \brief Velocitat de compressio LZSS
-     \pre  Cert
-     \post Retorna la mitjana de la velocitat de compressió de LZSS
-     */
-
-    public static double getVelLZSS(){
-        return lzss.get(3);
-    }
-
-
-    /** \brief Quantitat d'usos LZSS
-     \pre  Cert
-     \post Retorna el número d'usos de LZSS
-     */
-
-    public static double getQuantLZSS() {
-        return lzss.get(7);
-    }
-
-
-    /** \brief Quantitat de Descompressions LZSS
-     \pre  Cert
-     \post Retorna el número d'usos en la descompressió amb LZSS
-     */
-
-    public static double getDQuantLZSS() {
-        return lzss.get(8);
-    }
-
-
 
     /***************************
      ********** JPEG ***********
@@ -392,6 +180,25 @@ public class Estadistiques {
         for (int i = 0; i < 9; ++i) add(0.0);
 
     }};
+
+    /** \brief Obtenció d'estadístiques LZSS
+     \pre  Cert
+     \post Es retornen totes les estadístiques de LZSS
+     */
+
+    public static List<Double> getstatsJPEG(){
+        List<Double> tmpstats = new ArrayList<>();
+        tmpstats.add(jpeg.get(0));
+        tmpstats.add(jpeg.get(1));
+        tmpstats.add(jpeg.get(2));
+        tmpstats.add(jpeg.get(3));
+        if (jpeg.get(7) != 0) tmpstats.add(jpeg.get(4)/jpeg.get(7));
+        if (jpeg.get(8) != 0) tmpstats.add(jpeg.get(5)/jpeg.get(8));
+        if (jpeg.get(7) != 0) tmpstats.add(jpeg.get(6)/jpeg.get(7));
+        tmpstats.add(jpeg.get(7));
+        tmpstats.add(jpeg.get(8));
+        return tmpstats;
+    }
 
 
     /** \brief Recuperacio estadistiques JPEG
@@ -406,94 +213,6 @@ public class Estadistiques {
     }
 
 
-    /** \brief Last compress time JPEG
-     \pre  Cert
-     \post Retorna el temps de l'útlima execució amb JPEG
-     */
-
-    public static double getTimeJPEG() {
-        return jpeg.get(0);
-    }
-
-
-    /** \brief Temps Global JPEG
-     \pre  Cert
-     \post Retorna la mitjana de temps d'execució amb JPEG
-     */
-
-    public static double getGlobTimeJPEG() {
-        return (jpeg.get(7) != 0) ? jpeg.get(4)/jpeg.get(7): 0;
-    }
-
-
-    /** \brief Last decompress time JPEG
-     \pre  Cert
-     \post Retorna el temps de l'útlima descompressió amb JPEG
-     */
-
-    public static double getDTimeJPEG() {
-        return jpeg.get(1);
-    }
-
-
-    /** \brief Temps de descompressió Global JPEG
-     \pre  Cert
-     \post Retorna la mitjana de temps de descompressió amb JPEG
-     */
-
-    public static double getDGlobTimeJPEG() {
-        return (jpeg.get(8) != 0) ? jpeg.get(5)/jpeg.get(8): 0;
-    }
-
-
-    /** \brief Last ratio JPEG
-     \pre  Cert
-     \post Retorna el ratio de compressió de l'útlima execució amb JPEG
-     */
-
-    public static double getRatioJPEG() {
-        return jpeg.get(2);
-    }
-
-
-    /** \brief Ratio global JPEG
-     \pre  Cert
-     \post Retorna el ratio de compressió global amb JPEG
-     */
-
-    public static double getGlobRatioJPEG() {
-        return (jpeg.get(7) != 0) ? jpeg.get(6)/jpeg.get(7) : 0;
-    }
-
-
-    /** \brief Velocitat de compressio JPEG
-     \pre  Cert
-     \post Retorna la mitjana de la velocitat de compressió de JPEG
-     */
-
-    public static double getVelJPEG(){
-        return jpeg.get(3);
-    }
-
-
-    /** \brief Quantitat d'usos JPEG
-     \pre  Cert
-     \post Retorna el número d'usos de JPEG
-     */
-
-    public static double getQuantJPEG() {
-        return jpeg.get(7);
-    }
-
-
-    /** \brief Quantitat de Descompressions JPEG
-     \pre  Cert
-     \post Retorna el número d'usos en la descompressió amb JPEG
-     */
-
-    public static double getDQuantJPEG() {
-        return jpeg.get(8);
-    }
 
 
     /***************************
