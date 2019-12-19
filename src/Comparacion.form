@@ -56,9 +56,11 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="86ec0" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
+              <component id="79b07" class="javax.swing.JTextPane" binding="textArea1" default-binding="true">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                </properties>
               </component>
             </children>
           </scrollpane>
@@ -74,9 +76,11 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="95431" class="javax.swing.JTextArea" binding="textArea2" default-binding="true">
+              <component id="8cb50" class="javax.swing.JTextPane" binding="textArea2" default-binding="true">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                </properties>
               </component>
             </children>
           </scrollpane>

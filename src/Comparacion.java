@@ -1,47 +1,53 @@
-import sun.plugin.dom.core.Text;
+import Controlador_ficheros.controlador_gestor_fitxer;
 
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
 
 public class Comparacion extends JDialog {
     private JPanel contentPane;
     private JButton buttonCancel;
-    private JTextArea textArea1;
-    private JTextArea textArea2;
+    private JTextPane textArea1;
+    private JTextPane textArea2;
     private String file1;
     private String file2;
 
 
-    public Comparacion(String s1, String s2) throws IOException, BadLocationException {
-        file1 = s1;
-        file2 = s2;
+    public Comparacion(String s1, String s2, boolean image) throws IOException {
         setContentPane(contentPane);
         setMaximumSize(new Dimension(500, 700));
         setSize(new Dimension(400, 600));
         setModal(false);
         getRootPane().setDefaultButton(buttonCancel);
 
-        textArea1.setMaximumSize(new Dimension(300, 500));
-        textArea1.setColumns(40);
+        if (!image) {
 
-        textArea2.setMaximumSize(new Dimension(300, 500));
-        textArea2.setColumns(40);
+            file1 = s1;
+            file2 = s2;
 
-        textArea1.setLineWrap(true);
-        textArea2.setLineWrap(true);
+            textArea1.setMaximumSize(new Dimension(300, 500));
 
-        textArea1.setEditable(false);
-        textArea2.setEditable(false);
+            textArea2.setMaximumSize(new Dimension(300, 500));
 
-        textArea1.setText(s1);
-        textArea2.setText(s2);
+
+            textArea1.setEditable(false);
+            textArea2.setEditable(false);
+
+            textArea1.setText(s1);
+            textArea2.setText(s2);
+        }
+
+        else {
+            controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
+            cf.create_img_aux1("temp1",s1);
+            cf.create_img_aux1("temp2",s2);
+            textArea1.insertIcon(new ImageIcon("temp1.png"));
+            textArea2.insertIcon(new ImageIcon("temp2.png"));
+        }
 
 
         buttonCancel.addActionListener(new ActionListener() {
