@@ -23,6 +23,11 @@ import java.util.List;
 
 public class Interfaz extends JFrame {
 
+    /** \brief Clase JFilePicker
+     \pre  Cert
+     \post Definicio de la clase JFilePicker
+     \details Personalització de un JPanel per ha escollir un fitxer o carpeta per a comprimir o descomprimir
+     */
     public static class JFilePicker extends JPanel {
         private String textFieldLabel;
         private String buttonLabel;
@@ -38,6 +43,12 @@ public class Interfaz extends JFrame {
         public static final int MODE_SAVE = 2;
         private boolean directori = false;
 
+        /**
+         * \brief Instanciació de JFilePicker
+         * \pre  Cert
+         * \post Crea una instancia de JFilePicker
+         * \details S'inicialitzen tots els components necesàris
+         */
         public JFilePicker(String textFieldLabel, String buttonLabel) {
             this.textFieldLabel = textFieldLabel;
             this.buttonLabel = buttonLabel;
@@ -63,13 +74,18 @@ public class Interfaz extends JFrame {
             });
 
 
-
             add(label);
             add(textField);
             add(button);
 
         }
 
+        /**
+         * \brief Estableix mode de selecció
+         * \pre  Cert
+         * \post S'obre una ventana per seleccionar el fitxer y desa el path seleccionat en un textField
+         * \details Hi ha dos modes de seleccio.
+         */
         private void buttonActionPerformed(ActionEvent evt) {
             if (mode == MODE_OPEN) {
                 if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -83,47 +99,88 @@ public class Interfaz extends JFrame {
             }
         }
 
+        /**
+         * \brief Afegeix un filtre
+         * \pre  Cert
+         * \post El component FilePicker obté filtrés, per acceptar unicament uns fitxers en concret
+         * \details
+         */
         public void addFileTypeFilter(String[] e, String description) {
             FileTypeFilter filter = new FileTypeFilter(e, description);
             fileChooser.addChoosableFileFilter(filter);
 
         }
 
+        /**
+         * \brief Cambiem el mode de seleccio
+         * \pre  Cert
+         * \post Cambia la variable mode
+         * \details Es pot cambiar entre el mode SAVE i OPEN
+         */
         public void setMode(int mode) {
             this.mode = mode;
         }
 
+
+        /**
+         * \brief Obtenim el path seleccionat
+         * \pre  Cert
+         * \post Retorna el path seleccionat
+         * \details
+         */
         public String getSelectedFilePath() {
             return textField.getText();
         }
 
-        public JTextField gettextf () {return textField;}
 
+        /**
+         * \brief Obtenim el TextField
+         * \pre  Cert
+         * \post Retorna el parametre JTextField
+         * \details
+         */
+        public JTextField gettextf() {
+            return textField;
+        }
+
+        /**
+         * \brief Obtenim el filechooser
+         * \pre  Cert
+         * \post Retorna el parametre JfileChooser
+         * \details
+         */
         public JFileChooser getFileChooser() {
             return this.fileChooser;
         }
-
-        public JFilePicker change (String s1, String s2) {
-            return new JFilePicker(s1,s2);
-        }
-
-        public void removefilter () {
-            fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
-            textField.setText("");
-        }
-
-        public boolean getdir () {return directori;}
     }
 
+
+    /** \brief Clase FileTypeFilter
+     \pre  Cert
+     \post Definicio de la clase FileTypeFIlter
+     \details Creació de la clase FileTypeFIlter
+     */
     public static class FileTypeFilter extends FileFilter {
 
         private String[] extension;
         private String description;
 
+
+        /** \brief Instanciacio de la clase FileTypeFilter
+         \pre  Cert
+         \post S'inicializen els parametres de la clase
+         \details El parametre extension conté els elements a acceptar y la descripció conté un missatge personalitzat
+         */
         public FileTypeFilter(String[] extension, String description) {
             this.extension = extension;
             this.description = description;
         }
+
+        /** \brief Filtre per acceptar o denegar elements
+         \pre  Cert
+         \post Retorna cert si l'arxiu es troba o no en el filtre
+         \details El parametre local extension es que condiciona si el fitxer es  o no acceptat
+         */
 
         @Override
         public boolean accept(File file) {
@@ -136,16 +193,16 @@ public class Interfaz extends JFrame {
             return false;
         }
 
+        /** \brief Descripció asociada a un filtre
+         \pre  Cert
+         \post Retorna la descripció asociada a un filtre concret
+         \details
+         */
         public String getDescription() {
             return description + Arrays.toString(extension);
         }
     }
 
-    public static class Boton extends JButton {
-        public Boton() {
-            this.setText("Accion");
-        }
-    }
 
     private JPanel Panel;
     private JButton Sortir;
@@ -164,7 +221,14 @@ public class Interfaz extends JFrame {
     private static controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
     private static HashMap<Integer, String> M = new HashMap<Integer, String>();
     private static Map<String, List<String>> Asoc = cont.getAsoc();
+    private List<Comparacion> compL = new ArrayList<>();
 
+
+    /** \brief Creació de components personalizats
+     \pre  Cert
+     \post Crea els components personalitzats en la Interficie principal
+     \details
+     */
     private void createUIComponents () {
         Picker1 = new JFilePicker("Elemento a Comprimir/Descomprimir", "Busca");
         Picker1.setMode(JFilePicker.MODE_SAVE);
@@ -186,6 +250,12 @@ public class Interfaz extends JFrame {
 
     }
 
+
+    /** \brief Listener per al frame principal
+     \pre  Cert
+     \post Cada vegada que la mida del frame principal sigui modificada, la grandaria dels JFilePIcker s'adapta
+     \details Creació de la clase FileTypeFIlter
+     */
     class ResizeListener extends ComponentAdapter {
         public void componentResized(ComponentEvent e) {
             // Recalculate the variable you mentioned
@@ -194,31 +264,63 @@ public class Interfaz extends JFrame {
         }
     }
 
+
+    /** \brief Oculta el slider de qualitat y estableix el algoritme de compressio
+     \pre  Cert
+     \post Cambio l'algorisme que s'utilitzarà  a LZW y oculta la barra
+     \details
+     */
     public void LZW_option() {
         metodo = 0;
         slider1.setVisible(false);
         slider1.setMaximumSize(new Dimension(0,0));
     }
 
+    /** \brief Oculta el slider de qualitat y estableix el algoritme de compressio
+     \pre  Cert
+     \post Cambio l'algorisme que s'utilitzarà a LZSS y oculta la barra
+     \details
+     */
     public void LZSS_option() {
         metodo = 1;
         slider1.setVisible(false);
         slider1.setMaximumSize(new Dimension(0,0));
     }
 
+    /** \brief Oculta el slider de qualitat y estableix el algoritme de compressio
+     \pre  Cert
+     \post Cambio l'algorisme que s'utilitzarà a LZ78 y oculta la barra
+     \details
+     */
     public void LZ78_option() {
         metodo = 2;
         slider1.setVisible(false);
         slider1.setMaximumSize(new Dimension(0,0));
     }
 
+    /** \brief Mostra el slider de qualitat y estableix el algoritme de compressio
+     \pre  Cert
+     \post Cambio l'algorisme que s'utilitzarà a jPEG y mostra la barra
+     \details
+     */
     public void JPEG_option() {
         metodo = 3;
         slider1.setVisible(true);
         slider1.setMaximumSize(new Dimension(30,50));
     }
 
+/* He añadido o modifiado
+*   1. ppm
+*   2. get_temp_imagen
+*   3: dir_or_arch
+*   4: get_ext_file
+*   5: a_comprimir*/
 
+    /** \brief Instancia la ventana principal
+     \pre  Cert
+     \post S'inicialitzen totes les variables de control i components necesaris
+     \details
+     */
     public Interfaz()  {
         Estadistiques.inicialitzar();
         Map<String, List<Double>> MP = Estadistiques.getparam();
@@ -240,14 +342,30 @@ public class Interfaz extends JFrame {
         Accion.setBorder(BorderFactory.createEtchedBorder());
         Sortir.setBorder(BorderFactory.createEtchedBorder());
         Globales.setBorder(BorderFactory.createEtchedBorder());
+
+        /** \brief Implementa el comportament del boto de toncar l'aplicació
+         \pre  No hi ha cap procés de compressio o descompressió actiu ni tampoc cap carrega de textos o imatges per comparar
+         \post Totes les vistes de l'aplicació es tanquen i el programa finalitza
+         \details
+         */
         Sortir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Estadistiques.finalitza();
+                for (Comparacion c : compL) c.dispose();
                 frame.dispose();
             }
         });
 
+
+        /** \brief Actualitza el botó de comprimir y l'algoritme utilitzat
+         \pre  Cert
+         \post El boto cambia d'estat i es selecciona l'algorisme
+         \details Quan un fitxer es seleccionat, el boto pasa a tenir el text compressio o descompressio
+         \ depenent de en quin fitxer haguem escollit i a part d'això s'actualitza els algotimes disponibles
+         \ per comprimir i descomprimir i en cas del JPEG es mostra un slider que indica qualitat, altrament aquest slider
+         \ s'amaga.
+         */
         Picker1.textField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -266,8 +384,7 @@ public class Interfaz extends JFrame {
 
             public void act () {
                 String p = Picker1.getSelectedFilePath();
-                File f = new File(p);
-                directorio = f.isDirectory();
+                directorio = !cf.dir_or_arch(p);
                 for (ActionListener a : comboBox1.getActionListeners()) comboBox1.removeActionListener(a);
                 comboBox1.removeAllItems();
                 comboBox1.addActionListener(new ActionListener() {
@@ -295,8 +412,8 @@ public class Interfaz extends JFrame {
                     comboBox1.setSelectedIndex(metodo);
                 }
                 else {
-                    String substring = p.substring(p.length() - 4);
-                    boolean comprimir = substring.equals(".txt") || substring.equals(".ppm");
+                    boolean comprimir = cf.a_comprimir(p);
+                    String substring = cf.get_ext_file(p);
                     if (comprimir) {
                         Accion.setText("Comprimir");
                         List<String> S = new ArrayList<>();
@@ -319,17 +436,22 @@ public class Interfaz extends JFrame {
             }
         });
 
+        /** \brief Comprimeix o Descomprimex el fitxer o carpeta seleccionat
+         \pre  Cert
+         \post Comprimeix o Descomprimex el fitxer o carpeta seleccionat
+         \details En cas de comprimir una carpeta amb fitxers no compatibles s'enviara un avís
+         \demanant a l'usuari que confirmi la seva elecció
+         */
         Accion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Cont_CD C = new Cont_CD();
-                controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
                 if (Accion.getText().equals("Comprimir/Descomprimir")) {
                     JOptionPane.showMessageDialog(frame, "Escoge antes un Elemento a comprimir o descomprimir");
 
                 } else {
                     try {
-                        if (!directorio && Picker1.getSelectedFilePath().substring(Picker1.getSelectedFilePath().length()-2).charAt(0) != 'F')
+                        if (!directorio && cf.a_comprimir(Picker1.getSelectedFilePath()))
                             if (Accion.getText().equals("Comprimir"))
                                 image = C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo));
                             else
@@ -359,6 +481,13 @@ public class Interfaz extends JFrame {
             }
         });
 
+        /** \brief Compara la última compressió executada
+         \pre  Cert
+         \post Compara la última compressió executada
+         \details Compara la ultima compressió realitzada i en cas de que aquesta sigui un fitxer
+         \ es mostrara el text original i el comprimit (descomprimint aquest de forma temporal per a que així l'usuari)
+         \ pugui veure el resultat de la seva compressió, el mateix amb la imatge
+         */
         Compare.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -366,7 +495,8 @@ public class Interfaz extends JFrame {
                     try {
                         String[] S = C.comparar();
                         Comparacion dialog = new Comparacion(S[0], S[1], Cont_CD.getlastjpeg());
-                        dialog.pack();
+                        compL.add(dialog);
+                        //dialog.pack();
                         dialog.setVisible(true);
                         dialog.setMaximumSize(new Dimension(500, 500));
                     } catch (IOException ex) {
@@ -377,6 +507,14 @@ public class Interfaz extends JFrame {
             }
         });
 
+
+        /** \brief Mostra les estadístiques globals
+         \pre  Cert
+         \post Mostra les estadístiques globals
+         \details Mostra les estadístiques globals de tots els algoritmes, en cas de que
+         \ es vulguin veure totes de forma simultanea l'últim algoritme utilitzat apareixerà
+         \ amb un color diferent a la resta per indicar visualment quin es aquest
+         */
         Globales.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
