@@ -58,6 +58,10 @@ public class controlador_gestor_fitxer {
         gestor.create_img_aux1(name, path);
     }
 
+    public boolean a_comprimir (String path) {return gestor.a_comprimir(path);}
+
+    public String get_ext_file (String path) {return gestor.get_ext_file(path);}
+
     //COMPRESIO DE CARPETES:
     public List<String> get_paths_carpeta(String Path_o, String path_desti, String id) throws IOException {
         List<String> paths_fitxers;

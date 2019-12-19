@@ -224,6 +224,20 @@ public class gestor_fitxers {
         ImageIO.write(im, "jpg", new File(name + ".png"));
     }
 
+    public boolean a_comprimir (String path) {
+        String ex = path.substring(path.length() - 4);
+        return (ex.equals(".txt") || ex.equals(".ppm"));
+    }
+
+    public  String get_ext_file (String p) {
+        String ex = p.substring(p.length() - 4);
+        if (ex.equals(".txt") || ex.equals(".ppm")) {
+            return p.substring(p.length() - 4);
+        }
+        else
+            return p.substring(p.length() - 3);
+    }
+
     //LLEGEIX ELS BYTES QUE REPRESENTEN EL PATH D'UN FITXER I HO TRANSFORMA A STRING
     public String read_path(String path_fitxer_carpeta) throws IOException {
         File file= new File(path_fitxer_carpeta);
