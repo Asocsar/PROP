@@ -13,9 +13,8 @@ public class controlador_gestor_fitxer {
     private String path_fitxer_carpeta;
     private  Boolean C_P;
     private String id_a;
-    private static gestor_fitxers gestor;
-    private List<String> no_val = new ArrayList<>();
-
+    private gestor_fitxers gestor;
+    private Integer num_arxius;
 
 
 
@@ -51,41 +50,29 @@ public class controlador_gestor_fitxer {
 
     public boolean dir_or_arch(String path){ return gestor.dir_or_arch(path);}
 
-    public List<String> getPaths_no_valids(){ return no_val;}
+    public List<String> getPaths_no_valids(){ return gestor.getPaths_no_valids();}
 
-
-    public void create_img_aux1 (String name, String path) throws IOException {
-        gestor.create_img_aux1(name, path);
-    }
-
-    public boolean a_comprimir (String path) {return gestor.a_comprimir(path);}
-
-    public String get_ext_file (String path) {return gestor.get_ext_file(path);}
 
     //COMPRESIO DE CARPETES:
     public List<String> get_paths_carpeta(String Path_o, String path_desti, String id) throws IOException {
         List<String> paths_fitxers;
         String exten =getExtensio(id);
-        gestor.act_path_carpeta_og(Path_o);
         String path_dest;
         if(path_desti.equals("")) path_dest = Path_o + exten;
         else{
-            String s_aux= gestor.get_nom_carpeta2(Path_o) + exten;
+            String s_aux= gestor.get_nom_carpeta(Path_o) + exten;
             Path p_aux= Paths.get(path_desti,s_aux);
             path_dest = p_aux.toString();
         }
         paths_fitxers = new ArrayList<>();
         gestor.reset_num();
         paths_fitxers = gestor.get_paths_folder(Path_o, paths_fitxers);
-        no_val = gestor.getPaths_no_valids();
         gestor.act_num_f( paths_fitxers.size());
         path_fitxer_carpeta=  gestor.create_dir_comp(path_dest);
         return paths_fitxers;
     }
 
-    public String getNom_fitxer(){
-        return gestor.getNom_fitxer();
-    }
+
 
     public void write_c_folder(String Path_o, byte[] encoded) throws IOException {
         gestor.write_compressed_folder(encoded, Path_o,path_fitxer_carpeta);
@@ -235,3 +222,4 @@ public class controlador_gestor_fitxer {
     }
 
 }
+
