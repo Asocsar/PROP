@@ -458,14 +458,48 @@ public class Interfaz extends JFrame {
 
                 } else {
                     try {
-                        if (!directorio && cf.a_comprimir(Picker1.getSelectedFilePath()))
-                            if (Accion.getText().equals("Comprimir"))
-                                image = C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo));
-                            else
-                                C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath());
+                        if (!directorio && !cf.carpeta_des(Picker1.getSelectedFilePath()))
+                            if (Accion.getText().equals("Comprimir")) {
+                                int n = C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), false);
+                                if (n != -1) image = (n == 1);
+                                else {
+                                    String message = "Hi ha un fitxer comprimit amb el mateix nom en aquest directori, si vols continuar aquest fitxer es sobreescriurà\n\n Vols continuar ?";
+                                    int i = 0;
+                                    String title = "Avís";
+                                    int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                    if (reply == JOptionPane.YES_OPTION) {
+                                        C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), true);
+                                    }
+                                }
+                            }
+                            else {
+                                int n = C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), false);
+                                if (n == -1) {
+                                    String message = "Ja existeix un fitxer amb aquest nom en el directori actual de continuar el seu contingut serà sobreescrit\n\n Vols continuar ?";
+                                    int i = 0;
+                                    String title = "Avís";
+                                    int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                    if (reply == JOptionPane.YES_OPTION) {
+                                        C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), true);
+                                    }
+                                }
+                            }
                         else if (Accion.getText().equals("Comprimir")) {
-                            List<String> N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), false);
-                            if (!N.get(0).equals("0")) {
+                            boolean force1 = false;
+                            boolean force2 = false;
+                            int auxiliar = -111;
+                            List<String> N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1, force2);
+                            if (N.size() >= 1 && N.get(0).equals("-1")) {
+                                String message = "S'ha trobat un fitxer amb el mateix nom que la carpeta, si continua amb el procés el contingut del fitxer serà substituit\n\n Vol continuar ?";
+                                String title = "Avís";
+                                int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                auxiliar = reply;
+                                if (reply == JOptionPane.YES_OPTION) {
+                                    force1 = true;
+                                    N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1,force2);
+                                }
+                            }
+                            if (N.size() >= 1 && !N.get(0).equals("0") && auxiliar == JOptionPane.YES_OPTION) {
                                 String message = "Si continues amb la compressió els següents arxius seran ignorats\n\n";
                                 int i = 0;
                                 for (; (i < N.size()) && (i < 15); ++i) message += N.get(i) + "\n";
@@ -473,14 +507,25 @@ public class Interfaz extends JFrame {
                                 String title = "Avís";
                                 int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
                                 if (reply == JOptionPane.YES_OPTION) {
-                                    C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), true);
+                                    force2 = true;
+                                    force1 = true;
+                                    C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1,force2);
                                 }
                             }
                         }
-                        else
-                            C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath());
+                        else {
+                            if (! C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), false)) {
+                                String message = "Hi ha una carpeta amb el mateix nom, si vol continuar la carpeta serà eliminada y substituida per la que s'esta descomprimint\n\n";
+                                String title = "Avís";
+                                int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                if (reply == JOptionPane.YES_OPTION) {
+                                    C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), true);
+                                }
+                            }
+                        }
                     } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(frame, "Error inesperado, por favor vuelva a intentar");
+                        ex.printStackTrace();
+                        //JOptionPane.showMessageDialog(frame, "Error inesperado, por favor vuelva a intentar");
                     } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido | Cont_CD.NoFiles ficheroCompressionNoValido) {
                         JOptionPane.showMessageDialog(frame, ficheroCompressionNoValido.getMessage());
                     }

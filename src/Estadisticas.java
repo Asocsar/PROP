@@ -1,17 +1,25 @@
+/**
+ * /file Estadisticas.java
+ * /author Daniel Cano Carrascosa
+ * /title Mostrar les estadístiques tant globals com locals del algoritmes
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import  Estadístiques.*;
 
 
-
+/** \brief Clase Estadisticas
+ \pre  Cert
+ \post Definicio de la clase Estadisticas
+ \details Mostra les estadístiques globals i locals dels algoritmes
+ */
 public class Estadisticas extends JDialog {
     private JPanel contentPane;
     private JButton buttonCancel;
@@ -30,7 +38,12 @@ public class Estadisticas extends JDialog {
     private JTextArea [] L = new JTextArea[] {Quad1, Quad2, Quad3, Quad4};
 
 
-
+    /** \brief Estableix un tamany fixe
+     \pre  Cert
+     \post L'aplicació es manté a la mateixa mida
+     \details Cada vegada que s'intenta que la vista sigui més gran o petita aquest canvi es veu ignorat i s'estableix el
+     \seu tamany anterior
+     */
     class ResizeListener extends ComponentAdapter {
         public void componentResized(ComponentEvent e) {
             // Recalculate the variable you mentioned
@@ -38,22 +51,11 @@ public class Estadisticas extends JDialog {
         }
     }
 
-    public void actgen (JTextArea Q, String [] M, List<Double> L, String name) {
-        Q.setText("");
-        Q.append(name);
-        Q.append("\n");
-        for (int i = 0; i < 9; ++i) {
-            if (i == 0) Q.append(" Estadistiques més Recents\n\n");
-            if (i == 4) Q.append("\n Estadístiques Globals\n\n");
-            Q.append(" " + M[i]);
-            Q.append(" : ");
-            DecimalFormat dc = new DecimalFormat("0.00");
-            String num = dc.format(L.get(i));
-            Q.append(num);
-            Q.append(" \n");
-        }
-    }
-
+    /** \brief Mostra i actualitza la vista de totes les estadístiques
+     \pre  Cert
+     \post La vista cambia de tamany cambia i es mostren totes les estadístiques
+     \details
+     */
     private void actual (Set<String> OPC, String last) {
         for (JTextArea A : L) {
             A.setVisible(true);
@@ -71,6 +73,11 @@ public class Estadisticas extends JDialog {
         }
     }
 
+    /** \brief Mostra i actualitza la vista de totes les estadístiques pero només d'un algoritme
+     \pre  Cert
+     \post La vista cambia de tamany cambia i es mostren totes les estadístiques d'un algoritme
+     \details
+     */
     public void actual_alg (JTextArea Q, String alg, boolean ultim) {
         String [] M = Estadistiques.nom_atr();
         Map<String, List<Double>> MP = Estadistiques.getparam();
@@ -98,6 +105,11 @@ public class Estadisticas extends JDialog {
         }
     }
 
+    /** \brief Mostra la vista de Estadístiques
+     \pre  Cert
+     \post Definicio de la clase Comparacion
+     \details Serveix per visualitzar les estadístiques
+     */
     public Estadisticas (Set<String> OPC) {
         setContentPane(contentPane);
         setResizable(false);
@@ -149,7 +161,12 @@ public class Estadisticas extends JDialog {
 
 
 
-
+        /** \brief Mostra les estadistiques de l'algorisme seleccionat
+         \pre  Cert
+         \post Cambia la vista a l'algorisme corresponent
+         \details En cas de que la selecció sigui tots llavors es mostren els 4 algoritmes al mateix temps i el tamany
+         \ de la vista cambia
+         */
         comboBox1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -186,6 +203,12 @@ public class Estadisticas extends JDialog {
         });
 
 
+        /** \brief Tanca la vista de les Estadístiques
+         \pre  Cert
+         \post Cambia la vista a l'algorisme corresponent
+         \details En cas de que la selecció sigui tots llavors es mostren els 4 algoritmes al mateix temps i el tamany
+         \ de la vista cambia
+         */
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
@@ -223,34 +246,5 @@ public class Estadisticas extends JDialog {
 
     }
 
-
-
-    /*public static void main(String[] args) {
-        Estadisticas dialog = new Estadisticas();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
-    }*/
 }
 
-/*
-                    time = new Timer(1, new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            int inc = 9;
-                            if (getWidth() < post_x) {
-                                max_x = getWidth()+inc;
-                                setMinimumSize(new Dimension(getWidth()+inc,getHeight()));
-
-                            }
-                            if (getHeight() < post_y) {
-                                max_y = getHeight() + inc;
-                                setMaximumSize(new Dimension(getWidth(),getHeight()+inc));
-                            }
-                            if ( max_y >= post_y && max_x >= post_x) {
-                                time.stop();
-                                actual();
-                            }
-                        }
-                    });
-                    time.start();*/
