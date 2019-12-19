@@ -1,3 +1,10 @@
+/**
+ * /file Interfaz.java
+ * /author Daniel Cano Carrascosa
+ * /title Algorisme LZSS
+ */
+
+
 
 import Controlador_Compressio_Descompressio.Cont_CD;
 import Controlador_ficheros.controlador_gestor_fitxer;
