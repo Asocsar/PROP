@@ -22,6 +22,7 @@ public class Cont_CD {
     private static String id;
     private Map<String, List<String>> Asoc = new HashMap<String,List<String>>();
     private List<String> Alg = new ArrayList<>();
+    private static boolean jpeg = false;
 
     public class NoCompress extends Exception {
         public NoCompress (String message) {super(message);}
@@ -32,7 +33,8 @@ public class Cont_CD {
     }
     /** \brief Creadora
      \pre Cert
-     \post S'ha creat una instancia inicialitzada del Controlador CD
+     \post S'ha creat una instancia inicialitzada del Controlador CD y s'han asociat els algoritmes que aquesta implementa
+     \amb les extensions obtenides de la capa de persistència
      */
 
     public Cont_CD () {
@@ -166,14 +168,16 @@ public class Cont_CD {
      \pre path_o ha de ser vàlid
      \post Comprimeix el fitxer situat al path_o i el desa al path_d
      */
-    public void compressio_fitxer (String path_o, String path_d, String algoritme) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
+    public boolean compressio_fitxer (String path_o, String path_d, String algoritme) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         id = algoritme;
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
         byte[] L = action(path_o, id, true, I, -1);
         path1 = path_o;
+        if (algoritme.equals("JPEG")) jpeg = true;
         Path p = new Path();
         path2 = path_d + "\\" + I.getNom_fitxer() + I.get_extensio();
         I.writeFile(L, path_d);
+        return I.is_jpeg(path_o);
     }
 
     /**\brief Compressió de carpetes
@@ -244,13 +248,19 @@ public class Cont_CD {
                 throw new NoCompress("Debe realizar una compressión antes de intentar comparar");
             }
             else {
-                controlador_gestor_fitxer I = new controlador_gestor_fitxer();
-                //llegim el contingut del fitxer original
-                String S = I.obtenir_fitxer(path1);
-                K[0] = S;
-                //descomprimir el contingut del fitxer comprimit i el mostrem
-                byte[] L = (byte[]) action(path2, id, false, I, -1);
-                K[1] = I.compare(L, id);
+                if (jpeg) {
+                    K[0] = path1;
+                    K[1] = path2;
+                }
+                else {
+                    controlador_gestor_fitxer I = new controlador_gestor_fitxer();
+                    //llegim el contingut del fitxer original
+                    String S = I.obtenir_fitxer(path1);
+                    K[0] = S;
+                    //descomprimir el contingut del fitxer comprimit i el mostrem
+                    byte[] L = (byte[]) action(path2, id, false, I, -1);
+                    K[1] = I.compare(L, id);
+                }
             }
             return  K;
         }
