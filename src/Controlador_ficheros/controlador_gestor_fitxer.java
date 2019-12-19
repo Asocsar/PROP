@@ -54,6 +54,10 @@ public class controlador_gestor_fitxer {
     public List<String> getPaths_no_valids(){ return no_val;}
 
 
+    public void create_img_aux1 (String name, String path) throws IOException {
+        gestor.create_img_aux1(name, path);
+    }
+
     //COMPRESIO DE CARPETES:
     public List<String> get_paths_carpeta(String Path_o, String path_desti, String id) throws IOException {
         List<String> paths_fitxers;

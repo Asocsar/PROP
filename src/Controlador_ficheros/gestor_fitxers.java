@@ -1,5 +1,7 @@
 package Controlador_ficheros;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.*;
@@ -122,6 +124,104 @@ public class gestor_fitxers {
             bytes_llegits = bytes_llegits + 1;
         }
         return list_b_to_i(num_fitxers_b);
+    }
+
+
+    private BufferedImage ppm(int width, int height, int maxcolval, byte[] data){
+        if(maxcolval<256){
+            BufferedImage image=new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+            int r,g,b,k=0,pixel;
+            if(maxcolval==255){                                      // don't scale
+                for(int y=0;y<height;y++){
+                    for(int x=0;(x<width)&&((k+3)<data.length);x++){
+                        r=data[k++] & 0xFF;
+                        g=data[k++] & 0xFF;
+                        b=data[k++] & 0xFF;
+                        pixel=0xFF000000+(r<<16)+(g<<8)+b;
+                        image.setRGB(x,y,pixel);
+                    }
+                }
+            }
+            else{
+                for(int y=0;y<height;y++){
+                    for(int x=0;(x<width)&&((k+3)<data.length);x++){
+                        r=data[k++] & 0xFF;r=((r*255)+(maxcolval>>1))/maxcolval;  // scale to 0..255 range
+                        g=data[k++] & 0xFF;g=((g*255)+(maxcolval>>1))/maxcolval;
+                        b=data[k++] & 0xFF;b=((b*255)+(maxcolval>>1))/maxcolval;
+                        pixel=0xFF000000+(r<<16)+(g<<8)+b;
+                        image.setRGB(x,y,pixel);
+                    }
+                }
+            }
+            return image;
+        }
+        else{
+            BufferedImage image=new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+            int r,g,b,k=0,pixel;
+            for(int y=0;y<height;y++){
+                for(int x=0;(x<width)&&((k+6)<data.length);x++){
+                    r=(data[k++] & 0xFF)|((data[k++] & 0xFF)<<8);r=((r*255)+(maxcolval>>1))/maxcolval;  // scale to 0..255 range
+                    g=(data[k++] & 0xFF)|((data[k++] & 0xFF)<<8);g=((g*255)+(maxcolval>>1))/maxcolval;
+                    b=(data[k++] & 0xFF)|((data[k++] & 0xFF)<<8);b=((b*255)+(maxcolval>>1))/maxcolval;
+                    pixel=0xFF000000+(r<<16)+(g<<8)+b;
+                    image.setRGB(x,y,pixel);
+                }
+            }
+            return image;
+        }
+    }
+
+    public void create_img_aux1 (String name, String path) throws IOException {
+        byte [] b = Files.readAllBytes(Paths.get(path));
+        int i = 0;
+        boolean formato = true;
+        boolean first = true;
+        boolean end = false;
+        boolean maximo = true;
+        String max = "";
+        byte[] contenido = new byte[1];
+        String width = "";
+        String hight = "";
+        int aux = 0;
+        while (i < b.length) {
+            if (!formato) {
+                if (b[i] == 35 && maximo) {
+                    formato = true;
+                }
+                else if (!end && maximo){
+                    if (b[i] == 32 && maximo) {
+                        first = false;
+                    }
+                    else if (b[i] == 10) {
+                        end = true;
+                    }
+                    else {
+                        if (first)
+                            width += Character.toString((char) b[i]);
+                        else
+                            hight += Character.toString((char) b[i]);
+                    }
+                }
+                else {
+                    if (!maximo)
+                        contenido[aux++] = (b[i] != 0) ? b[i] : 32;
+                    else {
+                        if (b[i] != 10)
+                            max += Character.toString((char) b[i]);
+                        else {
+                            maximo = false;
+                            contenido = new byte[b.length-i-1];
+                        }
+                    }
+                }
+            }
+            if (formato && b[i] == 10) {
+                formato = false;
+            }
+            ++i;
+        }
+        BufferedImage im = ppm(Integer.parseInt(width), Integer.parseInt(hight),Integer.parseInt(max) ,contenido);
+        ImageIO.write(im, "jpg", new File(name + ".png"));
     }
 
     //LLEGEIX ELS BYTES QUE REPRESENTEN EL PATH D'UN FITXER I HO TRANSFORMA A STRING
