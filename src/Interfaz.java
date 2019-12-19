@@ -16,6 +16,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
@@ -157,6 +159,7 @@ public class Interfaz extends JFrame {
     private static JFrame frame;
     private static int metodo = 0;
     private boolean directorio = false;
+    private boolean image = false;
     private static Cont_CD cont = new Cont_CD();
     private static controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
     private static HashMap<Integer, String> M = new HashMap<Integer, String>();
@@ -320,6 +323,7 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Cont_CD C = new Cont_CD();
+                controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
                 if (Accion.getText().equals("Comprimir/Descomprimir")) {
                     JOptionPane.showMessageDialog(frame, "Escoge antes un Elemento a comprimir o descomprimir");
 
@@ -327,14 +331,16 @@ public class Interfaz extends JFrame {
                     try {
                         if (!directorio && Picker1.getSelectedFilePath().substring(Picker1.getSelectedFilePath().length()-2).charAt(0) != 'F')
                             if (Accion.getText().equals("Comprimir"))
-                                C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo));
+                                image = C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo));
                             else
                                 C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath());
                         else if (Accion.getText().equals("Comprimir")) {
                             List<String> N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), false);
                             if (!N.get(0).equals("0")) {
                                 String message = "Si continues amb la compressió els següents arxius seran ignorats\n\n";
-                                for (String neg : N) message += neg + "\n";
+                                int i = 0;
+                                for (; (i < N.size()) && (i < 15); ++i) message += N.get(i) + "\n";
+                                if (i == 15 && N.size() > 15) message += "I uns altres " + (N.size()-15) + " fitxers";
                                 String title = "Avís";
                                 int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
                                 if (reply == JOptionPane.YES_OPTION) {
@@ -357,20 +363,17 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Cont_CD C = new Cont_CD();
-                try {
-                    String[] S = C.comparar();
-                    Comparacion dialog = new Comparacion(S[0], S[1]);
-                    dialog.pack();
-                    dialog.setVisible(true);
-                    dialog.setMaximumSize(new Dimension(500, 500));
-
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido | Cont_CD.NoCompress ficheroCompressionNoValido) {
-                    JOptionPane.showMessageDialog(frame, ficheroCompressionNoValido.getMessage());
-                } catch (BadLocationException ex) {
-                    ex.printStackTrace();
-                }
+                    try {
+                        String[] S = C.comparar();
+                        Comparacion dialog = new Comparacion(S[0], S[1], Cont_CD.getlastjpeg());
+                        dialog.pack();
+                        dialog.setVisible(true);
+                        dialog.setMaximumSize(new Dimension(500, 500));
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(frame, "Error imprevist a l'hora de comparar, siusplau torni a intentar-ho");
+                    } catch (controlador_gestor_fitxer.FicheroDescompressionNoValido | controlador_gestor_fitxer.FicheroCompressionNoValido | Cont_CD.NoCompress ficheroDescompressionNoValido) {
+                        JOptionPane.showMessageDialog(frame, ficheroDescompressionNoValido.getMessage());
+                    }
             }
         });
 
