@@ -60,6 +60,7 @@
                 <constraints/>
                 <properties>
                   <editable value="false"/>
+                  <maximumSize width="700" height="1200"/>
                 </properties>
               </component>
             </children>
@@ -80,6 +81,7 @@
                 <constraints/>
                 <properties>
                   <editable value="false"/>
+                  <maximumSize width="700" height="1200"/>
                 </properties>
               </component>
             </children>

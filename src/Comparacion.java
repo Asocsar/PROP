@@ -1,13 +1,22 @@
+/**
+ * /file Comparacion.java
+ * /author Daniel Cano Carrascosa
+ * /title Comparació de imatges o textos
+ */
+
+
 import Controlador_ficheros.controlador_gestor_fitxer;
 
 import javax.swing.*;
-import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.ArrayList;
 
-
+/** \brief Clase Comparacion
+    \pre  Cert
+    \post Definicio de la clase Comparacion
+    \details Serveix per comparar dos texts o imatges .ppm
+ */
 public class Comparacion extends JDialog {
     private JPanel contentPane;
     private JButton buttonCancel;
@@ -17,10 +26,15 @@ public class Comparacion extends JDialog {
     private String file2;
 
 
+    /** \brief Compara dos fitxers o carpetes i els mostra per pantalla
+     \pre  Cert
+     \post Compara dos fitxers o carpetes i els mostra per pantalla
+     \details Les variables s1 y s2 contenen o bé el text en cas dels textos o be els paths de les imatges altrament
+     */
     public Comparacion(String s1, String s2, boolean image) throws IOException {
         setContentPane(contentPane);
-        setMaximumSize(new Dimension(500, 700));
-        setSize(new Dimension(400, 600));
+        setMaximumSize(new Dimension(700, 500));
+        setSize(new Dimension(600, 400));
         setModal(false);
         getRootPane().setDefaultButton(buttonCancel);
 
@@ -29,9 +43,9 @@ public class Comparacion extends JDialog {
             file1 = s1;
             file2 = s2;
 
-            textArea1.setMaximumSize(new Dimension(300, 500));
+            textArea1.setMaximumSize(new Dimension(500, 300));
 
-            textArea2.setMaximumSize(new Dimension(300, 500));
+            textArea2.setMaximumSize(new Dimension(500, 300));
 
 
             textArea1.setEditable(false);
@@ -39,17 +53,20 @@ public class Comparacion extends JDialog {
 
             textArea1.setText(s1);
             textArea2.setText(s2);
-        }
-
-        else {
+        } else {
             controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
-            cf.create_img_aux1("temp1",s1);
-            cf.create_img_aux1("temp2",s2);
+            cf.create_img_aux1("temp1", s1);
+            cf.create_img_aux1("temp2", s2);
             textArea1.insertIcon(new ImageIcon("temp1.png"));
             textArea2.insertIcon(new ImageIcon("temp2.png"));
         }
 
 
+        /** \brief Tenca la vista
+         \pre  Cert
+         \post Tenca la vista
+         \details Tenca la vista que esta mostrant o be dos textos o be dos imatges
+         */
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
@@ -72,92 +89,8 @@ public class Comparacion extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    private void onOK() {
-        // add your code here
-        dispose();
-    }
-
     private void onCancel() {
         // add your code here if necessary
-        dispose();
-    }
-
-
-
-    /*public static void main(String[] args) throws IOException {
-        Comparacion dialog = new Comparacion();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
-    }*/
-
-
-    public class BatchDocument extends DefaultStyledDocument {
-        /**
-         * EOL tag that we re-use when creating ElementSpecs
-         */
-        private final char[] EOL_ARRAY = { '\n' };
-
-        /**
-         * Batched ElementSpecs
-         */
-        private ArrayList batch = null;
-
-        public BatchDocument() {
-            batch = new ArrayList();
-        }
-
-        /**
-         * Adds a String (assumed to not contain linefeeds) for
-         * later batch insertion.
-         */
-        public void appendBatchString(String str,
-                                      AttributeSet a) {
-            // We could synchronize this if multiple threads
-            // would be in here. Since we're trying to boost speed,
-            // we'll leave it off for now.
-
-            // Make a copy of the attributes, since we will hang onto
-            // them indefinitely and the caller might change them
-            // before they are processed.
-            a = a.copyAttributes();
-            char[] chars = str.toCharArray();
-            batch.add(new ElementSpec(
-                    a, ElementSpec.ContentType, chars, 0, str.length()));
-        }
-
-        /**
-         * Adds a linefeed for later batch processing
-         */
-        public void appendBatchLineFeed(AttributeSet a) {
-            // See sync notes above. In the interest of speed, this
-            // isn't synchronized.
-
-            // Add a spec with the linefeed characters
-            batch.add(new ElementSpec(
-                    a, ElementSpec.ContentType, EOL_ARRAY, 0, 1));
-
-            // Then add attributes for element start/end tags. Ideally
-            // we'd get the attributes for the current position, but we
-            // don't know what those are yet if we have unprocessed
-            // batch inserts. Alternatives would be to get the last
-            // paragraph element (instead of the first), or to process
-            // any batch changes when a linefeed is inserted.
-            Element paragraph = getParagraphElement(0);
-            AttributeSet pattr = paragraph.getAttributes();
-            batch.add(new ElementSpec(null, ElementSpec.EndTagType));
-            batch.add(new ElementSpec(pattr, ElementSpec.StartTagType));
-        }
-
-        public void processBatchUpdates(int offs) throws
-                BadLocationException {
-            // As with insertBatchString, this could be synchronized if
-            // there was a chance multiple threads would be in here.
-            ElementSpec[] inserts = new ElementSpec[batch.size()];
-            batch.toArray(inserts);
-
-            // Process all of the inserts in bulk
-            super.insert(offs, inserts);
-        }
+        this.dispose();
     }
 }
