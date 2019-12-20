@@ -98,7 +98,12 @@ public class Interfaz extends JFrame  {
                 }
             } else if (mode == MODE_SAVE) {
                 if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-                    textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                    String p = fileChooser.getSelectedFile().getAbsolutePath();
+                    if (!cf.path_valid(p)) {
+                        JOptionPane.showMessageDialog(frame, "La direcció introduida un path exisisten o vàlid");
+                    }
+                    else
+                        textField.setText(p);
 
                 }
             }
@@ -394,57 +399,59 @@ public class Interfaz extends JFrame  {
 
             public void act () {
                 String p = Picker1.getSelectedFilePath();
-                directorio = !cf.dir_or_arch(p);
-                for (ActionListener a : comboBox1.getActionListeners()) comboBox1.removeActionListener(a);
-                comboBox1.removeAllItems();
-                comboBox1.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        String S = (String) comboBox1.getSelectedItem();
-                        switch (S) {
-                            case "LZW" : LZW_option();
-                                break;
-                            case "LZ78" : LZ78_option();
-                                break;
-                            case "LZSS" : LZSS_option();
-                                break;
-                            default: JPEG_option();
-                        }
-
-                    }
-                });
-                if (directorio) {
-                    Accion.setText("Comprimir");
-                    String substring = "folder";
-                    for (String Alg : Asoc.keySet()) {
-                        if (Asoc.get(Alg).contains(substring)) comboBox1.addItem(Alg);
-                    }
-                    comboBox1.setSelectedIndex(metodo);
-                }
-                else {
-                    boolean comprimir = cf.a_comprimir(p);
-                    String substring = cf.get_ext_file(p);
-                    if (comprimir) {
-                        Accion.setText("Comprimir");
-                        List<String> S = new ArrayList<>();
-
-                        for (String Alg : Asoc.keySet()) {
-                            if (Asoc.get(Alg).contains(substring)) {
-                                comboBox1.addItem(Alg);
+                    directorio = !cf.dir_or_arch(p);
+                    for (ActionListener a : comboBox1.getActionListeners()) comboBox1.removeActionListener(a);
+                    comboBox1.removeAllItems();
+                    comboBox1.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            String S = (String) comboBox1.getSelectedItem();
+                            switch (S) {
+                                case "LZW":
+                                    LZW_option();
+                                    break;
+                                case "LZ78":
+                                    LZ78_option();
+                                    break;
+                                case "LZSS":
+                                    LZSS_option();
+                                    break;
+                                default:
+                                    JPEG_option();
                             }
-                        }
-                        comboBox1.setSelectedIndex(0);
-                    }
-                    else {
-                        Accion.setText("Descomprimir");
-                        comboBox1.removeAllItems();
-                        qualitatDImatgeTextField.setVisible(false);
-                        slider1.setVisible(false);
-                        slider1.setMaximumSize(new Dimension(0,0));
 
+                        }
+                    });
+                    if (directorio) {
+                        Accion.setText("Comprimir");
+                        String substring = "folder";
+                        for (String Alg : Asoc.keySet()) {
+                            if (Asoc.get(Alg).contains(substring)) comboBox1.addItem(Alg);
+                        }
+                        comboBox1.setSelectedIndex(metodo);
+                    } else {
+                        boolean comprimir = cf.a_comprimir(p);
+                        String substring = cf.get_ext_file(p);
+                        if (comprimir) {
+                            Accion.setText("Comprimir");
+                            List<String> S = new ArrayList<>();
+
+                            for (String Alg : Asoc.keySet()) {
+                                if (Asoc.get(Alg).contains(substring)) {
+                                    comboBox1.addItem(Alg);
+                                }
+                            }
+                            comboBox1.setSelectedIndex(0);
+                        } else {
+                            Accion.setText("Descomprimir");
+                            comboBox1.removeAllItems();
+                            qualitatDImatgeTextField.setVisible(false);
+                            slider1.setVisible(false);
+                            slider1.setMaximumSize(new Dimension(0, 0));
+
+                        }
                     }
                 }
-            }
         });
 
         /** \brief Comprimeix o Descomprimex el fitxer o carpeta seleccionat
