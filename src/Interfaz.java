@@ -100,7 +100,7 @@ public class Interfaz extends JFrame  {
                 if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                     String p = fileChooser.getSelectedFile().getAbsolutePath();
                     if (!cf.path_valid(p)) {
-                        JOptionPane.showMessageDialog(frame, "La direcció introduida un path exisisten o vàlid");
+                        JOptionPane.showMessageDialog(frame, "La direcció introduida ha de ser path exisistent o vàlid");
                     }
                     else
                         textField.setText(p);
