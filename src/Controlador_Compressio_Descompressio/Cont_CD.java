@@ -104,14 +104,12 @@ public class Cont_CD {
             case "LZ78":
                 LZ78 L8 = new LZ78();
                 if (comprimir) {
-                    System.out.println("LZ78 compression ejecutado");
                     L = L8.compress(b);
                     //s'actualitzen les estadístiques i es guarda temps i rati
                     time = L8.get_Time();
                     rate = L8.get_Rate();
                     E.act8(time, rate, (time != 0) ? b.length/time : 0, true);
                 } else {
-                    System.out.println("LZ78 descompression ejecutado");
                     L = L8.descompress(b);
                     time = L8.get_Time();
                     E.act8(time, -1, (time != 0) ? b.length/time : 0, false);
@@ -121,13 +119,11 @@ public class Cont_CD {
             case "LZSS":
                 LZSS LS = new LZSS();
                 if (comprimir) {
-                    System.out.println("LZSS compression ejecutado");
                     L = LS.compress(b);
                     time = LS.getTime();
                     rate = LS.getRate();
                     E.actS(time, rate, (time != 0) ? b.length/time : 0, true);
                 } else {
-                    System.out.println("LZSS descompression ejecutado");
                     L = LS.descompress(b);
                     time = LS.getTime();
                     E.actS(time, -1, (time != 0) ? b.length/time : 0, false);
@@ -136,14 +132,12 @@ public class Cont_CD {
             case "LZW":
                 LZW LW = new LZW();
                 if (comprimir) {
-                    System.out.println("LZW compression ejecutado");
                     L = LW.compress(b);
                     time = LW.getTime();
                     rate = LW.getRate();
                     E.actW(time, rate, (time != 0) ? b.length/time : 0, true);
 
                 } else {
-                    System.out.println("LZW descompression ejecutado");
                     L = LW.descompress(b);
                     time = LW.getTime();
                     E.actW(time, -1, (time != 0) ? b.length/time : 0, false);
@@ -178,11 +172,11 @@ public class Cont_CD {
     public int compressio_fitxer (String path_o, String path_d, String algoritme, boolean force) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
         id = algoritme;
         controlador_gestor_fitxer I = new controlador_gestor_fitxer();
-        byte[] L = action(path_o, id, true, I, -1);
         if (algoritme.equals("JPEG")) jpeg = true;
-        Path p = new Path();
-        boolean seguir = I.writeFile(L, path_d, force);
-        if (!seguir && !force) return -1;
+        String s = I.c_fichero_comp(path_o,path_d,force,algoritme);
+        if (s.equals("-1") && !force) return -1;
+        byte[] L = action(path_o, id, true, I, -1);
+        I.writeFile(L, s);
         path1 = path_o;
         path2 = I.getPath_absoluto();
         if (I.is_jpeg(path_o)) return  1;
@@ -242,10 +236,11 @@ public class Cont_CD {
         public int descompressio_fitxer (String path_o, String path_d, boolean force) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido {
             controlador_gestor_fitxer I = new controlador_gestor_fitxer();
             id = I.getAlgoritme(path_o);
+            String s = I.c_fichero_descomp(path_o,path_d,force);
+            if (s.equals("-1") && !force) return -1;
             Object L = action(path_o, id, false, I, -1);
-            boolean a = I.writeFile(L, path_d, force);
-            if (!a && !force) return -1;
-            else return 0;
+            I.writeFile(L, s);
+            return 0;
         }
 
 
