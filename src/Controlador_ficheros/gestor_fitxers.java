@@ -779,4 +779,20 @@ public class gestor_fitxers {
         return aux;
     }
     
+      public String all_jpeg(String path, boolean force) throws IOException {
+        File file= new File(path);
+        file.delete();
+        String aux= path.substring(0,path.lastIndexOf("."));
+        aux = aux + ".FG";
+        file= new File(aux);
+        boolean b= file.createNewFile();
+        if(!b && !force) return "-1";
+        else if(!b && force){
+            file.delete();
+            file.createNewFile();
+        }
+        return aux;
+
+    }
+    
 }
