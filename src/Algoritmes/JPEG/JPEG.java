@@ -1,11 +1,16 @@
 
+/**
+ * /file JPEG.java
+ * /author Joan Maller Roig
+ * /title Algorisme JPEG
+ */
+
 
 package Algoritmes.JPEG;
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 
-
+/** \class JPEG */
 
 public class JPEG {
 
@@ -29,9 +34,10 @@ public class JPEG {
             {99, 99, 99, 99, 99, 99, 99, 99},
             {99, 99, 99, 99, 99, 99, 99, 99}};
 
+    //Matriu auxiliar per calcular la nova matriu Q amb el factor de qualitat
     private int[][] Q2 = new int[8][8];
 
-    //Matriu per fer el reccoregut en ZigZag sobre cada blocde 8x8.
+    //Matriu per fer el reccoregut en ZigZag sobre cada blo cde 8x8.
     private static final int[][] ZigZag = {
             {0, 0},
             {0, 1}, {1, 0},
@@ -49,6 +55,7 @@ public class JPEG {
             {6, 7}, {7, 6},
             {7, 7}};
 
+    //Taula de Huffman estàndard per a codificar els valors del RLE en binari
     private HashMap<String,String> HuffmanTables = new HashMap<String,String>() {{
         put("0,0", "1010");
         put("0,1", "00");put("0,2", "01");put("0,3", "100");put("0,4", "1011");put("0,5", "11010");
@@ -74,6 +81,7 @@ public class JPEG {
         put("10,1", "111111010");
     }};
 
+    //Taula de Huffman inversa per a agafar valors de RLE a partir de binari
     private HashMap<String, String> mapInversed = new HashMap<String, String>(){{
         for (HashMap.Entry<String, String> entry : HuffmanTables.entrySet()) put(entry.getValue(),entry.getKey());
     }};
@@ -84,10 +92,8 @@ public class JPEG {
     //temps de l'ultima compressió / descompressió
     private double time;
 
-
     //rati de compressió assolit en la última compressió
     private double rate;
-
 
     //PRE: Cert
     //POST: Inicialitza la classe JPEG
@@ -208,7 +214,7 @@ public class JPEG {
         int[][] B = new int[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
-                B[i][j] = (int) Math.min(Math.max(-127,Math.round(D[i][j] / (double) Q2[i][j])), 128);
+                B[i][j] = (int) Math.round(D[i][j] / (double) Q2[i][j]);
             }
         }
 
@@ -239,14 +245,12 @@ public class JPEG {
         //We have to add the DC coefficient and the 63 other values
         //With RLE and Hufmann (RUNLENTH, SIZE) (AMPLITUDE)
 
-
         String aux = sb.toString();
         int residu = aux.length()%8;
         int nume = (residu == 0) ? aux.length()/8 : aux.length()/8 +1;
         byte[] b = new byte [nume+3];
 
-        int k = 0;
-        int j = 0;
+        int k = 0, j;
         for (int i = 0; i < aux.length()-1; i += 8) {
             byte res = 0;
             int elev = 7;
@@ -488,12 +492,9 @@ public class JPEG {
                             if (posx < width && posy < height) YCbCr[a][posy][posx] = m[y][x];
 
                         }
-
                     }
-
                 }
             }
-
         }
 
         sb  = new StringBuilder();
