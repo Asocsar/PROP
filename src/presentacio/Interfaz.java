@@ -1,4 +1,4 @@
-/**
+package presentacio; /**
  * /file Interfaz.java
  * /author Daniel Cano Carrascosa
  * /title Algorisme LZSS
