@@ -88,9 +88,9 @@ public class Cont_CD {
      */
     public static boolean getlastjpeg () {return jpeg;}
 
-    /** \brief Si l'últim algorisme utilitzat ha sigut el jpeg
+    /** \brief Estableix la qualitat per l'algorisme JPEG
      \pre Cert
-     \post Es retorna un bolea que indica si l'últim algorisme executat ha sigut el jpeg
+     \post la variable local quality estableix el valor de qualitat estimat
      */
     public void setQuality (int n) {
         this.quality = n;
