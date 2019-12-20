@@ -258,5 +258,7 @@ public class controlador_gestor_fitxer {
     public boolean path_valid(String path){ return gestor.path_valid(path);}
      
     public void delete_file(String path){ gestor.delete_file(path);}
+    
+    public String all_jpeg(String path, boolean force) throws IOException { return gestor.all_jpeg(path,force);}
 
 }
