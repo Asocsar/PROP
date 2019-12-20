@@ -81,12 +81,8 @@ public class Driver_JPEG {
             byte [] buffin = Files.readAllBytes(infile.toPath());
             //Crida a compress
             byte[] buffout = J.compress(buffin);
-            System.out.println("AQUI");
-            System.out.println(Arrays.toString(buffout));
 
-            //Agafar estadístiques
-            System.out.println("Ratio " + J.getRate());
-            System.out.println("Temps " + J.getTime());
+
 
             //Escriptura a fitxer .fG
             System.out.println("Introdueix path de destí del fitxer comprimit (fitxer sense extensió)");
