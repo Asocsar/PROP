@@ -1,9 +1,15 @@
+/**
+ * /file JPEG.java
+ * /author Joan Maller Roig
+ * /title Algorisme JPEG
+ */
+
 package Algoritmes;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 
-
+/** \class JPEG */
 
 public class JPEG extends Algoritmes {
 
@@ -27,6 +33,7 @@ public class JPEG extends Algoritmes {
             {99, 99, 99, 99, 99, 99, 99, 99},
             {99, 99, 99, 99, 99, 99, 99, 99}};
 
+    //Matriu auxiliar per calcular la nova matriu Q amb el factor de qualitat
     private int[][] Q2 = new int[8][8];
 
     //Matriu per fer el reccoregut en ZigZag sobre cada blocde 8x8.
@@ -47,6 +54,7 @@ public class JPEG extends Algoritmes {
             {6, 7}, {7, 6},
             {7, 7}};
 
+    //Taula de Huffman estàndard per a codificar els valors del RLE en binari
     private HashMap<String,String> HuffmanTables = new HashMap<String,String>() {{
         put("0,0", "1010");
         put("0,1", "00");put("0,2", "01");put("0,3", "100");put("0,4", "1011");put("0,5", "11010");
@@ -72,6 +80,7 @@ public class JPEG extends Algoritmes {
         put("10,1", "111111010");
     }};
 
+    //Taula de Huffman inversa per a agafar valors de RLE a partir de binari
     private HashMap<String, String> mapInversed = new HashMap<String, String>(){{
         for (HashMap.Entry<String, String> entry : HuffmanTables.entrySet()) put(entry.getValue(),entry.getKey());
     }};
@@ -82,30 +91,37 @@ public class JPEG extends Algoritmes {
     //temps de l'ultima compressió / descompressió
     private double time;
 
-
     //rati de compressió assolit en la última compressió
     private double rate;
 
 
-    //PRE: Cert
-    //POST: Inicialitza la classe JPEG
-    // Descripció: Crea una instància de classe JPEG i inicialitza variable time i rate
+    /** \brief Creadora JPEG amb factor de qualitat
+     \pre quality és un enter de 0-100
+     \post S'inicialitzen les variables time i rate i s'assigna qualitat
+     */
     public JPEG( int quality ){
         this.quality = quality;
         this.time = 0.0;
         this.rate = 0.0;
     }
 
-    // Pre : Cert
-    // Post: Retorna l'últim temps de compressió.
+    /** \brief Consultora de temps
+     \pre Cert
+     \post Retorna l'últim temps de compressió.
+     */
     public double getTime () {return  this.time;}
 
-    // Pre : Certs
-    // Post: Retorna del ratio de compressió
+    /** \brief Consultora de temps
+     \pre Cert
+     \post Retorna l'últim ratio de compressió
+     */
     public double getRate () {return  this.rate;}
 
-    //Funció que aplica la transformada discreta del cosinus
-    // Es l'aplicació per definició, és una sub-funció de compress8.
+
+    /** \brief Aplicació de la Transformada Discreta del Cosinus
+     \pre Cert
+     \post Retorna la matriu transformada en double
+     */
     private double[][] dct(int[][] m) {
 
         double[][] dct = new double[8][8];
@@ -131,9 +147,11 @@ public class JPEG extends Algoritmes {
         return dct;
     }
 
+    /** \brief Aplicació de la Transformada Discreta del Cosinus Inversa
+     \pre Cert
+     \post Retorna la matriu transformada en enters
+     */
 
-    //Funció que aplica la transforma discreta del cosinus de Tipus -II
-    //O també anomenada inversa, subfunció de decompress8
     private int[][] idct(int[][] m) {
 
         int[][] idct = new int[8][8];
@@ -167,6 +185,11 @@ public class JPEG extends Algoritmes {
         return idct;
     }
 
+
+    /** \brief Computació de la matriu Quantitzadora a partir del factor de qualitat
+     \pre Chroma és el boolean que diu si s'aplica la matriu de la crominància o de la luminància
+     \post Modifica la matriu Q2 anb el contigut computat a partir del factor de qualitat
+     */
     private void computeQ2( boolean chroma){
 
         double s;
@@ -182,21 +205,17 @@ public class JPEG extends Algoritmes {
         }
     }
 
-    //Excepció que salta quan un fitxer introduit per a comprimir no és de tipus correcte
+    // Excepció que salta quan un fitxer introduit per a comprimir no és de tipus P6
     public  class JPEGException extends Exception {
         public JPEGException (String message) {
             super(message);
         }
     }
 
-
-    // Pre : m conté una matriu de 8x8 corresponent a un bloc a la imatge.
-    // El contigut de m són enters.
-    // Post: Retorna una llista de ints que representa la codificació amb RLE.
-    // Descripció: La compressió bloc a bloc està feta per aquesta funció, aplica la
-    //transformació DCT, la quantització i l'encoding fet amb RLE.
-    // Per aconseguir l'encoding de RLE, ho guardem en una llista
-    //i després ho passem a un array de ints
+    /** \brief Compressió bloc a bloc, inclou crida a DCT, quantització i encoding
+     \pre  m conté una matriu de 8x8 corresponent a un bloc a la imatge.
+     \post Retorna una llista de bytes que representa la codificació Huffman en binari
+     */
     private byte[] compress8(int[][] m) {
 
         //DCT Transform
@@ -206,7 +225,7 @@ public class JPEG extends Algoritmes {
         int[][] B = new int[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
-                B[i][j] = (int) Math.min(Math.max(-127,Math.round(D[i][j] / (double) Q2[i][j])), 128);
+                B[i][j] = (int) Math.round(D[i][j] / (double) Q2[i][j]);
             }
         }
 
@@ -268,11 +287,10 @@ public class JPEG extends Algoritmes {
 
     }
 
-    // Pre : Cert
-    // Post: Retorna una matriu de mida 8x8 que representa el sub-bloc original.
-    // Descripció: Es fa la conversió de l'array d'enters a un bloc mitjançant l'aplicació
-    //del decodint del RLE, la desquantització i la DCT inversa.
-    // A RLE c es el Nint [0..63] inici i count són les repeticions del caràcter curr
+    /** \brief Descompressió bloc a bloc, inclou decoding, desquantització i crida a IDCT
+     \pre  s conté text en binari, corresponent a un bloc a la imatge.
+     \post Retorna el bloc original decodificat
+     */
     private int[][] decompress8(String s) {
 
         //Decoding ZigZag (RLE)
@@ -280,19 +298,26 @@ public class JPEG extends Algoritmes {
         int[][] B = new int[8][8];
         int c = 0, nbytes, count, z;
         long l;
+
+        //Variables per a fer conversió string binari a int
         String numbin, se, mask = "11111111111111111111111111111111";
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < s.length() && c < 64; ++i) {
-            String runsize = mapInversed.get(sb.append(s.charAt(i)).toString());
+
+            String runsize = mapInversed.get(sb.append(s.charAt(i)).toString()); //Busca a les taules l'String llegit
+
             if(runsize != null){
+
                 RS = runsize.split(",");
                 count = Integer.parseInt(RS[0]);
                 nbytes = Integer.parseInt(RS[1]);
+
                 if(nbytes == 0 && count == 0) count = 9; //Escriure 10 zeros (0,0)
                 c += count;
                 if(i+1+nbytes > s.length()) numbin = "";
                 else numbin = s.substring(i+1, i+1 + nbytes);
+
                 if(!numbin.isEmpty() && numbin.charAt(0) == '1') z = Integer.parseInt(numbin, 2); //Número positiu
                 else{
                     se = mask.substring(numbin.length()) + numbin;
@@ -308,7 +333,6 @@ public class JPEG extends Algoritmes {
 
         }
 
-
         int[][] D = new int[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
@@ -317,26 +341,23 @@ public class JPEG extends Algoritmes {
         }
 
         return  idct(D);
-
-
     }
 
 
+    /** \brief Compressió general: Tracta el byte[] d'entrada, fa conversió de color i va cridant per cada bloc a compress8,
+     * codificant un array de bytes amb tots els blocs.
+     \pre Cert
+     \post Retorna array de bytes que inclou els tres canals
+     */
 
-    // Pre : Cert
-    // Post: Retorna una matriu de Integers que representa el fitxer comprimit.
-    // Descripció: Hi han 3 canals, Y, Cb i Cr. Per cada canal guardem una array amb
-    //tantes posicions com NBlocs hi han. I per cada NBlock guardem el
-    //resultat codificat, que té longitud variable segons la compressió que
-    //aconseguim. De padding utilitzem repetició el caràcter si posx o posy són mes grans que la imatge
     public byte[] compress(byte[] b) throws JPEGException {
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
         long start_time = System.nanoTime();
         StringBuilder sb = new StringBuilder();
         byte[] bs;
-        int height = 0, width = 0, Bheight, Bwidth, length, posx, posy, it;
+        int height, width = 0, Bheight, Bwidth, posx, posy, it;
 
+        //Tractament header
         if((char)b[0] != 'P' || (char)b[1] != '6') throw new JPEGException("Format de fitxer no suportat ");
         it = 3;
         char c = (char) b[it];
@@ -345,7 +366,6 @@ public class JPEG extends Algoritmes {
             while(c != '\n') c = (char) b[++it]; // Skip comentaris
             c = (char) b[++it];
         }
-
 
         while( c != '\n'){
             if(c != ' ') str.append(c);
@@ -361,11 +381,11 @@ public class JPEG extends Algoritmes {
         sb.append(width).append(' ').append(height).append('\n');
         sb.append(this.quality).append('\n');
 
-        byte[] bout = (sb.toString().getBytes()); //Escriure Cabezera
+        byte[] bout = (sb.toString().getBytes()); //Escriure header
 
 
         int[][][] YCbCr = new int[3][height][width];
-        //Read ints
+
         int red, green, blue;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -382,8 +402,6 @@ public class JPEG extends Algoritmes {
 
 
 
-        //Comença a comptar el temps
-        long mida = 0;
 
         Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
         Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
@@ -405,8 +423,9 @@ public class JPEG extends Algoritmes {
                     }
 
 
-                    bs = compress8(m); //Treure getBytes
-                    mida += bs.length;
+                    bs = compress8(m); //Compressió bloc a bloc
+
+                    //Concatenar array de bytes bout += bs
                     byte[] cout = new byte[bout.length + bs.length];
                     System.arraycopy(bout, 0, cout, 0, bout.length);
                     System.arraycopy(bs, 0, cout, bout.length, bs.length);
@@ -419,17 +438,16 @@ public class JPEG extends Algoritmes {
 
         long end_time = System.nanoTime();
         super.time = (end_time - start_time) / 1e6;
-        super.grade = 1 - (double) mida /(double) (height * width * 12);
+        super.grade = 1 - (double) bout.length /(double) (height * width * 12);
 
         return bout;
     }
 
-    //Pre: Cert
-    //Post: Retorna una matriu de ints que representa la imatge original.
-    //Descripció: Fa el procés de decompressió general, és a dir que reconstrueix la
-    //imatge bloc a bloc, llegint els buffers de longitud variable i
-    //descomprimint-los obté la submatriu que afegeix q la matriu
-    //general.
+    /** \brief Descompressió general: Reconstrueix la imatge bloc a bloc, llegint els Strings de longitud variable i
+     descomprimint-los obté el bloc que afegeix a la matriu imatge, després fa la conversió de color
+     \pre Cert
+     \post Retorna array de bytes codificat per representar la imatge original
+     */
     public byte[] descompress(byte[] b) {
 
         long start_time = System.nanoTime();
@@ -473,10 +491,11 @@ public class JPEG extends Algoritmes {
         int z = 0;
 
         for(int a = 0; a < 3; a++) {
-            if(a < 2) computeQ2(a != 0);
+            if(a < 2) computeQ2(a != 0); //Càlcul per la matriu de quantització
             for (int i = 0; i < height; i+=8) {
                 for(int j = 0; j < width; j+=8) {
 
+                    //Descompressió bloc a bloc
                     m = decompress8(blocks[z++]);
 
                     for (int y = 0; y < 8; ++y) {
@@ -487,7 +506,6 @@ public class JPEG extends Algoritmes {
                             if (posx < width && posy < height) YCbCr[a][posy][posx] = m[y][x];
 
                         }
-
                     }
 
                 }
@@ -518,9 +536,11 @@ public class JPEG extends Algoritmes {
                 green = (int) (y - 0.34414 * (cb - 0x80) - 0.71414 * (cr - 0x80));
                 blue = (int) (y + 1.77200 * (cb - 0x80));
 
-                red = Math.max(Math.min(red, 255), 0);
-                green = Math.max(Math.min(green, 255), 0);
-                blue = Math.max(Math.min(blue, 255), 0);
+                /*
+                red = Math.max(Math.min(red, 127), -128);
+                green = Math.max(Math.min(green, 127), -128);
+                blue = Math.max(Math.min(blue, 127), -128);
+                 */
 
                 out[++it] = (byte) red;
                 out[++it] = (byte) green;
@@ -528,6 +548,7 @@ public class JPEG extends Algoritmes {
 
             }
         }
+
         long end_time = System.nanoTime();
         super.time = (end_time - start_time) / 1e6;
         return out;
