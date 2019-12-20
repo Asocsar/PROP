@@ -256,5 +256,7 @@ public class controlador_gestor_fitxer {
     public String get_ext_file (String path) {return gestor.get_ext_file(path);}
     
     public boolean path_valid(String path){ return gestor.path_valid(path);}
+     
+    public void delete_file(String path){ gestor.delete_file(path);}
 
 }
