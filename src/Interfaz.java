@@ -6,6 +6,7 @@
 
 
 
+import Algoritmes.JPEG;
 import Controlador_Compressio_Descompressio.Cont_CD;
 import Controlador_ficheros.controlador_gestor_fitxer;
 import Estadístiques.Estadistiques;
@@ -536,7 +537,7 @@ public class Interfaz extends JFrame  {
                         }
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(frame, "Error inesperado, por favor vuelva a intentar");
-                    } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido | Cont_CD.NoFiles ficheroCompressionNoValido) {
+                    } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido | Cont_CD.NoFiles | JPEG.JPEGException ficheroCompressionNoValido) {
                         JOptionPane.showMessageDialog(frame, ficheroCompressionNoValido.getMessage());
                     }
                 }
@@ -568,7 +569,7 @@ public class Interfaz extends JFrame  {
                             dialog.setMaximumSize(new Dimension(500, 500));
                         } catch (IOException ex) {
                         JOptionPane.showMessageDialog(frame, "Error imprevist a l'hora de comparar, siusplau torni a intentar-ho");
-                        } catch (controlador_gestor_fitxer.FicheroDescompressionNoValido | controlador_gestor_fitxer.FicheroCompressionNoValido | Cont_CD.NoCompress ficheroDescompressionNoValido) {
+                        } catch (controlador_gestor_fitxer.FicheroDescompressionNoValido | controlador_gestor_fitxer.FicheroCompressionNoValido | Cont_CD.NoCompress | JPEG.JPEGException ficheroDescompressionNoValido) {
                             JOptionPane.showMessageDialog(frame, ficheroDescompressionNoValido.getMessage());
                         }
                     }

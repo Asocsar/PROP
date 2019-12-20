@@ -78,6 +78,8 @@ public class Comparacion extends JDialog {
 
 
         } else if (!s1.equals("-1")) {
+            p.setVisible(false);
+            fite.setVisible(false);
             controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
             cf.create_img_aux1("temp1", s1);
             cf.create_img_aux1("temp2", s2);
@@ -115,8 +117,6 @@ public class Comparacion extends JDialog {
 
     private void onCancel() {
         // add your code here if necessary
-        tk1.cancel(true);
-        tk2.cancel(true);
         this.dispose();
     }
 
