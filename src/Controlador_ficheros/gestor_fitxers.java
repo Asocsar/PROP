@@ -805,10 +805,11 @@ public class gestor_fitxers {
      */
     public String getAlgoritme(String path_o, Map<String,List<String>> m_aux) {
         String aux = path_o.substring(path_o.length() - 2);
-        if(m_aux.get("LZW").contains(aux)) return "LZW";
-        else if(m_aux.get("LZSS").contains(aux)) return "LZSS";
-        else if(m_aux.get("LZ78").contains(aux)) return "LZ78";
-        else if(m_aux.get("JPEG").contains(aux)) return "JPEG";
+        for(String s: m_aux.keySet()){
+           for(int i=0; i < m_aux.get(s).size(); ++i){
+               if(m_aux.get(s).get(i).equals(aux))return s;
+           }
+        }
         return null;
     }
 

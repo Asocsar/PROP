@@ -230,7 +230,7 @@ public class Cont_CD {
             if (path_destino_carpeta == null && !force) return false;
             int numerodeficheros = I.read_tamany(path_o);
             for (int i = 0; i < numerodeficheros; ++i) {
-                String algoritmo_usado = I.getAlgoritme(path_o);
+                String algoritmo_usado = I.getAlgoritme(path_o, Asoc);
                 String pathdelfichero = I.read_path(path_o);
                 if (I.is_jpeg(pathdelfichero)) algoritmo_usado = "JPEG";
                 int bytesfichero = I.read_tamany(path_o);
@@ -246,7 +246,7 @@ public class Cont_CD {
          */
         public int descompressio_fitxer (String path_o, String path_d, boolean force) throws IOException, controlador_gestor_fitxer.FicheroDescompressionNoValido, controlador_gestor_fitxer.FicheroCompressionNoValido, JPEG.JPEGException {
             controlador_gestor_fitxer I = new controlador_gestor_fitxer();
-            id = I.getAlgoritme(path_o);
+            id = I.getAlgoritme(path_o, Asoc);
             String s = I.c_fichero_descomp(path_o,path_d,force);
             if (s.equals("-1") && !force) return -1;
             Object L = action(path_o, id, false, I, -1);
