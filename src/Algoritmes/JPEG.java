@@ -491,7 +491,7 @@ public class JPEG extends Algoritmes {
         int z = 0;
 
         for(int a = 0; a < 3; a++) {
-            if(a < 2) computeQ2(a != 0);
+            if(a < 2) computeQ2(a != 0); //Càlcul per la matriu de quantització
             for (int i = 0; i < height; i+=8) {
                 for(int j = 0; j < width; j+=8) {
 
@@ -536,9 +536,12 @@ public class JPEG extends Algoritmes {
                 green = (int) (y - 0.34414 * (cb - 0x80) - 0.71414 * (cr - 0x80));
                 blue = (int) (y + 1.77200 * (cb - 0x80));
 
-                red = Math.max(Math.min(red, 255), 0);
-                green = Math.max(Math.min(green, 255), 0);
-                blue = Math.max(Math.min(blue, 255), 0);
+                /*
+                red = Math.max(Math.min(red, 127), -128);
+                green = Math.max(Math.min(green, 127), -128);
+                blue = Math.max(Math.min(blue, 127), -128);
+
+                 */
 
                 out[++it] = (byte) red;
                 out[++it] = (byte) green;
@@ -546,6 +549,7 @@ public class JPEG extends Algoritmes {
 
             }
         }
+
         long end_time = System.nanoTime();
         super.time = (end_time - start_time) / 1e6;
         return out;
