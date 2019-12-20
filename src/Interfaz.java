@@ -9,26 +9,24 @@
 import Controlador_Compressio_Descompressio.Cont_CD;
 import Controlador_ficheros.controlador_gestor_fitxer;
 import Estadístiques.Estadistiques;
-import com.sun.deploy.panel.JSmartTextArea;
 
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
-public class Interfaz extends JFrame {
+public class Interfaz extends JFrame  {
+
+
 
     /** \brief Clase JFilePicker
      \pre  Cert
@@ -221,6 +219,8 @@ public class Interfaz extends JFrame {
     private JSlider slider1;
     private JComboBox comboBox1;
     private JTextField qualitatDImatgeTextField;
+    private JProgressBar progressBar1;
+    private JTextField analitzantFitxerTextField;
     private static JFrame frame;
     private static int metodo = 0;
     private boolean directorio = false;
@@ -321,13 +321,6 @@ public class Interfaz extends JFrame {
         slider1.setMaximumSize(new Dimension(30,50));
     }
 
-/* He añadido o modifiado
-*   1. ppm
-*   2. get_temp_imagen
-*   3: dir_or_arch
-*   4: get_ext_file
-*   5: a_comprimir */
-
     /** \brief Instancia la ventana principal
      \pre  Cert
      \post S'inicialitzen totes les variables de control i components necesaris
@@ -335,6 +328,9 @@ public class Interfaz extends JFrame {
      */
     public Interfaz()  {
         Estadistiques.inicialitzar();
+        progressBar1.setVisible(false);
+        analitzantFitxerTextField.setVisible(false);
+        analitzantFitxerTextField.setBorder(BorderFactory.createEmptyBorder());
         qualitatDImatgeTextField.setBorder(BorderFactory.createEmptyBorder());
         qualitatDImatgeTextField.setVisible(false);
         Map<String, List<Double>> MP = Estadistiques.getparam();
@@ -523,7 +519,7 @@ public class Interfaz extends JFrame {
                         }
                         else {
                             if (! C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), false)) {
-                                String message = "Hi ha una carpeta amb el mateix nom, si vol continuar la carpeta serà eliminada y substituida per la que s'esta descomprimint\n\n";
+                                String message = "Hi ha una carpeta amb el mateix nom, si vol continuar la carpeta serà eliminada y substituida per la que s'esta descomprimint\n\n Vol continuar?";
                                 String title = "Avís";
                                 int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
                                 if (reply == JOptionPane.YES_OPTION) {
@@ -532,8 +528,7 @@ public class Interfaz extends JFrame {
                             }
                         }
                     } catch (IOException ex) {
-                        ex.printStackTrace();
-                        //JOptionPane.showMessageDialog(frame, "Error inesperado, por favor vuelva a intentar");
+                        JOptionPane.showMessageDialog(frame, "Error inesperado, por favor vuelva a intentar");
                     } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido | Cont_CD.NoFiles ficheroCompressionNoValido) {
                         JOptionPane.showMessageDialog(frame, ficheroCompressionNoValido.getMessage());
                     }
@@ -552,18 +547,25 @@ public class Interfaz extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Cont_CD C = new Cont_CD();
-                    try {
-                        String[] S = C.comparar();
-                        Comparacion dialog = new Comparacion(S[0], S[1], Cont_CD.getlastjpeg());
-                        compL.add(dialog);
-                        //dialog.pack();
-                        dialog.setVisible(true);
-                        dialog.setMaximumSize(new Dimension(500, 500));
-                    } catch (IOException ex) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String[] S = C.comparar();
+                            analitzantFitxerTextField.setVisible(true);
+                            progressBar1.setVisible(true);
+                            Comparacion dialog = new Comparacion(S[0], S[1], Cont_CD.getlastjpeg(), progressBar1, analitzantFitxerTextField);
+                            compL.add(dialog);
+                            //dialog.pack();
+                            dialog.setVisible(true);
+                            dialog.setMaximumSize(new Dimension(500, 500));
+                        } catch (IOException ex) {
                         JOptionPane.showMessageDialog(frame, "Error imprevist a l'hora de comparar, siusplau torni a intentar-ho");
-                    } catch (controlador_gestor_fitxer.FicheroDescompressionNoValido | controlador_gestor_fitxer.FicheroCompressionNoValido | Cont_CD.NoCompress ficheroDescompressionNoValido) {
-                        JOptionPane.showMessageDialog(frame, ficheroDescompressionNoValido.getMessage());
+                        } catch (controlador_gestor_fitxer.FicheroDescompressionNoValido | controlador_gestor_fitxer.FicheroCompressionNoValido | Cont_CD.NoCompress ficheroDescompressionNoValido) {
+                            JOptionPane.showMessageDialog(frame, ficheroDescompressionNoValido.getMessage());
+                        }
                     }
+                });
             }
         });
 
