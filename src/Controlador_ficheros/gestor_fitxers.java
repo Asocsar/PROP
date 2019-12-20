@@ -1,5 +1,7 @@
 package Controlador_ficheros;
 
+package Controlador_ficheros;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -21,8 +23,8 @@ public class gestor_fitxers {
     private Integer num_fitxers;
     private Integer bytes_llegits;
     private String path_carpeta_og;
-    private String path_absoluto;
-    private boolean all_jpeg = false;
+    private static String path_absoluto;
+
 
     /** \brief Creadora
      \pre Cert
@@ -790,6 +792,7 @@ public class gestor_fitxers {
         }
         String aux= path.substring(0,path.lastIndexOf("."));
         aux = aux + ".FG";
+        path_absoluto= aux;
         return aux;
 
     }
