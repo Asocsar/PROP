@@ -225,20 +225,13 @@ public class controlador_gestor_fitxer {
      */
 
     public String getAlgoritme(String path_o, Map<String,List<String>> m_aux) {
-        return gestor.getAlgoritme(path_o);}
+        return gestor.getAlgoritme(path_o,m_aux);}
 
     /**\brief Obtenció de la extensió.
      \pre id_s és un id vàlid.
      \post Retorna el id de l'algorisme detectat.
      */
     public String getExtensio(String id_s) { return gestor.get_Ex(id_s); }
-
-    /**\brief Obtenció d'algoritme.
-     \pre path_o és un path vàlid
-     \post Retorna el id de l'algorisme detectat.
-     */
-
-    public String getAlgoritme(String path_o) { return gestor.getAlgoritme(path_o);}
 
     /**\brief És '.ppm'?
      \pre path_fitxer és vàlid
