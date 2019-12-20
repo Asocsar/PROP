@@ -86,7 +86,7 @@
               <background color="-10052173"/>
               <font name="Tahoma"/>
               <foreground color="-14080734"/>
-              <text value="Visualizar ultima Compression"/>
+              <text value="Visualizar ultima compressió"/>
             </properties>
           </component>
           <component id="e9c6f" class="javax.swing.JButton" binding="Globales">
@@ -230,6 +230,7 @@
         </constraints>
         <properties>
           <background color="-985353"/>
+          <editable value="false"/>
           <font name="Tahoma" style="1"/>
           <foreground color="-14080734"/>
           <text value="Analitzant fitxer..."/>

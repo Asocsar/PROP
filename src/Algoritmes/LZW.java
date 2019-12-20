@@ -69,6 +69,7 @@ public class LZW extends Algoritmes {
      */
 
     public byte[] compress(byte [] file)  {
+        if (file.length == 0) return file;
         long start = System.nanoTime();
         // Creem el diccionari de forma local a la funció per un acces més ràpid
         Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);

@@ -465,7 +465,9 @@ public class Interfaz extends JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Cont_CD C = new Cont_CD();
-                C.setQuality(slider1.getValue());
+                boolean comprimido = true;
+                if (slider1.isVisible()) C.setQuality(slider1.getValue());
+                else C.setQuality(50);
                 if (Accion.getText().equals("Comprimir/Descomprimir")) {
                     JOptionPane.showMessageDialog(frame, "Escoge antes un Elemento a comprimir o descomprimir");
 
@@ -492,6 +494,8 @@ public class Interfaz extends JFrame  {
                                             JOptionPane.showMessageDialog(frame, "Format de fitxer ppm no suportat, si us plau comprovi que la versió es la P6\n");
                                         }
                                     }
+                                    else
+                                        comprimido = false;
                                 }
                             }
                             else {
@@ -504,6 +508,8 @@ public class Interfaz extends JFrame  {
                                     if (reply == JOptionPane.YES_OPTION) {
                                         C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), true);
                                     }
+                                    else
+                                        comprimido = false;
                                 }
                             }
                         else if (Accion.getText().equals("Comprimir")) {
@@ -530,6 +536,8 @@ public class Interfaz extends JFrame  {
                                         cf.delete_file(cf.getPath_absoluto());
                                     }
                                 }
+                                else
+                                    comprimido = false;
                             }
                             if (N.size() >= 1 && !N.get(0).equals("0") && auxiliar == JOptionPane.YES_OPTION) {
                                 String message = "Si continues amb la compressió els següents arxius seran ignorats\n\n";
@@ -564,6 +572,8 @@ public class Interfaz extends JFrame  {
                                             JOptionPane.showMessageDialog(frame, "Error inesperat, si us plau torni a intentar-ho més tard");
                                         }
                                     }
+                                    else
+                                        comprimido = false;
                                 }
                             } catch (JPEG.JPEGException ex) {
                                 JOptionPane.showMessageDialog(frame, "Error inesperat, si us plau torni a intentar-ho més tard");
@@ -575,6 +585,9 @@ public class Interfaz extends JFrame  {
                         JOptionPane.showMessageDialog(frame, ficheroCompressionNoValido.getMessage());
                     }
                 }
+                String act = "Compressió";
+                if (!Accion.getText().equals("Comprimir")) act = "Descompressió";
+                if (comprimido) JOptionPane.showMessageDialog(frame, act + " realitzada amb éxit");
             }
         });
 
