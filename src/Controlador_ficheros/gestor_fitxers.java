@@ -11,8 +11,6 @@ import java.util.List;
 
 
 
-
-
 public class gestor_fitxers {
     //VARIABLES DE LA CLASSE
     private String nom_fitxer;
@@ -23,35 +21,20 @@ public class gestor_fitxers {
     private Integer num_fitxers;
     private Integer bytes_llegits;
     private String path_carpeta_og;
-
     private String path_absoluto;
 
     /** \brief Creadora
      \pre Cert
      \post Es crea una instància de la classe gestor_fitxers
      */
-    public gestor_fitxers(){
+    public gestor_fitxers() {
 
 
     }
 
-    //COMPRESSIO CARPETES:
-
-
-    /** \brief Número de fitxers
-     \pre Cert
-     \post el número de fitxers de la carpeta a comprimir és igual a i
-     */
-    public void act_num_f( Integer i){
-        num_fitxers= i;
-    }
-
-    /** \brief Path actual
-     \pre p és un path vàlid
-     \post S'ha assignat el path actual del directori font
-     */
-    public void act_path_carpeta_og(String p){path_carpeta_og=p;}
-
+    /*************************
+     *COMPRESSIÓ DE CARPETES**
+     *************************/
 
     /** \brief Obtenció paths directori
      \pre Path_o és un path vàlid
@@ -75,7 +58,6 @@ public class gestor_fitxers {
         }
         return paths_fitxers;
     }
-
 
     /** \brief Crea directori
      \pre Cert
@@ -104,7 +86,6 @@ public class gestor_fitxers {
         else return null;
     }
 
-
     /** \brief Compressió de carpetes
      \pre path_original és un path vàlid
      \post S'ha escrit en un fitxer tota la codificació dels fitxers dins del directori situat a path_original
@@ -128,14 +109,55 @@ public class gestor_fitxers {
         fop.close();
     }
 
-    //DESCOMPRESIO DE CARPETES:
+
+    /***************************
+     *DESCOMPRESSIÓ DE CARPETES*
+     ***************************/
 
 
 
+    /** \brief Obtenció d'un path contingut en un arxiu comprimit
+     \pre path_fitxer_carpeta és un path vàlid
+     \post es llegeixen bytes fins arribar a un byte de control del fitxer amb path igual a "path_fitxer_carpeta", els quals representen el path d'un fitxer de la carpeta a descomprimir. Retorna el path en forma de String.
+     */
+    public String read_path(String path_fitxer_carpeta) throws IOException {
+        File file= new File(path_fitxer_carpeta);
+        FileInputStream fip= new FileInputStream(file);
+        List<Byte> path_en_bytes= new ArrayList<>();
+        fip.skip(bytes_llegits);
+        boolean fin= false;
+        while (!fin){
+            byte aux= (byte) fip.read();
+            if(aux== 10) fin = true;
+            else path_en_bytes.add(aux);
+            bytes_llegits = bytes_llegits + 1;
+        }
+        return p_bytes_to_string(path_en_bytes);
+    }
 
-    /** \brief Número de fiters
+
+
+    /** \brief Lectura d'un fitxer contingut en un arxiu comprimit.
+     \pre path_fitxer_carpeta és vàlid
+     \post es llegeixen de l'arxiu comprimit en el path "paht_fitxer_carpeta" un número de bytes igual a tam_fitxer, els quals representen un dels arxius continguts en la carpeta. Retorna aquest conjunt de bytes en forma de String.
+     */
+    public byte[] read_file_compressed(Integer tam_fitxer, String path_fitxer_carpeta) throws IOException {
+        File file= new File(path_fitxer_carpeta);
+        FileInputStream fip= new FileInputStream(file);
+        List<Byte> file_readed= new ArrayList<>();
+        fip.skip(bytes_llegits);
+        for(int i=0; i < tam_fitxer; ++i){
+            byte ax=(byte)fip.read();
+            file_readed.add(ax);
+            ++bytes_llegits;
+        }
+        return list_b_to_ab(file_readed);
+    }
+
+
+    /** \brief Lectura d'un enter contingut en un arxiu comprimit.
      \pre path_fitxer_carptea és un path vàlid.
-     \post Es retorna el número de bytes al fitxer/directori situat a path_fitxer_carpeta
+     \post es llegeixen bytes fins arribar a un byte de control del fitxer amb path igual a "path_fitxer_carpeta", els quals representen un enter. Retorna l'enter.
      */
     public Integer read_tamany(String path_fitxer_carpeta) throws IOException {
         File file= new File(path_fitxer_carpeta);
@@ -152,23 +174,403 @@ public class gestor_fitxers {
         return list_b_to_i(num_fitxers_b);
     }
 
-    //LLEGEIX ELS BYTES QUE REPRESENTEN EL PATH D'UN FITXER I HO TRANSFORMA A STRING
-    public String read_path(String path_fitxer_carpeta) throws IOException {
-        File file= new File(path_fitxer_carpeta);
-        FileInputStream fip= new FileInputStream(file);
-        List<Byte> path_en_bytes= new ArrayList<>();
-        fip.skip(bytes_llegits);
-        boolean fin= false;
-        while (!fin){
-            byte aux= (byte) fip.read();
-            if(aux== 10) fin = true;
-            else path_en_bytes.add(aux);
-            bytes_llegits = bytes_llegits + 1;
+    /** \brief Obtenció del path de destí on es crearà el directori al ser descomprimit
+     \pre path_carpeta_comprimida i path_destino són paths vàlids.
+     \post retorna o bé el path de destí de la carpeta a descomprimir, o bé null depenent del resultat de "crea_dir_desc"
+     */
+    public String path_dest_carpeta(String path_carpeta_comprimida, String path_destino, boolean force){
+        if(path_destino.equals("")) {
+            String aux= path_carpeta_comprimida.substring(0,path_carpeta_comprimida.lastIndexOf("."));
+            boolean b=  crea_dir_desc(aux,force);
+            if(!b) return null;
+            return aux;
         }
-        return p_bytes_to_string(path_en_bytes);
+        else{
+            String aux= get_nom_carpeta(path_carpeta_comprimida);
+            Path dest= Paths.get(path_destino,aux);
+            boolean b= crea_dir_desc(dest.toString(), force);
+            if(!b) return null;
+            return dest.toString();
+        }
     }
 
-    //A PARTIR D'EL PATH D'UN FITXER, COMPROVA SI EL DIRECTORI ON ESTA EXISTEIX, I EN CAS DE QUE NO, EL CREA
+
+    /** \brief Escriptura d'un fitxer
+     \pre path_c_og, path_dest_c i path_fichero són paths vàlids.
+     \post escriu un vector de bytes[] en un fitxer previament creat.
+     */
+    public boolean  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit) throws IOException {
+        String dest_final=  cc_directori(path_fichero,path_c_og,path_dest_c);
+        Path p = Paths.get(path_fichero);
+        String nom_f= path_fichero.substring(path_fichero.lastIndexOf(p.getFileSystem().getSeparator()));
+        Path direccio = Paths.get(dest_final,nom_f);
+        File file= new File(direccio.toString());
+        file.createNewFile();
+        FileOutputStream fop= new FileOutputStream(file);
+        fop.write(fdescomprimit);
+        fop.flush();
+        fop.close();
+        ++bytes_llegits;
+        return true;
+    }
+
+
+
+    /*************************
+     **COMPRESSIÓ DE FITXERS**
+     *************************/
+
+    /**\brief Gestio fitxer a comprimir
+     \pre path_og és vàlid, 0 < id < 4
+     \post Retorna l’estructura de dades necessària per la compressió de l’arxiu demanat per l’algorisme seleccionat.
+     */
+
+    public byte[] get_f_compressio(String path_og) throws IOException {
+        return buscar_leer_archivo(path_og);
+    }
+
+    public String c_fichero_comp (String path_og, String path_desti, boolean force, String id_a) throws IOException {
+        Path p = Paths.get(path_og);
+        int pos= path_og.lastIndexOf(p.getFileSystem().getSeparator());
+        Path_original= path_og.substring(0,pos);
+        nombre_fichero(path_og);
+        ex_comp(id_a);
+        if (path_desti.equals("")) path_desti=Path_original;
+        Path path_dest= Paths.get(path_desti,nom_fitxer);
+        String nom_ex= path_dest + extensio;
+        path_absoluto= nom_ex;
+        File file = new File(nom_ex);
+        if (file.createNewFile() || force) {
+            if (force) {
+                file.delete();
+                file.createNewFile();
+            }
+            return nom_ex;
+        }
+        return "-1";
+    }
+
+    /** \brief Creadora d'un fitxer
+     \pre path_desti ha de ser vàlid.
+     \post Si es possible, crea un fitxer, hi escriu el resultat de la compressió i retorna true. Si no és possible retorna false;
+     */
+    public void e_fichero_comp (String path_desti, Object aux) throws IOException {
+        File file = new File(path_desti);
+        FileOutputStream fop= new FileOutputStream(file);
+        fop.write((byte[])aux);
+        fop.flush();
+        fop.close();
+    }
+
+    /**************************
+     *DESCOMPRESSIÓ DE FITXERS*
+     **************************/
+
+    /**\brief Gestio fitxer a descomprimir
+     \pre path_og és vàlid
+     \post Retorna  l’estructura de dades necessària per la descompressió de l’arxiu a path_og per l’algorisme seleccionat.
+     */
+    public byte[] conversio_fitxer_desc(String path_og) throws IOException {
+
+        return buscar_leer_archivo(path_og);
+    }
+
+    public String c_fichero_descomp (String path_og, String path_desti, boolean force) throws IOException {
+        Path p = Paths.get(path_og);
+        int pos= path_og.lastIndexOf(p.getFileSystem().getSeparator());
+        Path_original= path_og.substring(0,pos);
+        id_ex_desc(path_og);
+        nombre_fichero(path_og);
+        if (path_desti.equals("")) path_desti=Path_original;
+        Path path_dest= Paths.get(path_desti,nom_fitxer);
+        String nom_ex= path_dest + extensio;
+        path_absoluto= nom_ex;
+        File file = new File(nom_ex);
+        if (file.createNewFile() || force) {
+            if (force) {
+                file.delete();
+                file.createNewFile();
+            }
+            return nom_ex;
+        }
+        return "-1";
+    }
+
+
+    /** \brief Creadora del fitxer destí
+     \pre path_og és vàlid
+     \post Si pot crear un fitxer en el path_desti, hi escriu el resultat de la descompressió i retorna true. Si no, retorna false;
+     */
+    public void e_fichero_descomp ( String path_desti, Object encoded) throws IOException {
+        File file = new File(String.valueOf(path_desti));
+        FileOutputStream fop = new FileOutputStream(file);
+        fop.write((byte[])encoded);
+        fop.flush();
+        fop.close();
+    }
+
+
+
+    /*************************
+     *FUNCIONALITATS DIVERSES*
+     **************************/
+
+
+    /** \brief Transformació d'imatge
+     \pre path és vàlid
+     \post agafa una imatge ppm i la transforma en un arxiu png.
+     */
+    public void create_img_aux1 (String name, String path) throws IOException {
+        byte [] b = Files.readAllBytes(Paths.get(path));
+        int i = 0;
+        boolean formato = true;
+        boolean first = true;
+        boolean end = false;
+        boolean maximo = true;
+        String max = "";
+        byte[] contenido = new byte[1];
+        String width = "";
+        String hight = "";
+        int aux = 0;
+        while (i < b.length) {
+            if (!formato) {
+                if (b[i] == 35 && maximo) {
+                    formato = true;
+                }
+                else if (!end && maximo){
+                    if (b[i] == 32 && maximo) {
+                        first = false;
+                    }
+                    else if (b[i] == 10) {
+                        end = true;
+                    }
+                    else {
+                        if (first)
+                            width += Character.toString((char) b[i]);
+                        else
+                            hight += Character.toString((char) b[i]);
+                    }
+                }
+                else {
+                    if (!maximo)
+                        contenido[aux++] = (b[i] != 0) ? b[i] : 32;
+                    else {
+                        if (b[i] != 10)
+                            max += Character.toString((char) b[i]);
+                        else {
+                            maximo = false;
+                            contenido = new byte[b.length-i-1];
+                        }
+                    }
+                }
+            }
+            if (formato && b[i] == 10) {
+                formato = false;
+            }
+            ++i;
+        }
+        BufferedImage im = ppm(Integer.parseInt(width), Integer.parseInt(hight),Integer.parseInt(max) ,contenido);
+        ImageIO.write(im, "jpg", new File(name + ".png"));
+    }
+
+
+    /** \brief Eliminador de fitxers
+     \pre Existeix un fitxer amb path igual a "path"
+     \post el fitxer amb path igual a "path" és eliminat.
+     */
+    public void delete_file (String path){
+        File file = new File(path);
+        file.delete();
+    }
+
+    /** \brief Comprovació d'extensions
+     \pre path és un path vàlid
+     \post es comprova l'extensió del fitxer amb path igual a "path" i retorna true si l'extensió d'aquest és o .ppm o .txt.
+     */
+    public boolean a_comprimir (String path) {
+        String ex = path.substring(path.length() - 4);
+        return (ex.equals(".txt") || ex.equals(".ppm"));
+    }
+
+    /** \brief Obtenció d'extensions.
+     \pre Existeix un fitxer amb path igual a "path"
+     \post retorna l'extensió del fitxer.
+     */
+    public  String get_ext_file (String p) {
+        String ex = p.substring(p.length() - 4);
+        if (ex.equals(".txt") || ex.equals(".ppm")) {
+            return p.substring(p.length() - 4);
+        }
+        else
+            return p.substring(p.length() - 3);
+    }
+
+
+    /**\brief Lectura fitxer
+     \pre Existeix un fitxer amb path igual a "path"
+     \post S'ha guardat en un string el fitxer del path "path"
+     */
+    public String read_file(String path) throws IOException {
+        File file = new File(path);
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String aux = "";
+        String aux2;
+        while ((aux2 = br.readLine()) != null) {
+            aux = aux + aux2 + "\n";
+        }
+        return aux;
+    }
+
+
+    /**\brief Comparació de fitxers
+     \pre cert
+     \post retorna en forma de String el vector de bytes rebut.
+     */
+    public String compare_g(byte[] aux) throws IOException {
+        File file = new File("temp.txt");
+        if(file.createNewFile()) {
+            FileOutputStream fop = new FileOutputStream(file);
+            fop.write(aux);
+            fop.flush();
+            fop.close();
+            byte[] encoded = Files.readAllBytes(Paths.get("temp.txt"));
+            file.delete();
+            return new String(encoded, Charset.defaultCharset());
+        }
+        return null;
+    }
+
+
+    /**\brief Consultora
+     \pre cert
+     \post retorna la variable global privada extensio.
+     */
+    public String get_extensio(){return extensio;}
+
+    /**\brief Consultora
+     \pre cert
+     \post retorna la variable global privada extensiones.
+     */
+    public String[] extensiones_validas(){
+        return extensiones;
+    }
+
+
+    /**\brief Consultora
+     \pre cert
+     \post retorna la variable global privada Path_original.
+     */
+    public String path_if_null(){
+        return Path_original;
+    }
+
+
+    /**\brief Comprovació
+     \pre path és vàlid
+     \post retorna true si el path és un fitxer, o bé false si és un directori.
+     */
+    public boolean dir_or_arch(String path){
+        File file = new File(path);
+        if (file.isDirectory()) return false;
+        else return true;
+    }
+
+
+    /**\brief Consultora
+     \pre path és vàlid.
+     \post retorna true si l'extensió del fitxer és .F. Si no retorna false.
+     */
+    public boolean carpeta_des(String path){
+        if(path.substring(path.lastIndexOf("."),path.length()-1).equals(".F")) return true;
+        return false;
+    }
+
+    /**\brief Consultora
+     \pre cert
+     \post retorna la variable global privada paths_no_valids.
+     */
+    public List<String> getPaths_no_valids(){
+        List<String> aux = paths_no_valids;
+        paths_no_valids= new ArrayList<>();
+        return aux;
+    }
+
+    /**\brief Obtenció de noms.
+     \pre path_o és un path vàlid
+     \post retorna el nom de la carpeta amb path igual a "path_o".
+     */
+    public String get_nom_carpeta2(String Path_o){
+        Path p = Paths.get(Path_o);
+        int pos = Path_o.lastIndexOf(p.getFileSystem().getSeparator());
+        String aux= Path_o.substring(pos);
+        return aux;
+    }
+
+    /**\brief Obtenció de noms.
+     \pre path_o és un path vàlid
+     \post retorna el nom de la carpeta amb path igual a "path_o".
+     */
+    public String get_nom_carpeta(String Path_o){
+        Path p = Paths.get(Path_o);
+        int pos = Path_o.lastIndexOf(p.getFileSystem().getSeparator());
+        String aux= Path_o.substring(pos,Path_o.lastIndexOf("."));
+        return aux;
+    }
+
+    /**\brief Actualitzadora
+     \pre cert
+     \post fica la variable global num_fitxers a 0.
+     */
+    public void reset_num(){
+        num_fitxers=0;
+    }
+
+    /**\brief Actualitzadora
+     \pre cert
+     \post fica la variable global bytes_llegits a 0.
+     */
+    public void reset_bytes_llegits(){
+        bytes_llegits=0;
+    }
+
+    /**\brief Consultora
+     \pre cert
+     \post retorna la variable global privada nom_fitxer.
+     */
+    public String getNom_fitxer(){
+        return nom_fitxer;
+    }
+
+    /** \brief Número de fitxers
+     \pre Cert
+     \post el número de fitxers de la carpeta a comprimir és igual a i
+     */
+    public void act_num_f( Integer i){
+        num_fitxers= i;
+    }
+
+    /** \brief Actualitzadora
+     \pre p és un path vàlid
+     \post S'ha assignat el path actual del directori font
+     */
+    public void act_path_carpeta_og(String p){path_carpeta_og=p;}
+
+    /**\brief Consultora
+     \pre cert
+     \post retorna la variable global privada path_absoluto.
+     */
+    public String getPath_absoluto(){ return path_absoluto; }
+
+
+
+    /*************************
+     *FUNCIONALITATS PRIVADES*
+     *************************/
+
+    /**\brief Comprovació de directori
+     \pre path_fitxer i path_desti són paths vàlids
+     \post retorna la variable global privada nom_fitxer.
+     */
     private String cc_directori(String path_fitxer, String path_c_original, String path_desti){
         Path p = Paths.get(path_fitxer);
         int pos= path_fitxer.lastIndexOf(p.getFileSystem().getSeparator());
@@ -182,7 +584,6 @@ public class gestor_fitxers {
         else new_dir= path_desti;
         return new_dir;
     }
-
 
     /**\brief Crea Directori
      \pre Cert
@@ -200,72 +601,8 @@ public class gestor_fitxers {
         return b;
     }
 
-
-    //LLEGEIX TAM_FITXER BYTES DEL ARCHIU DE LA CARPETA COMPRIMIDA I HO TRANSFORMA A A BYTE[] PER A QUE SIGUI COMPRIMIT
-    public byte[] read_file_compressed(Integer tam_fitxer, String path_fitxer_carpeta) throws IOException {
-        File file= new File(path_fitxer_carpeta);
-        FileInputStream fip= new FileInputStream(file);
-        List<Byte> file_readed= new ArrayList<>();
-        fip.skip(bytes_llegits);
-        for(int i=0; i < tam_fitxer; ++i){
-            byte ax=(byte)fip.read();
-            file_readed.add(ax);
-            ++bytes_llegits;
-        }
-        return list_b_to_ab(file_readed);
-    }
-
-
-
-    /****************
-     ***COMPRESSIÓ***
-     ****************/
-
-    /**\brief Gestio fitxer a comprimir
-     \pre path_og és vàlid, 0 < id < 4
-     \post Retorna l’estructura de dades necessària per la compressió de l’arxiu demanat per l’algorisme seleccionat.
-     */
-
-    public byte[] get_f_compressio(String path_og, String id_a) throws IOException {
-        Path p = Paths.get(path_og);
-        int pos= path_og.lastIndexOf(p.getFileSystem().getSeparator());
-        Path_original= path_og.substring(0,pos);
-        nombre_fichero(path_og);
-        ex_comp(id_a);
-        return buscar_leer_archivo(path_og);
-    }
-
-    public String getPath_absoluto(){
-        return path_absoluto;
-    }
-
-    /** \brief Creadora
-     \pre 0 < id < 4
-     \post Crea un fitxer i hi escriu el resultat de la compressió.
-     */
-    public boolean c_e_fichero_comp (String path_desti, Object aux, boolean force) throws IOException {
-        if (path_desti.equals("")) path_desti=Path_original;
-        Path path_dest= Paths.get(path_desti,nom_fitxer);
-        String nom_ex= path_dest + extensio;
-        path_absoluto= nom_ex;
-        File file = new File(nom_ex);
-        if (file.createNewFile() || force) {
-            if(force){
-                file.delete();
-                file.createNewFile();
-            }
-            FileOutputStream fop= new FileOutputStream(file);
-            fop.write((byte[])aux);
-            fop.flush();
-            fop.close();
-            return true;
-        }
-        return false;
-
-    }
-
     /** \brief Update extensio
-     \pre 0 < id < 4
+     \pre id ha de ser un id valid (LZ78, LZSS, LZW, JPEG)
      \post La variable extensió ha estat actualitzada
      */
 
@@ -288,154 +625,6 @@ public class gestor_fitxers {
             default:
         }
     }
-
-
-    //FI FUNCIONS COMPRESIO
-
-
-    /*****************
-     **DESCOMPRESSIÓ**
-     *****************/
-
-    /**\brief Gestio fitxer a descomprimir
-     \pre path_og és vàlid
-     \post Retorna  l’estructura de dades necessària per la descompressió de l’arxiu a path_og per l’algorisme seleccionat.
-     */
-    public byte[] conversio_fitxer_desc(String path_og) throws IOException {
-        Path p = Paths.get(path_og);
-        int pos= path_og.lastIndexOf(p.getFileSystem().getSeparator());
-        Path_original= path_og.substring(0,pos);
-        id_ex_desc(path_og);
-        nombre_fichero(path_og);
-        return buscar_leer_archivo(path_og);
-    }
-
-    /** \brief Creadora del fitxer destí
-     \pre path_og és vàlid
-     \post Si pot crear un fitxer en el path_desti, hi escriu el resultat de la descompressió i retorna true. Si no, retorna false;
-     */
-    public boolean c_e_fichero_descomp ( String path_desti, Object encoded, boolean force) throws IOException {
-        if (path_desti.equals("")) path_desti=Path_original;
-        String nom_ex= nom_fitxer + extensio;
-        Path path_dest= Paths.get(path_desti,nom_ex);
-        File file = new File(String.valueOf(path_dest));
-        if(file.createNewFile() || force) {
-            if(force){
-                file.delete();
-                file.createNewFile();
-            }
-            FileOutputStream fop = new FileOutputStream(file);
-            fop.write((byte[])encoded);
-            fop.flush();
-            fop.close();
-            return true;
-        }
-        else return false;
-
-    }
-
-    /*************************
-     *FUNCIONALITATS DIVERSES*
-     *************************/
-
-
-    /**\brief Lectura fitxer
-     \pre cert
-     \post S'ha guardat en un string el fitxer del path "path"
-     */
-    public String read_file(String path) throws IOException {
-        File file = new File(path);
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String aux = "";
-        String aux2;
-        while ((aux2 = br.readLine()) != null) {
-            aux = aux + aux2 + "\n";
-        }
-        return aux;
-    }
-
-
-    //CREA UN FITXER TEMPORAL PER A LA COMPARACIO DE FITXERS
-    public String compare_g(byte[] aux) throws IOException {
-        File file = new File("temp.txt");
-        if(file.createNewFile()) {
-            FileOutputStream fop = new FileOutputStream(file);
-            fop.write(aux);
-            fop.flush();
-            fop.close();
-            byte[] encoded = Files.readAllBytes(Paths.get("temp.txt"));
-            file.delete();
-            return new String(encoded, Charset.defaultCharset());
-        }
-        return null;
-    }
-
-
-    //RETORNA LA VARIABLE GLOBAL EXTENSIO
-    public String get_extensio(){return extensio;}
-
-    //RETORNA LES EXTENSIONS D'ARXIUS ACCEPTADES PER EL PROGRAMA
-    public String[] extensiones_validas(){
-        return extensiones;
-    }
-
-    //RETORNA VARIABLE GLOBAL PATH_ORIGINAL
-    public String path_if_null(){
-        return Path_original;
-    }
-
-    public boolean carpeta_des(String path){
-       if (path.substring(path.lastIndexOf("."),path.length()-1).equals(".F")) return true;
-       return false;
-    }
-
-
-    //BOOL--> FALSE SI PATH ES DIRECTORI/ TRUE SI PATH ES FITXER
-    public boolean dir_or_arch(String path){
-        File file = new File(path);
-        if (file.isDirectory()) return false;
-        else return true;
-    }
-
-    //RETORNA LA LLISTA DE PATHS NO VALIDS D'UNA CARPETA PER A COMPRIMIR I LA RESETEJA
-    public List<String> getPaths_no_valids(){
-        List<String> aux = paths_no_valids;
-        paths_no_valids= new ArrayList<>();
-        return aux;
-    }
-
-    //OBTÉ EL NOM D'UNA CARPETA
-    public String get_nom_carpeta2(String Path_o){
-        Path p = Paths.get(Path_o);
-        int pos = Path_o.lastIndexOf(p.getFileSystem().getSeparator());
-        String aux= Path_o.substring(pos);
-        return aux;
-    }
-
-    //OBTÉ EL NOM D'UNA CARPETA
-    public String get_nom_carpeta(String Path_o){
-        Path p = Paths.get(Path_o);
-        int pos = Path_o.lastIndexOf(p.getFileSystem().getSeparator());
-        String aux= Path_o.substring(pos,Path_o.lastIndexOf("."));
-        return aux;
-    }
-
-    //RESETEJA LA VARIABLE NUM_FITXERS AL ACABAR UNA COMPRESSIO DE CARPETA
-    public void reset_num(){
-        num_fitxers=0;
-    }
-
-    //RESETEJA LA VARIABLE BYTES LLEGITS AL ACABAR UNA DESCOMPRESIO DE CARPETA
-    public void reset_bytes_llegits(){
-        bytes_llegits=0;
-    }
-
-    public String getNom_fitxer(){
-        return nom_fitxer;
-    }
-
-
-    //PRIVATES
 
     /** \brief Buscar i llegir arxiu
      \pre Cert
@@ -511,38 +700,6 @@ public class gestor_fitxers {
         return new String(aux, Charset.defaultCharset());
     }
 
-    public String path_dest_carpeta(String path_carpeta_comprimida, String path_destino, boolean force){
-        if(path_destino.equals("")) {
-            String aux= path_carpeta_comprimida.substring(0,path_carpeta_comprimida.lastIndexOf("."));
-           boolean b=  crea_dir_desc(aux,force);
-           if(!b) return null;
-           return aux;
-        }
-        else{
-            String aux= get_nom_carpeta(path_carpeta_comprimida);
-            Path dest= Paths.get(path_destino,aux);
-            boolean b= crea_dir_desc(dest.toString(), force);
-            if(!b) return null;
-            return dest.toString();
-        }
-    }
-
-    public boolean  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit) throws IOException {
-        String dest_final=  cc_directori(path_fichero,path_c_og,path_dest_c);
-        Path p = Paths.get(path_fichero);
-        String nom_f= path_fichero.substring(path_fichero.lastIndexOf(p.getFileSystem().getSeparator()));
-        Path direccio = Paths.get(dest_final,nom_f);
-        File file= new File(direccio.toString());
-        file.createNewFile();
-        FileOutputStream fop= new FileOutputStream(file);
-        fop.write(fdescomprimit);
-        fop.flush();
-        fop.close();
-        ++bytes_llegits;
-        return true;
-    }
-
-
     private BufferedImage ppm(int width, int height, int maxcolval, byte[] data){
         if(maxcolval<256){
             BufferedImage image=new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
@@ -587,72 +744,7 @@ public class gestor_fitxers {
         }
     }
 
-    public void create_img_aux1 (String name, String path) throws IOException {
-        byte [] b = Files.readAllBytes(Paths.get(path));
-        int i = 0;
-        boolean formato = true;
-        boolean first = true;
-        boolean end = false;
-        boolean maximo = true;
-        String max = "";
-        byte[] contenido = new byte[1];
-        String width = "";
-        String hight = "";
-        int aux = 0;
-        while (i < b.length) {
-            if (!formato) {
-                if (b[i] == 35 && maximo) {
-                    formato = true;
-                }
-                else if (!end && maximo){
-                    if (b[i] == 32 && maximo) {
-                        first = false;
-                    }
-                    else if (b[i] == 10) {
-                        end = true;
-                    }
-                    else {
-                        if (first)
-                            width += Character.toString((char) b[i]);
-                        else
-                            hight += Character.toString((char) b[i]);
-                    }
-                }
-                else {
-                    if (!maximo)
-                        contenido[aux++] = (b[i] != 0) ? b[i] : 32;
-                    else {
-                        if (b[i] != 10)
-                            max += Character.toString((char) b[i]);
-                        else {
-                            maximo = false;
-                            contenido = new byte[b.length-i-1];
-                        }
-                    }
-                }
-            }
-            if (formato && b[i] == 10) {
-                formato = false;
-            }
-            ++i;
-        }
-        BufferedImage im = ppm(Integer.parseInt(width), Integer.parseInt(hight),Integer.parseInt(max) ,contenido);
-        ImageIO.write(im, "jpg", new File(name + ".png"));
-    }
 
-    public boolean a_comprimir (String path) {
-        String ex = path.substring(path.length() - 4);
-        return (ex.equals(".txt") || ex.equals(".ppm"));
-    }
-
-    public  String get_ext_file (String p) {
-        String ex = p.substring(p.length() - 4);
-        if (ex.equals(".txt") || ex.equals(".ppm")) {
-            return p.substring(p.length() - 4);
-        }
-        else
-            return p.substring(p.length() - 3);
-    }
 
 
 
