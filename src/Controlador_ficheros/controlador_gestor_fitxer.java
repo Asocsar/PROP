@@ -86,9 +86,9 @@ public class controlador_gestor_fitxer {
             Path p_aux= Paths.get(path_desti,s_aux);
             path_dest = p_aux.toString();
         }
+        gestor.reset_num();
         paths_fitxers = gestor.get_paths_folder(Path_o, paths_fitxers);
         path_dest= gestor.all_jpeg(path_dest,paths_fitxers);
-        gestor.reset_num();
         path_fitxer_carpeta=  gestor.create_dir_comp(path_dest, force);
         if(path_fitxer_carpeta== null) {
             paths_fitxers = new ArrayList<>();
@@ -233,7 +233,9 @@ public class controlador_gestor_fitxer {
         return gestor.write_fitxer_carpeta_desc(path_c_og,path_dest_c,path_fichero,fdescomprimit);
     }
 
-    public String getPath_absoluto(){ return gestor.getPath_absoluto(); }
+    public String getPath_absoluto(){
+        return gestor.getPath_absoluto();
+    }
 
     public String crea_dir_desc(String path_destino_carpeta, boolean force) throws IOException { return gestor.create_dir_comp(path_destino_carpeta,force); }
 

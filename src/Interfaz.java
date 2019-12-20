@@ -465,115 +465,126 @@ public class Interfaz extends JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Cont_CD C = new Cont_CD();
-                C.setQuality(slider1.getValue());
-                if (Accion.getText().equals("Comprimir/Descomprimir")) {
-                    JOptionPane.showMessageDialog(frame, "Escoge antes un Elemento a comprimir o descomprimir");
-
+                if (!cf.path_valid(Picker1.getSelectedFilePath())) {
+                    JOptionPane.showMessageDialog(frame, "La direcció introduida ha de ser path exisistent o vàlid");
                 } else {
-                    try {
-                        if (!directorio && !cf.carpeta_des(Picker1.getSelectedFilePath()))
-                            if (Accion.getText().equals("Comprimir")) {
-                                int n = 0;
-                                try {
-                                    n = C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), false);
-                                } catch (JPEG.JPEGException ex) {
-                                    JOptionPane.showMessageDialog(frame, "Format de fitxer ppm no suportat, si us plau comprovi que la versió es la P6\n");
-                                }
-                                if (n != -1) image = (n == 1);
-                                else {
-                                    String message = "Hi ha un fitxer comprimit amb el mateix nom en aquest directori, si vols continuar aquest fitxer es sobreescriurà\n\n Vols continuar ?";
-                                    int i = 0;
-                                    String title = "Avís";
-                                    int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
-                                    if (reply == JOptionPane.YES_OPTION) {
-                                        try {
-                                            C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), true);
-                                        } catch (JPEG.JPEGException ex) {
-                                            JOptionPane.showMessageDialog(frame, "Format de fitxer ppm no suportat, si us plau comprovi que la versió es la P6\n");
-                                        }
-                                    }
-                                }
-                            }
-                            else {
-                                int n = C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), false);
-                                if (n == -1) {
-                                    String message = "Ja existeix un fitxer amb aquest nom en el directori actual de continuar el seu contingut serà sobreescrit\n\n Vols continuar ?";
-                                    int i = 0;
-                                    String title = "Avís";
-                                    int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
-                                    if (reply == JOptionPane.YES_OPTION) {
-                                        C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), true);
-                                    }
-                                }
-                            }
-                        else if (Accion.getText().equals("Comprimir")) {
-                            boolean force1 = false;
-                            boolean force2 = false;
-                            int auxiliar = -111;
-                            List<String> N = null;
-                            try {
-                                N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1, force2);
-                            } catch (JPEG.JPEGException ex) {
-                                JOptionPane.showMessageDialog(frame, "La carpeta conté fitxers no valids d'un format ppm diferent del P6, per tant s'avorta el protocol de compressió \n  Elimini aquests fitxers per continuar");
-                            }
-                            if (N.size() >= 1 && N.get(0).equals("-1")) {
-                                String message = "S'ha trobat un fitxer amb el mateix nom que la carpeta, si continua amb el procés el contingut del fitxer serà substituit\n\n Vol continuar ?";
-                                String title = "Avís";
-                                int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
-                                auxiliar = reply;
-                                if (reply == JOptionPane.YES_OPTION) {
-                                    force1 = true;
+                    boolean comprimido = true;
+                    if (slider1.isVisible()) C.setQuality(slider1.getValue());
+                    else C.setQuality(50);
+                    if (Accion.getText().equals("Comprimir/Descomprimir")) {
+                        JOptionPane.showMessageDialog(frame, "Escoge antes un Elemento a comprimir o descomprimir");
+
+                    } else {
+                        try {
+                            if (!directorio && !cf.carpeta_des(Picker1.getSelectedFilePath()))
+                                if (Accion.getText().equals("Comprimir")) {
+                                    int n = 0;
                                     try {
-                                        N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1,force2);
+                                        n = C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), false);
                                     } catch (JPEG.JPEGException ex) {
-                                        JOptionPane.showMessageDialog(frame, "La carpeta conté fitxers no valids d'un format ppm diferent del P6, per tant s'avorta el protocol de compressió \n  Elimini aquests fitxers per continuar");
-                                        cf.delete_file(cf.getPath_absoluto());
+                                        JOptionPane.showMessageDialog(frame, "Format de fitxer ppm no suportat, si us plau comprovi que la versió es la P6\n");
+                                    }
+                                    if (n != -1) image = (n == 1);
+                                    else {
+                                        String message = "Hi ha un fitxer comprimit amb el mateix nom en aquest directori, si vols continuar aquest fitxer es sobreescriurà\n\n Vols continuar ?";
+                                        int i = 0;
+                                        String title = "Avís";
+                                        int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                        if (reply == JOptionPane.YES_OPTION) {
+                                            try {
+                                                C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), true);
+                                            } catch (JPEG.JPEGException ex) {
+                                                JOptionPane.showMessageDialog(frame, "Format de fitxer ppm no suportat, si us plau comprovi que la versió es la P6\n");
+                                            }
+                                        } else
+                                            comprimido = false;
+                                    }
+                                } else {
+                                    int n = C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), false);
+                                    if (n == -1) {
+                                        String message = "Ja existeix un fitxer amb aquest nom en el directori actual de continuar el seu contingut serà sobreescrit\n\n Vols continuar ?";
+                                        int i = 0;
+                                        String title = "Avís";
+                                        int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                        if (reply == JOptionPane.YES_OPTION) {
+                                            C.descompressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), true);
+                                        } else
+                                            comprimido = false;
                                     }
                                 }
-                            }
-                            if (N.size() >= 1 && !N.get(0).equals("0") && auxiliar == JOptionPane.YES_OPTION) {
-                                String message = "Si continues amb la compressió els següents arxius seran ignorats\n\n";
-                                int i = 0;
-                                for (; (i < N.size()) && (i < 15); ++i) message += N.get(i) + "\n";
-                                if (i == 15 && N.size() > 15) message += "I uns altres " + (N.size()-15) + " fitxers";
-                                String title = "Avís";
-                                int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
-                                if (reply == JOptionPane.YES_OPTION) {
-                                    force2 = true;
-                                    force1 = true;
-                                    try {
-                                        C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1, force2);
-                                    }
-                                    catch (JPEG.JPEGException ex) {
-                                        JOptionPane.showMessageDialog(frame, "La carpeta conté fitxers no valids d'un format ppm diferent del P6, per tant s'avorta el protocol de compressió \n  Elimini aquests fitxers per continuar");
-                                        cf.delete_file(cf.getPath_absoluto());
-                                    }
+                            else if (Accion.getText().equals("Comprimir")) {
+                                boolean force1 = false;
+                                boolean force2 = false;
+                                int auxiliar = -111;
+                                List<String> N = null;
+                                try {
+                                    N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1, force2);
+                                } catch (JPEG.JPEGException ex) {
+                                    JOptionPane.showMessageDialog(frame, "La carpeta conté fitxers no valids d'un format ppm diferent del P6, per tant s'avorta el protocol de compressió \n  Elimini aquests fitxers per continuar");
                                 }
-                            }
-                        }
-                        else {
-                            try {
-                                if (! C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), false)) {
-                                    String message = "Hi ha una carpeta amb el mateix nom, si vol continuar la carpeta serà eliminada y substituida per la que s'esta descomprimint\n\n Vol continuar?";
+                                if (N.size() >= 1 && N.get(0).equals("-1")) {
+                                    String message = "S'ha trobat un fitxer amb el mateix nom que la carpeta, si continua amb el procés el contingut del fitxer serà substituit\n\n Vol continuar ?";
+                                    String title = "Avís";
+                                    int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                    auxiliar = reply;
+                                    if (reply == JOptionPane.YES_OPTION) {
+                                        force1 = true;
+                                        try {
+                                            N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1, force2);
+                                        } catch (JPEG.JPEGException ex) {
+                                            JOptionPane.showMessageDialog(frame, "La carpeta conté fitxers no valids d'un format ppm diferent del P6, per tant s'avorta el protocol de compressió \n  Elimini aquests fitxers per continuar");
+                                            cf.delete_file(cf.getPath_absoluto());
+                                        }
+                                    } else
+                                        comprimido = false;
+                                }
+                                if (N.size() >= 1 && !N.get(0).equals("0") && auxiliar == JOptionPane.YES_OPTION) {
+                                    String message = "Si continues amb la compressió els següents arxius seran ignorats\n\n";
+                                    int i = 0;
+                                    for (; (i < N.size()) && (i < 15); ++i) message += N.get(i) + "\n";
+                                    if (i == 15 && N.size() > 15)
+                                        message += "I uns altres " + (N.size() - 15) + " fitxers";
                                     String title = "Avís";
                                     int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
                                     if (reply == JOptionPane.YES_OPTION) {
+                                        force2 = true;
+                                        force1 = true;
                                         try {
-                                            C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), true);
+                                            C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1, force2);
                                         } catch (JPEG.JPEGException ex) {
-                                            JOptionPane.showMessageDialog(frame, "Error inesperat, si us plau torni a intentar-ho més tard");
+                                            JOptionPane.showMessageDialog(frame, "La carpeta conté fitxers no valids d'un format ppm diferent del P6, per tant s'avorta el protocol de compressió \n  Elimini aquests fitxers per continuar");
+                                            cf.delete_file(cf.getPath_absoluto());
                                         }
                                     }
                                 }
-                            } catch (JPEG.JPEGException ex) {
-                                JOptionPane.showMessageDialog(frame, "Error inesperat, si us plau torni a intentar-ho més tard");
+                            } else {
+                                try {
+                                    if (!C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), false)) {
+                                        String message = "Hi ha una carpeta amb el mateix nom, si vol continuar la carpeta serà eliminada y substituida per la que s'esta descomprimint\n\n Vol continuar?";
+                                        String title = "Avís";
+                                        int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                        if (reply == JOptionPane.YES_OPTION) {
+                                            try {
+                                                C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), true);
+                                            } catch (JPEG.JPEGException ex) {
+                                                JOptionPane.showMessageDialog(frame, "Error inesperat, si us plau torni a intentar-ho més tard");
+                                            }
+                                        } else
+                                            comprimido = false;
+                                    }
+                                } catch (JPEG.JPEGException ex) {
+                                    JOptionPane.showMessageDialog(frame, "Error inesperat, si us plau torni a intentar-ho més tard");
+                                }
                             }
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(frame, "Error inesperado, por favor vuelva a intentar");
+                        } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido | Cont_CD.NoFiles | JPEG.JPEGException ficheroCompressionNoValido) {
+                            JOptionPane.showMessageDialog(frame, ficheroCompressionNoValido.getMessage());
                         }
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(frame, "Error inesperado, por favor vuelva a intentar");
-                    } catch (controlador_gestor_fitxer.FicheroCompressionNoValido | controlador_gestor_fitxer.FicheroDescompressionNoValido | Cont_CD.NoFiles | JPEG.JPEGException ficheroCompressionNoValido) {
-                        JOptionPane.showMessageDialog(frame, ficheroCompressionNoValido.getMessage());
                     }
+                    String act = "Compressió";
+                    if (!Accion.getText().equals("Comprimir")) act = "Descompressió";
+                    if (comprimido) JOptionPane.showMessageDialog(frame, act + " realitzada amb éxit");
                 }
             }
         });
