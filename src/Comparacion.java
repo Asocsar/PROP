@@ -8,9 +8,12 @@
 import Controlador_ficheros.controlador_gestor_fitxer;
 
 import javax.swing.*;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /** \brief Clase Comparacion
     \pre  Cert
@@ -18,6 +21,8 @@ import java.io.IOException;
     \details Serveix per comparar dos texts o imatges .ppm
  */
 public class Comparacion extends JDialog {
+
+
     private JPanel contentPane;
     private JButton buttonCancel;
     private JTextPane textArea1;
@@ -26,15 +31,20 @@ public class Comparacion extends JDialog {
     private JTextField fitxerComprimitTextField;
     private String file1;
     private String file2;
+    private Task_IntegerUpdate tk1;
+    private Task_IntegerUpdate tk2;
+    private static  JTextField fit;
 
 
-    /** \brief Compara dos fitxers o carpetes i els mostra per pantalla
-     \pre  Cert
-     \post Compara dos fitxers o carpetes i els mostra per pantalla
-     \details Les variables s1 y s2 contenen o bé el text en cas dels textos o be els paths de les imatges altrament
+    /**
+     * \brief Compara dos fitxers o carpetes i els mostra per pantalla
+     * \pre  Cert
+     * \post Compara dos fitxers o carpetes i els mostra per pantalla
+     * \details Les variables s1 y s2 contenen o bé el text en cas dels textos o be els paths de les imatges altrament
      */
-    public Comparacion(String s1, String s2, boolean image) throws IOException {
+    public Comparacion(String s1, String s2, boolean image, JProgressBar p, JTextField fite) throws IOException {
         setContentPane(contentPane);
+        fit = fite;
         setMaximumSize(new Dimension(700, 500));
         setSize(new Dimension(600, 400));
         setModal(false);
@@ -42,7 +52,7 @@ public class Comparacion extends JDialog {
         fitxerOriginalTextField.setBorder(BorderFactory.createEmptyBorder());
         fitxerComprimitTextField.setBorder(BorderFactory.createEmptyBorder());
 
-        if (!image) {
+        if (!image && !s1.equals("-1")) {
 
             file1 = s1;
             file2 = s2;
@@ -52,12 +62,22 @@ public class Comparacion extends JDialog {
             textArea2.setMaximumSize(new Dimension(500, 300));
 
 
+            textArea1.setVisible(false);
+            textArea2.setVisible(false);
             textArea1.setEditable(false);
             textArea2.setEditable(false);
+            p.setMaximum(s1.length() + s2.length());
+            p.setIndeterminate(false);
+            tk1 = new Task_IntegerUpdate(p, textArea1, s1);
+            tk1.execute();
 
-            textArea1.setText(s1);
-            textArea2.setText(s2);
-        } else {
+
+
+            tk2 = new Task_IntegerUpdate(p, textArea2, s2);
+            tk2.execute();
+
+
+        } else if (!s1.equals("-1")) {
             controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
             cf.create_img_aux1("temp1", s1);
             cf.create_img_aux1("temp2", s2);
@@ -95,6 +115,60 @@ public class Comparacion extends JDialog {
 
     private void onCancel() {
         // add your code here if necessary
+        tk1.cancel(true);
+        tk2.cancel(true);
         this.dispose();
+    }
+
+    public static  JTextField getFit () {return fit;}
+
+
+    class Task_IntegerUpdate extends SwingWorker<Void, Integer> {
+
+        String s;
+        JTextPane label;
+        JProgressBar p;
+
+        public Task_IntegerUpdate(JProgressBar p, JTextPane label, String s1) {
+            this.label = label;
+            this.s = s1;
+            this.p = p;
+        }
+
+        @Override
+        protected void process(java.util.List<Integer> chunks) {
+            int i = chunks.get(chunks.size() - 1);
+            p.setValue(i); // The last value in this array is all we care about.
+            //System.out.println(i);
+            //label.setText("Loading " + i + " of " + max);
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            Document doc = new DefaultStyledDocument();
+            for (int i = 0; i < s.length(); ++i) {
+                doc.insertString(doc.getLength(), String.valueOf(this.s.charAt(i)), null);
+                publish(i+p.getValue());
+            }
+            if (p.getValue() >= s.length()*2 - 5) Comparacion.getFit().setText("Procesant informació per ser mostrada...");
+            //this.label.setText(this.s);
+            this.label.setDocument(doc);
+            this.label.setVisible(true);
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            try {
+                get();
+                p.setVisible(false);
+                Comparacion.getFit().setVisible(false);
+                Comparacion.getFit().setText("Analitzant fitxer...");
+                //JOptionPane.showMessageDialog(jpb.getParent(), "Success", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
