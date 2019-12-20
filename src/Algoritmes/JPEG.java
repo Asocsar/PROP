@@ -298,19 +298,26 @@ public class JPEG extends Algoritmes {
         int[][] B = new int[8][8];
         int c = 0, nbytes, count, z;
         long l;
+
+        //Variables per a fer conversió string binari a int
         String numbin, se, mask = "11111111111111111111111111111111";
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < s.length() && c < 64; ++i) {
-            String runsize = mapInversed.get(sb.append(s.charAt(i)).toString());
+
+            String runsize = mapInversed.get(sb.append(s.charAt(i)).toString()); //Busca a les taules l'String llegit
+
             if(runsize != null){
+
                 RS = runsize.split(",");
                 count = Integer.parseInt(RS[0]);
                 nbytes = Integer.parseInt(RS[1]);
+
                 if(nbytes == 0 && count == 0) count = 9; //Escriure 10 zeros (0,0)
                 c += count;
                 if(i+1+nbytes > s.length()) numbin = "";
                 else numbin = s.substring(i+1, i+1 + nbytes);
+
                 if(!numbin.isEmpty() && numbin.charAt(0) == '1') z = Integer.parseInt(numbin, 2); //Número positiu
                 else{
                     se = mask.substring(numbin.length()) + numbin;
@@ -326,7 +333,6 @@ public class JPEG extends Algoritmes {
 
         }
 
-
         int[][] D = new int[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
@@ -335,8 +341,6 @@ public class JPEG extends Algoritmes {
         }
 
         return  idct(D);
-
-
     }
 
 
@@ -348,12 +352,12 @@ public class JPEG extends Algoritmes {
 
     public byte[] compress(byte[] b) throws JPEGException {
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
         long start_time = System.nanoTime();
         StringBuilder sb = new StringBuilder();
         byte[] bs;
-        int height = 0, width = 0, Bheight, Bwidth, length, posx, posy, it;
+        int height, width = 0, Bheight, Bwidth, posx, posy, it;
 
+        //Tractament header
         if((char)b[0] != 'P' || (char)b[1] != '6') throw new JPEGException("Format de fitxer no suportat ");
         it = 3;
         char c = (char) b[it];
@@ -362,7 +366,6 @@ public class JPEG extends Algoritmes {
             while(c != '\n') c = (char) b[++it]; // Skip comentaris
             c = (char) b[++it];
         }
-
 
         while( c != '\n'){
             if(c != ' ') str.append(c);
@@ -378,11 +381,11 @@ public class JPEG extends Algoritmes {
         sb.append(width).append(' ').append(height).append('\n');
         sb.append(this.quality).append('\n');
 
-        byte[] bout = (sb.toString().getBytes()); //Escriure Cabezera
+        byte[] bout = (sb.toString().getBytes()); //Escriure header
 
 
         int[][][] YCbCr = new int[3][height][width];
-        //Read ints
+
         int red, green, blue;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -399,8 +402,6 @@ public class JPEG extends Algoritmes {
 
 
 
-        //Comença a comptar el temps
-        long mida = 0;
 
         Bheight = (height % 8 == 0) ? height / 8 : height / 8 + 1;
         Bwidth = (width % 8 == 0) ? width / 8 : width / 8 + 1;
@@ -422,8 +423,9 @@ public class JPEG extends Algoritmes {
                     }
 
 
-                    bs = compress8(m); //Treure getBytes
-                    mida += bs.length;
+                    bs = compress8(m); //Compressió bloc a bloc
+
+                    //Concatenar array de bytes bout += bs
                     byte[] cout = new byte[bout.length + bs.length];
                     System.arraycopy(bout, 0, cout, 0, bout.length);
                     System.arraycopy(bs, 0, cout, bout.length, bs.length);
@@ -436,7 +438,7 @@ public class JPEG extends Algoritmes {
 
         long end_time = System.nanoTime();
         super.time = (end_time - start_time) / 1e6;
-        super.grade = 1 - (double) mida /(double) (height * width * 12);
+        super.grade = 1 - (double) bout.length /(double) (height * width * 12);
 
         return bout;
     }
@@ -493,6 +495,7 @@ public class JPEG extends Algoritmes {
             for (int i = 0; i < height; i+=8) {
                 for(int j = 0; j < width; j+=8) {
 
+                    //Descompressió bloc a bloc
                     m = decompress8(blocks[z++]);
 
                     for (int y = 0; y < 8; ++y) {
@@ -503,7 +506,6 @@ public class JPEG extends Algoritmes {
                             if (posx < width && posy < height) YCbCr[a][posy][posx] = m[y][x];
 
                         }
-
                     }
 
                 }
