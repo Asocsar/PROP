@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="987cecee-9275-4ab7-bebf-5c0a99903a27" name="Default Changelist" comment="Sin comentarios, funciona tractament bytes -&gt; Imatge mal">
+      <change beforePath="$PROJECT_DIR$/src/Algoritmes/JPEG/JPEG.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Algoritmes/JPEG/JPEG.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1S9eBv1f1C8GJn5hKW9hTAoLjuj" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/aqui2.fg" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Console Font" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="Algoritmes.JPEG" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/Algoritmes/JPEG" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Driver_JPEG">
+    <configuration name="Driver_JPEG (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Driver_JPEG" />
+      <module name="PROP" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Driver_JPEG" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Algoritmes.JPEG.Driver_JPEG" />
+      <module name="PROP" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Algoritmes.JPEG.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HuffmanTables" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Algoritmes.JPEG.Huffman.HuffmanTables" />
+      <module name="PROP" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Algoritmes.JPEG.Huffman.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Huffmanints" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Algoritmes.JPEG.Huffman.Huffmanints" />
+      <module name="PROP" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Algoritmes.JPEG.Huffman.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JPEG" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Algoritmes.JPEG.JPEG" />
+      <module name="PROP" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Algoritmes.JPEG.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JPEG_main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Algoritmes.JPEG.JPEG_main" />
+      <module name="PROP" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Algoritmes.JPEG.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Unnamed" type="CompoundRunConfigurationType">
+      <method v="2" />
+    </configuration>
+    <configuration name="ActionsDemo" type="Java Scratch" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ActionsDemo" />
+      <option name="SCRATCH_FILE_URL" value="file://$APPLICATION_CONFIG_DIR$/scratches/Learning" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JPEG" type="Java Scratch">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="JPEG" />
+      <module name="PROP" />
+      <option name="SCRATCH_FILE_URL" value="file://$PROJECT_DIR$/src/Algoritmes/JPEG.java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.JPEG" />
+      <item itemvalue="Application.Driver_JPEG" />
+      <item itemvalue="Application.JPEG_main" />
+      <item itemvalue="Application.Driver_JPEG (1)" />
+      <item itemvalue="Application.Huffmanints" />
+      <item itemvalue="Application.HuffmanTables" />
+      <item itemvalue="Compound.Unnamed" />
+      <item itemvalue="Java Scratch.JPEG" />
+      <item itemvalue="Java Scratch.ActionsDemo" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Driver_JPEG" />
+        <item itemvalue="Application.HuffmanTables" />
+        <item itemvalue="Application.Huffmanints" />
+        <item itemvalue="Application.Driver_JPEG (1)" />
+        <item itemvalue="Application.JPEG_main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="987cecee-9275-4ab7-bebf-5c0a99903a27" name="Default Changelist" comment="" />
+      <created>1570980434770</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1570980434770</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Actualizado">
+      <created>1570981837301</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1570981837302</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Actualizado">
+      <created>1570982379129</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1570982379129</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Actualizado">
+      <created>1571567226686</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1571567226686</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Lectura_escriptura">
+      <created>1571945890613</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1571945890613</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Separació JPEG">
+      <created>1571998223593</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1571998223593</updated>
+    </task>
+    <task id="LOCAL-00006" summary="DCT Quantitzation ZigZag i IDCT">
+      <created>1572465209838</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1572465209839</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Compress and decompress with buffs and file in out">
+      <created>1572489625911</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1572489625911</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Compress and decompress with buffs and file in out">
+      <created>1572625809664</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1572625809664</updated>
+    </task>
+    <task id="LOCAL-00009" summary="In/Out">
+      <created>1573434933208</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1573434933208</updated>
+    </task>
+    <task id="LOCAL-00010" summary="In/Out Comprovación">
+      <created>1573484698887</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1573484698887</updated>
+    </task>
+    <task id="LOCAL-00011" summary="In/Out Comprovación">
+      <created>1573485058524</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1573485058524</updated>
+    </task>
+    <task id="LOCAL-00012" summary="In/Out Comprovación">
+      <created>1573608150048</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1573608150048</updated>
+    </task>
+    <task id="LOCAL-00013" summary="In/Out Comprovación">
+      <created>1573668079915</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1573668079915</updated>
+    </task>
+    <task id="LOCAL-00014" summary="In/Out funcionant">
+      <created>1573825998500</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1573825998500</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Dividit en bloc 8x8 -&gt; Resultat verd">
+      <created>1573872175267</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1573872175267</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Dividit en bloc 8x8 -&gt; Resultat verd">
+      <created>1573919387219</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1573919387219</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Funcionant menys últimes linies">
+      <created>1574017450773</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1574017450773</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Drivers i altres">
+      <created>1574034649064</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1574034649064</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Compressió i RLE funcionant, línies en blocs 8x8">
+      <created>1574042802394</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1574042802394</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Driver Jpeg i Jpeg amb estadístiques">
+      <created>1574048822298</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1574048822298</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Driver Jpeg i Jpeg amb estadístiques -&gt; funcionen">
+      <created>1574049738267</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1574049738267</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Driver Jpeg i Jpeg amb estadístiques, QC afegida">
+      <created>1574094788172</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1574094788172</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Driver Jpeg i Jpeg amb estadístiques, QC afegida">
+      <created>1574338294116</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1574338294116</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Quantització up and running">
+      <created>1575505560506</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1575505560506</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Debugging la part de llegir i escriure afitxers, porblemes al llegir números negatius que els llegeix com a 65535.&#10;També els buffs de cada bloc són molt curts">
+      <created>1575587559810</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1575587559810</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Debugging no escriu els 0s finals a cada fila del buff i a l'hora de llegir llegeix els ints com a byte -1 com a 65355">
+      <created>1575648936460</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1575648936460</updated>
+    </task>
+    <task id="LOCAL-00027" summary="HuffmanInts working, però me n'he adonat que el q serveix son les taules estandards">
+      <created>1575676238985</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1575676238985</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Lectura amb bytes funcioant">
+      <created>1575769908763</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1575769908763</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Lectura amb bytes funcioant, i comentaris també">
+      <created>1575771390394</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1575771390394</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Bytes todavia no completo">
+      <created>1576084221750</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1576084221750</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Bytes correctes i driver actualitzat uso 2 StringBuilder, tant per construir la tira de bits com per construir larray de bytes.">
+      <created>1576173773296</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1576173773296</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Huffman Correcte/ Falta descompressió">
+      <created>1576466067859</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1576466067859</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Hasta aquí hemos llegado">
+      <created>1576466504837</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1576466504837</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Guardar cambios">
+      <created>1576611920934</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1576611920934</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Imagen mal vista pro compression general con compress8 té concordància">
+      <created>1576638568286</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1576638568286</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Fijarse en la conversion a bytes:&#10;&#10;Linies compress8:&#10;243- escriure bloc en binary string&#10;247- escriure separador de bloc salto de línea&#10;250-251- Pasar StrinBuilder a byte[]&#10;&#10;compress:&#10;ArrayOutputStream output;&#10;367- Escriure cabezera en texto a output&#10;420- Escriure cada bloc compress8 a output">
+      <created>1576680121201</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1576680121201</updated>
+    </task>
+    <task id="LOCAL-00037" summary="Update">
+      <created>1576782876802</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1576782876802</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Compila blocs 8x8">
+      <created>1576786047178</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1576786047179</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Sin comentarios, funciona tractament bytes -&gt; Imatge mal">
+      <created>1576843851132</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1576843851132</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
+    <MESSAGE value="In/Out Comprovación" />
+    <MESSAGE value="In/Out funcionant" />
+    <MESSAGE value="Dividit en bloc 8x8 -&gt; Resultat verd" />
+    <MESSAGE value="Funcionant menys últimes linies" />
+    <MESSAGE value="Drivers i altres" />
+    <MESSAGE value="Compressió i RLE funcionant, línies en blocs 8x8" />
+    <MESSAGE value="Driver Jpeg i Jpeg amb estadístiques" />
+    <MESSAGE value="Driver Jpeg i Jpeg amb estadístiques -&gt; funcionen" />
+    <MESSAGE value="Driver Jpeg i Jpeg amb estadístiques, QC afegida" />
+    <MESSAGE value="Quantització up and running" />
+    <MESSAGE value="Debugging la part de llegir i escriure afitxers, porblemes al llegir números negatius que els llegeix com a 65535.&#10;També els buffs de cada bloc són molt curts" />
+    <MESSAGE value="Debugging no escriu els 0s finals a cada fila del buff i a l'hora de llegir llegeix els ints com a byte -1 com a 65355" />
+    <MESSAGE value="HuffmanInts working, però me n'he adonat que el q serveix son les taules estandards" />
+    <MESSAGE value="Lectura amb bytes funcioant" />
+    <MESSAGE value="Lectura amb bytes funcioant, i comentaris també" />
+    <MESSAGE value="Bytes todavia no completo" />
+    <MESSAGE value="Bytes correctes i driver actualitzat uso 2 StringBuilder, tant per construir la tira de bits com per construir larray de bytes." />
+    <MESSAGE value="Huffman Correcte/ Falta descompressió" />
+    <MESSAGE value="Hasta aquí hemos llegado" />
+    <MESSAGE value="Guardar cambios" />
+    <MESSAGE value="Imagen mal vista pro compression general con compress8 té concordància" />
+    <MESSAGE value="Fijarse en la conversion a bytes:&#10;&#10;Linies compress8:&#10;243- escriure bloc en binary string&#10;247- escriure separador de bloc salto de línea&#10;250-251- Pasar StrinBuilder a byte[]&#10;&#10;compress:&#10;ArrayOutputStream output;&#10;367- Escriure cabezera en texto a output&#10;420- Escriure cada bloc compress8 a output" />
+    <MESSAGE value="Update" />
+    <MESSAGE value="Compila blocs 8x8" />
+    <MESSAGE value="Sin comentarios, funciona tractament bytes -&gt; Imatge mal" />
+    <option name="LAST_COMMIT_MESSAGE" value="Sin comentarios, funciona tractament bytes -&gt; Imatge mal" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="488" y="136" width="1000" height="839" key="#Notifications" timestamp="1576413749386">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="488" y="136" width="1000" height="839" key="#Notifications/67.34.1853.1046@67.34.1853.1046" timestamp="1576413749386" />
+    <state x="643" y="343" width="690" height="425" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1576773611193">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="643" y="343" width="690" height="425" key="#com.intellij.fileTypes.FileTypeChooser/67.34.1853.1046@67.34.1853.1046" timestamp="1576773611193" />
+    <state x="488" y="136" width="1000" height="839" key="#value" timestamp="1576771494386">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="488" y="136" width="1000" height="839" key="#value/67.34.1853.1046@67.34.1853.1046" timestamp="1576771494386" />
+    <state x="953" y="84" width="958" height="944" key="CommitChangelistDialog2" timestamp="1576849285346">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="953" y="84" width="958" height="944" key="CommitChangelistDialog2/67.34.1853.1046@67.34.1853.1046" timestamp="1576849285346" />
+    <state x="167" y="132" width="1653" height="848" key="DiffContextDialog" timestamp="1575596764868">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="167" y="132" width="1653" height="848" key="DiffContextDialog/67.34.1853.1046@67.34.1853.1046" timestamp="1575596764868" />
+    <state x="723" y="257" width="530" height="598" key="FileChooserDialogImpl" timestamp="1576849140659">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="723" y="257" width="530" height="598" key="FileChooserDialogImpl/67.34.1853.1046@67.34.1853.1046" timestamp="1576849140659" />
+    <state width="1797" height="226" key="GridCell.Tab.0.bottom" timestamp="1576848719122">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state width="1797" height="226" key="GridCell.Tab.0.bottom/67.34.1853.1046@67.34.1853.1046" timestamp="1576848719122" />
+    <state width="1797" height="226" key="GridCell.Tab.0.center" timestamp="1576848719122">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state width="1797" height="226" key="GridCell.Tab.0.center/67.34.1853.1046@67.34.1853.1046" timestamp="1576848719122" />
+    <state width="1797" height="226" key="GridCell.Tab.0.left" timestamp="1576848719122">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state width="1797" height="226" key="GridCell.Tab.0.left/67.34.1853.1046@67.34.1853.1046" timestamp="1576848719122" />
+    <state width="1797" height="226" key="GridCell.Tab.0.right" timestamp="1576848719122">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state width="1797" height="226" key="GridCell.Tab.0.right/67.34.1853.1046@67.34.1853.1046" timestamp="1576848719122" />
+    <state width="1797" height="284" key="GridCell.Tab.1.bottom" timestamp="1576785349357">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state width="1797" height="284" key="GridCell.Tab.1.bottom/67.34.1853.1046@67.34.1853.1046" timestamp="1576785349356" />
+    <state width="1797" height="284" key="GridCell.Tab.1.center" timestamp="1576785349356">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state width="1797" height="284" key="GridCell.Tab.1.center/67.34.1853.1046@67.34.1853.1046" timestamp="1576785349356" />
+    <state width="1797" height="284" key="GridCell.Tab.1.left" timestamp="1576785349356">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state width="1797" height="284" key="GridCell.Tab.1.left/67.34.1853.1046@67.34.1853.1046" timestamp="1576785349356" />
+    <state width="1797" height="284" key="GridCell.Tab.1.right" timestamp="1576785349356">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state width="1797" height="284" key="GridCell.Tab.1.right/67.34.1853.1046@67.34.1853.1046" timestamp="1576785349356" />
+    <state x="359" y="103" key="SettingsEditor" timestamp="1575586834942">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="359" y="103" key="SettingsEditor/67.34.1853.1046@67.34.1853.1046" timestamp="1575586834942" />
+    <state x="488" y="214" width="1000" height="683" key="Vcs.Push.Dialog.v2" timestamp="1576849293561">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="488" y="214" width="1000" height="683" key="Vcs.Push.Dialog.v2/67.34.1853.1046@67.34.1853.1046" timestamp="1576849293561" />
+    <state width="926" height="524" key="XDebugger.FullValuePopup" timestamp="1576777118244">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state width="926" height="524" key="XDebugger.FullValuePopup/67.34.1853.1046@67.34.1853.1046" timestamp="1576777118244" />
+    <state x="573" y="346" key="com.intellij.ide.util.TipDialog" timestamp="1576845433849">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="573" y="346" key="com.intellij.ide.util.TipDialog/67.34.1853.1046@67.34.1853.1046" timestamp="1576845433849" />
+    <state x="550" y="83" width="876" height="945" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1576254947255">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="550" y="83" width="876" height="945" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/67.34.1853.1046@67.34.1853.1046" timestamp="1576254947255" />
+    <state x="717" y="458" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1576414805553">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="717" y="458" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.34.1853.1046@67.34.1853.1046" timestamp="1576414805553" />
+    <state x="668" y="203" width="640" height="705" key="git4idea.branch.GitSmartOperationDialog" timestamp="1576849171742">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="668" y="203" width="640" height="705" key="git4idea.branch.GitSmartOperationDialog/67.34.1853.1046@67.34.1853.1046" timestamp="1576849171742" />
+    <state x="153" y="81" width="1671" height="949" key="new project wizard" timestamp="1576849133644">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="153" y="81" width="1671" height="949" key="new project wizard/67.34.1853.1046@67.34.1853.1046" timestamp="1576849133644" />
+    <state x="573" y="251" key="run.anything.popup" timestamp="1576781428391">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="573" y="251" key="run.anything.popup/67.34.1853.1046@67.34.1853.1046" timestamp="1576781428391" />
+    <state x="572" y="45" width="840" height="1034" key="search.everywhere.popup" timestamp="1576769602251">
+      <screen x="67" y="34" width="1853" height="1046" />
+    </state>
+    <state x="572" y="45" width="840" height="1034" key="search.everywhere.popup/67.34.1853.1046@67.34.1853.1046" timestamp="1576769602251" />
+  </component>
+</project>
