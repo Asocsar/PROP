@@ -92,7 +92,7 @@ public class LZ78 extends Algoritmes {
      */
 
     public byte[] compress(byte[] fole)  {
-        double starttime = System.currentTimeMillis();
+        long start_time = System.nanoTime();
         int x=0;
         Byte[] file = new Byte[fole.length];
         for(byte a : fole){
@@ -129,8 +129,8 @@ public class LZ78 extends Algoritmes {
                 Caracters.add(null);
             }
         }
-        double endtime = System.currentTimeMillis();
-        super.time = endtime - starttime;
+        long end_time = System.nanoTime();
+        super.time = (end_time - start_time)/ 1e6;
         super.grade = fole.length/result.size();
         return transform(result);
     }
@@ -143,7 +143,7 @@ public class LZ78 extends Algoritmes {
      */
 
     public  byte[] descompress(byte[] aux) {
-        double starttime = System.currentTimeMillis();
+        long start_time = System.nanoTime();
         int x=0;
         Byte[] file = new Byte[aux.length];
         for(byte a : aux){
@@ -204,8 +204,8 @@ public class LZ78 extends Algoritmes {
         }
         Caracters.remove(0);
         Caracters_aux.addAll(Caracters);
-        double endtime = System.currentTimeMillis();
-        super.time = endtime - starttime;
+        long end_time = System.nanoTime();
+        super.time = (end_time - start_time) / 1e6;
         return transform2(Caracters_aux,tam);
     }
 

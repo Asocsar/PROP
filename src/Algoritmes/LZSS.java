@@ -55,7 +55,7 @@ public class LZSS extends Algoritmes {
 
 
     public  byte[] compress(byte[] file)  {
-        double startTime = System.currentTimeMillis();
+        double startTime = System.nanoTime();
         int match, offset, SB, LAB,LABini;
         match = 0;
         offset = 0;
@@ -183,8 +183,8 @@ public class LZSS extends Algoritmes {
             }
         }
 
-        double endTime = System.currentTimeMillis();
-        super.time = (endTime - startTime);                                               //Càlcul del temps de compressió i assignació a variable de la superclasse
+        double endTime = System.nanoTime();
+        super.time = (endTime - startTime) / 1e6;                                          //Càlcul del temps de compressió i assignació a variable de la superclasse
         if(file.length > 0) super.grade = (double)encoded.size()/(double)file.length;     //Càlcul del ratio de compressió i assignació a variable de la superclasse
 
         // Conversió de la llista a un byte[]
@@ -229,6 +229,7 @@ public class LZSS extends Algoritmes {
         for (byte b : entrada) {
             encoded.add(b);
         }
+        long start_time = System.nanoTime();
         List<Byte> result = new ArrayList<>();
         int resultindex = 0;
         while (encoded.size() < 4 && resultindex < encoded.size()) {
@@ -285,6 +286,8 @@ public class LZSS extends Algoritmes {
             retur[i] = b.byteValue();
             ++i;
         }
+        long end_time = System.nanoTime();
+        super.time = (end_time - start_time) / 1e6;
         return retur;
     }
 

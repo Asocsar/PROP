@@ -7,10 +7,9 @@
 package Algoritmes;
 
 
-import java.io.*;
+
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.lang.Math;
 
 /** \class LZW */
 
@@ -70,7 +69,7 @@ public class LZW extends Algoritmes {
      */
 
     public byte[] compress(byte [] file)  {
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         // Creem el diccionari de forma local a la funció per un acces més ràpid
         Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
         List<Integer> result = new ArrayList<>();
@@ -106,8 +105,8 @@ public class LZW extends Algoritmes {
         // en la ultima iteració fem w = k, es a dir que el caràcter k, o la seqüència
         // de caràcters aux no han sigut afegits al resultat
         result.add(Alf_aux.get(Arrays.asList(w)));
-        long end = System.currentTimeMillis();
-        super.time = (end - start) / 1000F;
+        long end = System.nanoTime();
+        super.time = (end - start) / 1e6;
 
         byte [] resul = new byte[result.size()*4];
         int it = 0;
@@ -135,7 +134,7 @@ public class LZW extends Algoritmes {
         if (bytes.length == 0) {
             return new byte[0];
         }
-        long start = System.currentTimeMillis();
+        long start_time = System.nanoTime();
         Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
         int i = 0;
         ByteBuffer s = ByteBuffer.wrap(bytes);
@@ -177,8 +176,8 @@ public class LZW extends Algoritmes {
         for (Byte b: result) {
             fin[k++] = b;
         }
-        long end = System.currentTimeMillis();
-        super.time = (end - start) / 1000F;
+        long end_time = System.nanoTime();
+        super.time = (end_time - start_time) / 1e6;
         return fin;
     }
 }
