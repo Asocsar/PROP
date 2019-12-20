@@ -254,5 +254,7 @@ public class controlador_gestor_fitxer {
     public boolean a_comprimir (String path) {return gestor.a_comprimir(path);}
 
     public String get_ext_file (String path) {return gestor.get_ext_file(path);}
+    
+    public boolean path_valid(String path){ return gestor.path_valid(path);}
 
 }
