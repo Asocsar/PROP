@@ -21,7 +21,7 @@ public class Cont_CD {
     private Map<String, List<String>> Asoc = new HashMap<String,List<String>>();
     private List<String> Alg = new ArrayList<>();
     private static boolean jpeg = false;
-    private int quality = 50;
+    private int quality;
 
     public class NoCompress extends Exception {
         public NoCompress (String message) {super(message);}
@@ -30,6 +30,9 @@ public class Cont_CD {
     public class NoFiles extends Exception {
         public NoFiles (String message) {super (message);}
     }
+
+
+
     /** \brief Creadora
      \pre Cert
      \post S'ha creat una instancia inicialitzada del Controlador CD y s'han asociat els algoritmes que aquesta implementa
@@ -85,6 +88,13 @@ public class Cont_CD {
      */
     public static boolean getlastjpeg () {return jpeg;}
 
+    /** \brief Estableix la qualitat per l'algorisme JPEG
+     \pre Cert
+     \post la variable local quality estableix el valor de qualitat estimat
+     */
+    public void setQuality (int n) {
+        this.quality = n;
+    }
 
     /**\brief Acció
      \pre cert
@@ -148,14 +158,14 @@ public class Cont_CD {
                 JPEG JG = new JPEG(quality);
                 if (comprimir) {
                     System.out.println("JPEG compression ejecutado");
-                    L = JG.compress(I.get_buffer(path_o, comprimir, id));
+                    L = JG.compress(b);
                     time = JG.getTime();
                     rate = JG.getRate();
                     E.actG(time,rate, (time != 0) ? b.length/time : 0,comprimir);
                 }
                 else {
                     System.out.println("JPEG descompression ejecutado");
-                    L = JG.descompress(I.get_buffer(path_o, comprimir, id));
+                    L = JG.descompress(b);
                     time = JG.getTime();
                     E.actG(time, -1, (time != 0) ? b.length/time : 0, false);
                 }
@@ -195,8 +205,10 @@ public class Cont_CD {
         List<String> basura = new ArrayList<String>(1);
         basura.add("0");
         if (I.getPaths_no_valids().size() > 0 && !force2) return I.getPaths_no_valids();
+        boolean all_jpeg = true;
         for (String s : a) {
             boolean jpeg = I.is_jpeg(s);
+            all_jpeg = all_jpeg && jpeg;
             String algoritmo_utilizado = id;
             if (jpeg) algoritmo_utilizado = "JPEG";
             byte[] aux = action(s, algoritmo_utilizado, true, I, -1);

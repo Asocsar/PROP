@@ -7,11 +7,13 @@
 
 import Controlador_ficheros.controlador_gestor_fitxer;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -35,6 +37,12 @@ public class Comparacion extends JDialog {
     private Task_IntegerUpdate tk2;
     private static  JTextField fit;
 
+    public BufferedImage bufferImage(Image image, int type) {
+        BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
+        Graphics2D g = bufferedImage.createGraphics();
+        g.drawImage(image, null, null);
+        return bufferedImage;
+    }
 
     /**
      * \brief Compara dos fitxers o carpetes i els mostra per pantalla
@@ -42,7 +50,7 @@ public class Comparacion extends JDialog {
      * \post Compara dos fitxers o carpetes i els mostra per pantalla
      * \details Les variables s1 y s2 contenen o bé el text en cas dels textos o be els paths de les imatges altrament
      */
-    public Comparacion(String s1, String s2, boolean image, JProgressBar p, JTextField fite) throws IOException {
+    public Comparacion(String s1, String s2, boolean image, JProgressBar p, JTextField fite) throws IOException, IOException {
         setContentPane(contentPane);
         fit = fite;
         setMaximumSize(new Dimension(700, 500));
@@ -83,8 +91,12 @@ public class Comparacion extends JDialog {
             controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
             cf.create_img_aux1("temp1", s1);
             cf.create_img_aux1("temp2", s2);
+
             textArea1.insertIcon(new ImageIcon("temp1.png"));
             textArea2.insertIcon(new ImageIcon("temp2.png"));
+            cf.delete_file("temp1.png");
+            cf.delete_file("temp2.png");
+            cf.delete_file(s2);
         }
 
 

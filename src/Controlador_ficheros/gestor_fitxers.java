@@ -22,6 +22,7 @@ public class gestor_fitxers {
     private Integer bytes_llegits;
     private String path_carpeta_og;
     private String path_absoluto;
+    private boolean all_jpeg = false;
 
     /** \brief Creadora
      \pre Cert
@@ -514,7 +515,7 @@ public class gestor_fitxers {
         return aux;
     }
 
-    
+
 
     /**\brief Actualitzadora
      \pre cert
@@ -627,7 +628,7 @@ public class gestor_fitxers {
 
     /** \brief Buscar i llegir arxiu
      \pre Cert
-     \post Retorna un objecte que representa la estructura de dades necessària per a la compressió o descompressió d'un arxiu. 
+     \post Retorna un objecte que representa la estructura de dades necessària per a la compressió o descompressió d'un arxiu.
      */
     private byte[] buscar_leer_archivo(String path_og) throws IOException {
         File file = new File (path_og);
@@ -673,7 +674,7 @@ public class gestor_fitxers {
     }
     /**\brief Transformació de dades.
      \pre cert
-     \post transforma la llista de bytes que entra per parametre en un enter. 
+     \post transforma la llista de bytes que entra per parametre en un enter.
      */
     private Integer list_b_to_i(List<Byte> aux){
         int i_aux=0;
@@ -778,5 +779,75 @@ public class gestor_fitxers {
         String aux= Path_o.substring(pos,Path_o.lastIndexOf("."));
         return aux;
     }
-    
+
+    /**\brief Actualització carpeta descomprimida.
+     \pre path és un path vàlid
+     \post esborra el fitxer amb path igual a "path" i crea un fitxer igual amb l'extensió .FG.
+     */
+    public String all_jpeg(String path, List<String> l_aux) throws IOException {
+        for(int i=0; i < l_aux.size(); ++i){
+            if(!(l_aux.get(i).substring(l_aux.get(i).lastIndexOf(".")).equals(".ppm"))) return path;
+        }
+        String aux= path.substring(0,path.lastIndexOf("."));
+        aux = aux + ".FG";
+        return aux;
+
+    }
+
+    /**\brief Obtenció d'algoritme.
+     \pre path_o és un path vàlid
+     \post retorna el id de l'algorisme detectat.
+     */
+    public String getAlgoritme(String path_o) {
+        String aux = path_o.substring(path_o.length() - 2);
+        switch (aux) {
+            case "f8" :
+
+            case "F8" :
+                return "LZ78";
+
+            case "fS":
+
+            case "FS":
+                return "LZSS";
+
+            case "fW":
+
+            case "FW":
+                return "LZW";
+
+            case "fG":
+
+            case "FG":
+                return "JPEG";
+
+
+            default:
+        }
+        return null;
+    }
+
+    /**\brief Obtenció de la extensió.
+     \pre id_s és un id vàlid.
+     \post retorna el id de l'algorisme detectat.
+     */
+    public String get_Ex(String id_s) {
+        switch (id_s) {
+            case "LZ78":
+                return ".F8";
+
+            case "LZSS":
+                return ".FS";
+
+            case "LZW":
+                return ".FW";
+
+            case "JPEG":
+                return ".FG";
+
+            default:
+        }
+        return null;
+    }
+
 }
