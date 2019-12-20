@@ -72,14 +72,14 @@ public class Cont_CD {
      \post S'ha retornat el temps de l'última execució
      */
 
-    public double getTime () {return this.time;}
+    public double getTime () {return time;}
 
     /** \brief Ratio de compressió
      \pre Cert
      \post S'ha retornat el ratio de compressió de l'última execució
      */
 
-    public double getRate () {return this.rate;}
+    public double getRate () {return rate;}
 
 
     /** \brief Si l'últim algorisme utilitzat ha sigut el jpeg
@@ -88,9 +88,9 @@ public class Cont_CD {
      */
     public static boolean getlastjpeg () {return jpeg;}
 
-    /** \brief Estableix la qualitat per l'algorisme JPEG
+    /** \brief Si l'últim algorisme utilitzat ha sigut el jpeg
      \pre Cert
-     \post la variable local quality estableix el valor de qualitat estimat
+     \post Es retorna un bolea que indica si l'últim algorisme executat ha sigut el jpeg
      */
     public void setQuality (int n) {
         this.quality = n;
@@ -117,11 +117,11 @@ public class Cont_CD {
                     //s'actualitzen les estadístiques i es guarda temps i rati
                     time = L8.get_Time();
                     rate = L8.get_Rate();
-                    E.act8(time, rate, (time != 0) ? b.length/time : 0, true);
+                    Estadistiques.act8(time, rate, (time != 0) ? b.length/time : 0, true);
                 } else {
                     L = L8.descompress(b);
                     time = L8.get_Time();
-                    E.act8(time, -1, (time != 0) ? b.length/time : 0, false);
+                    Estadistiques.act8(time, -1, (time != 0) ? b.length/time : 0, false);
                 }
 
                 break;
@@ -131,11 +131,11 @@ public class Cont_CD {
                     L = LS.compress(b);
                     time = LS.getTime();
                     rate = LS.getRate();
-                    E.actS(time, rate, (time != 0) ? b.length/time : 0, true);
+                    Estadistiques.actS(time, rate, (time != 0) ? b.length/time : 0, true);
                 } else {
                     L = LS.descompress(b);
                     time = LS.getTime();
-                    E.actS(time, -1, (time != 0) ? b.length/time : 0, false);
+                    Estadistiques.actS(time, -1, (time != 0) ? b.length/time : 0, false);
                 }
                 break;
             case "LZW":
@@ -144,12 +144,12 @@ public class Cont_CD {
                     L = LW.compress(b);
                     time = LW.getTime();
                     rate = LW.getRate();
-                    E.actW(time, rate, (time != 0) ? b.length/time : 0, true);
+                    Estadistiques.actW(time, rate, (time != 0) ? b.length/time : 0, true);
 
                 } else {
                     L = LW.descompress(b);
                     time = LW.getTime();
-                    E.actW(time, -1, (time != 0) ? b.length/time : 0, false);
+                    Estadistiques.actW(time, -1, (time != 0) ? b.length/time : 0, false);
 
                 }
 
@@ -161,13 +161,13 @@ public class Cont_CD {
                     L = JG.compress(b);
                     time = JG.getTime();
                     rate = JG.getRate();
-                    E.actG(time,rate, (time != 0) ? b.length/time : 0,comprimir);
+                    Estadistiques.actG(time,rate, (time != 0) ? b.length/time : 0,comprimir);
                 }
                 else {
                     System.out.println("JPEG descompression ejecutado");
                     L = JG.descompress(b);
                     time = JG.getTime();
-                    E.actG(time, -1, (time != 0) ? b.length/time : 0, false);
+                    Estadistiques.actG(time, -1, (time != 0) ? b.length/time : 0, false);
                 }
                 break;
         }

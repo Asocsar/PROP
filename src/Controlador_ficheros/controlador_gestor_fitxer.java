@@ -21,15 +21,23 @@ public class controlador_gestor_fitxer {
 
     //EXCEPCIONS
 
-    //Excepció que salta quan un fitxer introduit per a comprimir no és vàlid o no és compatible amb l'algorisme
+
     public class FicheroCompressionNoValido extends Exception {
+        /** \class FicheroCompressionNoValido
+         * \brief Exception
+         \details Salta quan un fitxer introduit per a comprimir no és vàlid o no és compatible amb l'algorisme
+         */
         public FicheroCompressionNoValido(String message) {
             super(message);
         }
     }
 
-    //Excepció que salta quan un fitxer introduit per a comprimir no és vàlid
+
     public class FicheroDescompressionNoValido extends Exception {
+        /** \class FicheroDescompressionNoValido
+         * \brief Exception
+         \details Excepció que salta quan un fitxer introduit per a descomprimir no és vàlid
+         */
         public FicheroDescompressionNoValido(String message) {
             super(message);
         }
@@ -171,7 +179,7 @@ public class controlador_gestor_fitxer {
     public byte[] get_buffer(String Path_original, Boolean c_p, String id) throws IOException, FicheroCompressionNoValido, FicheroDescompressionNoValido {
         C_P = c_p;
         id_a = id;
-        byte b[] = null;
+        byte[] b = null;
         if (C_P) {
             String aux = Path_original.substring(Path_original.length() - 3);
             if (!aux.equals("txt") & !aux.equals("ppm")) {
@@ -211,43 +219,112 @@ public class controlador_gestor_fitxer {
      */
     public String obtenir_fitxer(String path) throws IOException { return gestor.read_file(path); }
 
+    /**\brief Obtenció d'algoritme.
+     \pre path_o és un path vàlid
+     \post Retorna el id de l'algorisme detectat.
+     */
 
     public String getAlgoritme(String path_o, Map<String,List<String>> m_aux) {
         return gestor.getAlgoritme(path_o);}
 
+    /**\brief Obtenció de la extensió.
+     \pre id_s és un id vàlid.
+     \post Retorna el id de l'algorisme detectat.
+     */
     public String getExtensio(String id_s) { return gestor.get_Ex(id_s); }
+
+    /**\brief Obtenció d'algoritme.
+     \pre path_o és un path vàlid
+     \post Retorna el id de l'algorisme detectat.
+     */
 
     public String getAlgoritme(String path_o) { return gestor.getAlgoritme(path_o);}
 
+    /**\brief És '.ppm'?
+     \pre path_fitxer és vàlid
+     \post Retorna true si l'extensió del fitxer a path_fitxer és '.ppm'
+     */
     public boolean is_jpeg(String path_fitxer){
-        if(path_fitxer.substring(path_fitxer.length() - 3).equals("ppm")) return true;
-        return false;
+        return path_fitxer.substring(path_fitxer.length() - 3).equals("ppm");
     }
+
+    /**\brief Comparació de fitxers
+     \pre cert
+     \post retorna en forma de String el vector de bytes rebut.
+     */
 
     public String compare(byte[] aux, String id) throws IOException { return gestor.compare_g(aux); }
 
+    /** \brief Obtenció del path de destí on es crearà el directori al ser descomprimit
+     \pre path_carpeta_comprimida i path_destino són paths vàlids.
+     \post retorna o bé el path de destí de la carpeta a descomprimir, o bé null depenent del resultat de "crea_dir_desc"
+     */
+
     public String path_dest_carpeta(String path_carpeta_comprimida, String path_destino, boolean force){ return gestor.path_dest_carpeta(path_carpeta_comprimida,path_destino, force); }
 
-    //SI DEVUELVE FALSO NO SE HA CREADO EL FICHERO
+    /** \brief Escriptura d'un fitxer
+     \pre path_c_og, path_dest_c i path_fichero són paths vàlids.
+     \post S'ha un vector de bytes[] en un fitxer previament creat. Retorna fals si no s'ha creat.
+     */
     public boolean  write_fitxer_carpeta_desc(String path_c_og,String path_dest_c, String path_fichero, byte[] fdescomprimit) throws IOException {
         return gestor.write_fitxer_carpeta_desc(path_c_og,path_dest_c,path_fichero,fdescomprimit);
     }
+
+    /**\brief Consultora
+     \pre cert
+     \post retorna la variable global privada path_absoluto.
+     */
 
     public String getPath_absoluto(){
         return gestor.getPath_absoluto();
     }
 
+    /**\brief Crea Directori
+     \pre Cert
+     \post Crea un directori siutat al path path_carpeta. Retorna false si no s'ha pogut crear o true si s'ha completat la creació.
+     */
+
     public String crea_dir_desc(String path_destino_carpeta, boolean force) throws IOException { return gestor.create_dir_comp(path_destino_carpeta,force); }
+
+    /**\brief Consultora
+     \pre path és vàlid.
+     \post retorna true si l'extensió del fitxer és .F. Si no retorna false.
+     */
 
     public boolean carpeta_des(String path){ return gestor.carpeta_des(path); }
 
+    /** \brief Obtenció d'un path contingut en un arxiu comprimit
+     \pre path_fitxer_carpeta és un path vàlid
+     \post es llegeixen bytes fins arribar a un byte de control del fitxer amb path igual a "path_fitxer_carpeta", els quals representen el path d'un fitxer de la carpeta a descomprimir. Retorna el path en forma de String.
+     */
+
     public String read_path(String path_fitxer_carpeta) throws IOException { return gestor.read_path(path_fitxer_carpeta); }
+
+    /** \brief Lectura d'un fitxer contingut en un arxiu comprimit.
+     \pre path_fitxer_carpeta és vàlid
+     \post es llegeixen de l'arxiu comprimit en el path "paht_fitxer_carpeta" un número de bytes igual a tam_fitxer, els quals representen un dels arxius continguts en la carpeta. Retorna aquest conjunt de bytes en forma de String.
+     */
 
     public byte[] read_file_compressed(Integer bytesfichero, String path_fitxer_carpeta) throws IOException { return gestor.read_file_compressed(bytesfichero,path_fitxer_carpeta); }
 
+    /** \brief Transformació d'imatge
+     \pre path és vàlid
+     \post agafa una imatge ppm i la transforma en un arxiu png.
+     */
+
     public void create_img_aux1 (String name, String path) throws IOException { gestor.create_img_aux1(name, path); }
 
+    /** \brief Comprovació d'extensions
+     \pre path és un path vàlid
+     \post es comprova l'extensió del fitxer amb path igual a "path" i retorna true si l'extensió d'aquest és o .ppm o .txt.
+     */
+
     public boolean a_comprimir (String path) {return gestor.a_comprimir(path);}
+
+    /** \brief Obtenció d'extensions.
+     \pre Existeix un fitxer amb path igual a "path"
+     \post retorna l'extensió del fitxer.
+     */
 
     public String get_ext_file (String path) {return gestor.get_ext_file(path);}
 

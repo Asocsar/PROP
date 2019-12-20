@@ -11,13 +11,7 @@ import java.util.Map;
 
 public class Cont_Est {
 
-    /*public static void main (String[] args) throws IOException {
-        GetStats();
-        Stats_Update();
-        Map<String,List<Double>> temp = new HashMap<>();
-        temp = Estadistiques.getparam();
-        System.out.print(temp.values());
-    }*/
+
 
     /** \brief Actualitza l'arxiu d'estadístiques
      \pre Cert
@@ -40,16 +34,16 @@ public class Cont_Est {
 
          // Save Stats LZW
 
-         actalg = Estadistiques.getstatsLZW();//act(E.getTimeLZW(), E.getGlobTimeLZW(), E.getDTimeLZW(), E.getDGlobTimeLZW(), E.getRatioLZW(), E.getGlobRatioLZW(), E.getVelLZW(), E.getQuantLZW(), E.getDQuantLZW());
-         E.setLZW(actalg);
+         actalg = Estadistiques.getstatsLZW();
+         Estadistiques.setLZW(actalg);
 
 
          pw.print(0 + "," + actalg.get(0) + "," + actalg.get(1) + "," + actalg.get(2) + "," + actalg.get(3) + "," + actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
 
          // Save Stats LZSS
 
-         actalg = Estadistiques.getstatsLZSS();//act(E.getTimeLZSS(), E.getGlobTimeLZSS(), E.getDTimeLZSS(), E.getDGlobTimeLZSS(), E.getRatioLZSS(), E.getGlobRatioLZSS(), E.getVelLZSS(), E.getQuantLZSS(), E.getDQuantLZSS());
-         E.setLZSS(actalg);
+         actalg = Estadistiques.getstatsLZSS();
+         Estadistiques.setLZSS(actalg);
 
 
          pw.print(1 + "," + actalg.get(0) + "," + actalg.get(1) + "," + actalg.get(2) + "," + actalg.get(3) + "," + actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
@@ -57,24 +51,24 @@ public class Cont_Est {
 
          // Save Stats LZ78
 
-         actalg = Estadistiques.getstatsLZ78();//act(E.getTimeLZ78(), E.getGlobTimeLZ78(), E.getDTimeLZ78(), E.getDGlobTimeLZ78(), E.getRatioLZ78(), E.getGlobRatioLZ78(), E.getVelLZ78(), E.getQuantLZ78(), E.getDQuantLZ78());
-         E.setLZ78(actalg);
+         actalg = Estadistiques.getstatsLZ78();
+         Estadistiques.setLZ78(actalg);
 
          pw.print(2 + "," + actalg.get(0) + "," + actalg.get(1) + "," + actalg.get(2) + "," + actalg.get(3) + "," + actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
 
 
          // Save Stats JPEG
 
-         actalg = Estadistiques.getstatsJPEG();//act(E.getTimeJPEG(), E.getGlobTimeJPEG(), E.getDTimeJPEG(), E.getDGlobTimeJPEG(), E.getRatioJPEG(), E.getGlobRatioJPEG(), E.getVelJPEG(), E.getQuantJPEG(), E.getDQuantJPEG());
-         E.setJPEG(actalg);
+         actalg = Estadistiques.getstatsJPEG();
+         Estadistiques.setJPEG(actalg);
 
          pw.print(3 + "," + actalg.get(0) + "," + actalg.get(1) + "," + actalg.get(2) + "," + actalg.get(3) + "," + actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
 
          //Save Last Algorithm
 
-         E.setLastAlg(E.getLastAlg());
+         Estadistiques.setLastAlg(Estadistiques.getLastAlg());
 
-         pw.print(4 + "," + E.getLastAlg());
+         pw.print(4 + "," + Estadistiques.getLastAlg());
 
          pw.close();
 
@@ -145,27 +139,27 @@ public class Cont_Est {
                 switch (id) {
                     case 0: //LZW
 
-                        oldE.setLZW(values);
+                        Estadistiques.setLZW(values);
                         break;
 
                     case 1: //LZ78
 
-                        oldE.setLZ78(values);
+                        Estadistiques.setLZ78(values);
                         break;
 
                     case 2: //LZSS
 
-                        oldE.setLZSS(values);
+                        Estadistiques.setLZSS(values);
                         break;
 
                     case 3: //JPEG
 
-                        oldE.setJPEG(values);
+                        Estadistiques.setJPEG(values);
                         break;
 
                     case 4: //LastAlgorithmUsed
 
-                        oldE.setLastAlg(cas_especial);
+                        Estadistiques.setLastAlg(cas_especial);
 
                     default:
                         break;

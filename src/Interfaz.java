@@ -29,12 +29,11 @@ public class Interfaz extends JFrame  {
 
 
 
-    /** \brief Clase JFilePicker
-     \pre  Cert
-     \post Definicio de la clase JFilePicker
-     \details Personalització de un JPanel per ha escollir un fitxer o carpeta per a comprimir o descomprimir
-     */
+
     public static class JFilePicker extends JPanel {
+        /** \class JFilePicker
+         \details Personalització de un JPanel per ha escollir un fitxer o carpeta per a comprimir o descomprimir
+         */
         private String textFieldLabel;
         private String buttonLabel;
 
@@ -166,12 +165,11 @@ public class Interfaz extends JFrame  {
     }
 
 
-    /** \brief Clase FileTypeFilter
-     \pre  Cert
-     \post Definicio de la clase FileTypeFIlter
-     \details Creació de la clase FileTypeFIlter
-     */
+
     public static class FileTypeFilter extends FileFilter {
+        /** \class FileTypeFilter
+            \details Filtra els tipus no permesos en el processat
+         */
 
         private String[] extension;
         private String description;

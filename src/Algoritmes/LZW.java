@@ -11,7 +11,6 @@ package Algoritmes;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-/** \class LZW */
 
 public class LZW extends Algoritmes {
 
