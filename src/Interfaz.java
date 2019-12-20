@@ -465,6 +465,7 @@ public class Interfaz extends JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Cont_CD C = new Cont_CD();
+                C.setQuality(slider1.getValue());
                 if (Accion.getText().equals("Comprimir/Descomprimir")) {
                     JOptionPane.showMessageDialog(frame, "Escoge antes un Elemento a comprimir o descomprimir");
 
@@ -472,7 +473,12 @@ public class Interfaz extends JFrame  {
                     try {
                         if (!directorio && !cf.carpeta_des(Picker1.getSelectedFilePath()))
                             if (Accion.getText().equals("Comprimir")) {
-                                int n = C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), false);
+                                int n = 0;
+                                try {
+                                    n = C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), false);
+                                } catch (JPEG.JPEGException ex) {
+                                    JOptionPane.showMessageDialog(frame, "Format de fitxer ppm no suportat, si us plau comprovi que la versió es la P6\n");
+                                }
                                 if (n != -1) image = (n == 1);
                                 else {
                                     String message = "Hi ha un fitxer comprimit amb el mateix nom en aquest directori, si vols continuar aquest fitxer es sobreescriurà\n\n Vols continuar ?";
@@ -480,7 +486,11 @@ public class Interfaz extends JFrame  {
                                     String title = "Avís";
                                     int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
                                     if (reply == JOptionPane.YES_OPTION) {
-                                        C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), true);
+                                        try {
+                                            C.compressio_fitxer(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), true);
+                                        } catch (JPEG.JPEGException ex) {
+                                            JOptionPane.showMessageDialog(frame, "Format de fitxer ppm no suportat, si us plau comprovi que la versió es la P6\n");
+                                        }
                                     }
                                 }
                             }
@@ -500,7 +510,12 @@ public class Interfaz extends JFrame  {
                             boolean force1 = false;
                             boolean force2 = false;
                             int auxiliar = -111;
-                            List<String> N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1, force2);
+                            List<String> N = null;
+                            try {
+                                N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1, force2);
+                            } catch (JPEG.JPEGException ex) {
+                                JOptionPane.showMessageDialog(frame, "La carpeta conté fitxers no valids d'un format ppm diferent del P6, per tant s'avorta el protocol de compressió \n  Elimini aquests fitxers per continuar");
+                            }
                             if (N.size() >= 1 && N.get(0).equals("-1")) {
                                 String message = "S'ha trobat un fitxer amb el mateix nom que la carpeta, si continua amb el procés el contingut del fitxer serà substituit\n\n Vol continuar ?";
                                 String title = "Avís";
@@ -508,7 +523,12 @@ public class Interfaz extends JFrame  {
                                 auxiliar = reply;
                                 if (reply == JOptionPane.YES_OPTION) {
                                     force1 = true;
-                                    N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1,force2);
+                                    try {
+                                        N = C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1,force2);
+                                    } catch (JPEG.JPEGException ex) {
+                                        JOptionPane.showMessageDialog(frame, "La carpeta conté fitxers no valids d'un format ppm diferent del P6, per tant s'avorta el protocol de compressió \n  Elimini aquests fitxers per continuar");
+                                        cf.delete_file(cf.getPath_absoluto());
+                                    }
                                 }
                             }
                             if (N.size() >= 1 && !N.get(0).equals("0") && auxiliar == JOptionPane.YES_OPTION) {
@@ -521,18 +541,32 @@ public class Interfaz extends JFrame  {
                                 if (reply == JOptionPane.YES_OPTION) {
                                     force2 = true;
                                     force1 = true;
-                                    C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1,force2);
+                                    try {
+                                        C.compressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), M.get(metodo), force1, force2);
+                                    }
+                                    catch (JPEG.JPEGException ex) {
+                                        JOptionPane.showMessageDialog(frame, "La carpeta conté fitxers no valids d'un format ppm diferent del P6, per tant s'avorta el protocol de compressió \n  Elimini aquests fitxers per continuar");
+                                        cf.delete_file(cf.getPath_absoluto());
+                                    }
                                 }
                             }
                         }
                         else {
-                            if (! C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), false)) {
-                                String message = "Hi ha una carpeta amb el mateix nom, si vol continuar la carpeta serà eliminada y substituida per la que s'esta descomprimint\n\n Vol continuar?";
-                                String title = "Avís";
-                                int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
-                                if (reply == JOptionPane.YES_OPTION) {
-                                    C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), true);
+                            try {
+                                if (! C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), false)) {
+                                    String message = "Hi ha una carpeta amb el mateix nom, si vol continuar la carpeta serà eliminada y substituida per la que s'esta descomprimint\n\n Vol continuar?";
+                                    String title = "Avís";
+                                    int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                    if (reply == JOptionPane.YES_OPTION) {
+                                        try {
+                                            C.descompressio_carpeta(Picker1.getSelectedFilePath(), Picker2.getSelectedFilePath(), true);
+                                        } catch (JPEG.JPEGException ex) {
+                                            JOptionPane.showMessageDialog(frame, "Error inesperat, si us plau torni a intentar-ho més tard");
+                                        }
+                                    }
                                 }
+                            } catch (JPEG.JPEGException ex) {
+                                JOptionPane.showMessageDialog(frame, "Error inesperat, si us plau torni a intentar-ho més tard");
                             }
                         }
                     } catch (IOException ex) {
