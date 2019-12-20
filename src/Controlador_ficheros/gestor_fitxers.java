@@ -8,7 +8,7 @@ import java.nio.file.*;
 import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class gestor_fitxers {
@@ -803,32 +803,12 @@ public class gestor_fitxers {
      \pre path_o és un path vàlid
      \post retorna el id de l'algorisme detectat.
      */
-    public String getAlgoritme(String path_o) {
+    public String getAlgoritme(String path_o, Map<String,List<String>> m_aux) {
         String aux = path_o.substring(path_o.length() - 2);
-        switch (aux) {
-            case "f8" :
-
-            case "F8" :
-                return "LZ78";
-
-            case "fS":
-
-            case "FS":
-                return "LZSS";
-
-            case "fW":
-
-            case "FW":
-                return "LZW";
-
-            case "fG":
-
-            case "FG":
-                return "JPEG";
-
-
-            default:
-        }
+        if(m_aux.get("LZW").contains(aux)) return "LZW";
+        else if(m_aux.get("LZSS").contains(aux)) return "LZSS";
+        else if(m_aux.get("LZ78").contains(aux)) return "LZ78";
+        else if(m_aux.get("JPEG").contains(aux)) return "JPEG";
         return null;
     }
 
