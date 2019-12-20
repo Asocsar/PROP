@@ -213,33 +213,7 @@ public class controlador_gestor_fitxer {
 
 
     public String getAlgoritme(String path_o, Map<String,List<String>> m_aux) {
-        String aux = path_o.substring(path_o.length() - 2);
-        switch (aux) {
-            case "f8" :
-
-            case "F8" :
-                return "LZ78";
-
-            case "fS":
-
-            case "FS":
-                return "LZSS";
-
-            case "fW":
-
-            case "FW":
-                return "LZW";
-
-            case "fG":
-
-            case "FG":
-                return "JPEG";
-
-
-            default:
-        }
-        return null;
-    }
+       return gestor.getAlgoritme(path_o);}
 
     public String getExtensio(String id_s) { return gestor.get_Ex(id_s); }
 
