@@ -18,8 +18,6 @@ public class controlador_gestor_fitxer {
 
 
 
-
-
     //EXCEPCIONS
 
     //Excepció que salta quan un fitxer introduit per a comprimir no és vàlid o no és compatible amb l'algorisme
@@ -106,6 +104,14 @@ public class controlador_gestor_fitxer {
         return gestor.extensiones_validas();
     }
 
+    public String c_fichero_comp (String path_og, String path_desti, boolean force, String id_a) throws IOException {
+        return gestor.c_fichero_comp(path_og,path_desti,force,id_a);
+    }
+
+    public String c_fichero_descomp (String path_og, String path_desti, boolean force) throws IOException {
+        return gestor.c_fichero_descomp(path_og,path_desti,force);
+    }
+
 
     //PRE: Path_original ha de ser vàlid
     //POST: Retorna l’estructura de dades necessària obtinguda del fitxer del path_original, depenent de si és una compressió o descompressió i de l’algorisme que s’utilitzarà.
@@ -122,7 +128,7 @@ public class controlador_gestor_fitxer {
                 if ((aux.equals("txt") && id_a.equals("JPEG")) || (aux.equals("ppm") && !id_a.equals("JPEG"))) {
                     throw new FicheroCompressionNoValido("El fichero seleccionado no es comaptible con el algorismo");
                 } else {
-                    b = gestor.get_f_compressio(Path_original, id_a);
+                    b = gestor.get_f_compressio(Path_original);
                 }
             }
         }
@@ -142,10 +148,10 @@ public class controlador_gestor_fitxer {
     //PRE: path_og ha de ser vàlid
     //POST: Crea un fitxer amb el resultat de la compressió o descompressió passat per paràmetre.
     //SI DEVUELVE FALSO NO SE HA CREADO EL FICHERO
-    public boolean writeFile(Object write, String Path_desti,boolean force) throws IOException {
+    public void writeFile(Object write, String Path_desti) throws IOException {
         if (!C_P) {
-            return gestor.c_e_fichero_descomp(Path_desti, write, force);
-        } else return gestor.c_e_fichero_comp(Path_desti, write,force);
+            gestor.e_fichero_descomp(Path_desti, write);
+        } else gestor.e_fichero_comp(Path_desti, write);
     }
 
     //PRE: Cert
