@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="987cecee-9275-4ab7-bebf-5c0a99903a27" name="Default Changelist" comment="Sin comentarios, funciona tractament bytes -&gt; Imatge mal">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Algoritmes/LZW.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Algoritmes/LZW.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controlador_Compressio_Descompressio/Cont_CD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controlador_Compressio_Descompressio/Cont_CD.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controlador_Estadistiques/Cont_Est.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controlador_Estadistiques/Cont_Est.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controlador_ficheros/controlador_gestor_fitxer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controlador_ficheros/controlador_gestor_fitxer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaz.java" afterDir="false" />
+    <list default="true" id="987cecee-9275-4ab7-bebf-5c0a99903a27" name="Default Changelist" comment="falta arreglar lo de la Interfaz">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -466,7 +459,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576843851132</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="falta arreglar lo de la Interfaz">
+      <created>1576867506023</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1576867506023</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -494,7 +494,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="In/Out Comprovación" />
     <MESSAGE value="In/Out funcionant" />
     <MESSAGE value="Dividit en bloc 8x8 -&gt; Resultat verd" />
     <MESSAGE value="Funcionant menys últimes linies" />
@@ -519,7 +518,8 @@
     <MESSAGE value="Update" />
     <MESSAGE value="Compila blocs 8x8" />
     <MESSAGE value="Sin comentarios, funciona tractament bytes -&gt; Imatge mal" />
-    <option name="LAST_COMMIT_MESSAGE" value="Sin comentarios, funciona tractament bytes -&gt; Imatge mal" />
+    <MESSAGE value="falta arreglar lo de la Interfaz" />
+    <option name="LAST_COMMIT_MESSAGE" value="falta arreglar lo de la Interfaz" />
   </component>
   <component name="WindowStateProjectService">
     <state x="488" y="136" width="1000" height="839" key="#Notifications" timestamp="1576413749386">
@@ -534,10 +534,10 @@
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
     <state x="488" y="136" width="1000" height="839" key="#value/67.34.1853.1046@67.34.1853.1046" timestamp="1576771494386" />
-    <state x="612" y="33" width="958" height="944" key="CommitChangelistDialog2" timestamp="1576867468649">
+    <state x="523" y="0" width="958" height="944" key="CommitChangelistDialog2" timestamp="1576867538679">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="612" y="33" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1576867468649" />
+    <state x="523" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1576867538679" />
     <state x="953" y="84" width="958" height="944" key="CommitChangelistDialog2/67.34.1853.1046@67.34.1853.1046" timestamp="1576849285346" />
     <state x="167" y="132" width="1653" height="848" key="DiffContextDialog" timestamp="1575596764868">
       <screen x="67" y="34" width="1853" height="1046" />
@@ -547,25 +547,25 @@
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
     <state x="723" y="257" width="530" height="598" key="FileChooserDialogImpl/67.34.1853.1046@67.34.1853.1046" timestamp="1576849140659" />
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom" timestamp="1576865564679">
+    <state width="1237" height="163" key="GridCell.Tab.0.bottom" timestamp="1576869382504">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1576865564679" />
+    <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1576869382504" />
     <state width="1797" height="226" key="GridCell.Tab.0.bottom/67.34.1853.1046@67.34.1853.1046" timestamp="1576848719122" />
-    <state width="1237" height="163" key="GridCell.Tab.0.center" timestamp="1576865564679">
+    <state width="1237" height="163" key="GridCell.Tab.0.center" timestamp="1576869382504">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1576865564679" />
+    <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1576869382504" />
     <state width="1797" height="226" key="GridCell.Tab.0.center/67.34.1853.1046@67.34.1853.1046" timestamp="1576848719122" />
-    <state width="1237" height="163" key="GridCell.Tab.0.left" timestamp="1576865564679">
+    <state width="1237" height="163" key="GridCell.Tab.0.left" timestamp="1576869382503">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1576865564679" />
+    <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1576869382503" />
     <state width="1797" height="226" key="GridCell.Tab.0.left/67.34.1853.1046@67.34.1853.1046" timestamp="1576848719122" />
-    <state width="1237" height="163" key="GridCell.Tab.0.right" timestamp="1576865564679">
+    <state width="1237" height="163" key="GridCell.Tab.0.right" timestamp="1576869382504">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1576865564679" />
+    <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1576869382504" />
     <state width="1797" height="226" key="GridCell.Tab.0.right/67.34.1853.1046@67.34.1853.1046" timestamp="1576848719122" />
     <state width="1797" height="284" key="GridCell.Tab.1.bottom" timestamp="1576785349357">
       <screen x="67" y="34" width="1853" height="1046" />
@@ -595,9 +595,10 @@
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
     <state x="359" y="103" key="SettingsEditor/67.34.1853.1046@67.34.1853.1046" timestamp="1575586834942" />
-    <state x="488" y="214" width="1000" height="683" key="Vcs.Push.Dialog.v2" timestamp="1576849293561">
-      <screen x="67" y="34" width="1853" height="1046" />
+    <state x="291" y="117" width="1000" height="683" key="Vcs.Push.Dialog.v2" timestamp="1576867544373">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
+    <state x="291" y="117" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1576867544373" />
     <state x="488" y="214" width="1000" height="683" key="Vcs.Push.Dialog.v2/67.34.1853.1046@67.34.1853.1046" timestamp="1576849293561" />
     <state width="926" height="524" key="XDebugger.FullValuePopup" timestamp="1576777118244">
       <screen x="67" y="34" width="1853" height="1046" />
