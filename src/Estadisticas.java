@@ -80,6 +80,7 @@ public class Estadisticas extends JDialog {
      */
     public void actual_alg (JTextArea Q, String alg, boolean ultim) {
         String [] M = Estadistiques.nom_atr();
+        String [] J = Estadistiques.getatrib();
         Map<String, List<Double>> MP = Estadistiques.getparam();
         List<Double> L = MP.get(alg);
         Q.setText("");
@@ -88,11 +89,20 @@ public class Estadisticas extends JDialog {
         for (int i = 0; i < 9; ++i) {
             if (i == 0) Q.append(" Estadistiques més Recents\n\n");
             if (i == 4) Q.append("\n Estadístiques Globals\n\n");
+            boolean mitad = false;
             Q.append(" " + M[i]);
             Q.append(" : ");
-            DecimalFormat dc = new DecimalFormat("0.00");
-            String num = dc.format(L.get(i));
+            DecimalFormat dc = null;
+            if (M[i].startsWith("Número de")) {
+                dc = new DecimalFormat("0");
+                mitad = true;
+            }
+            else dc = new DecimalFormat("0.00");
+            String num = null; //dc.format(L.get(i));
+            if (mitad) num = dc.format(L.get(i)/2);
+            else num = dc.format(L.get(i));
             Q.append(num);
+            Q.append(" " + J[i]);
             Q.append(" \n");
         }
         if (ultim) {
