@@ -480,8 +480,7 @@ public class gestor_fitxers {
      */
     public boolean dir_or_arch(String path){
         File file = new File(path);
-        if (file.isDirectory()) return false;
-        else return true;
+        return !file.isDirectory();
     }
 
 
@@ -490,8 +489,7 @@ public class gestor_fitxers {
      \post retorna true si l'extensió del fitxer és .F. Si no retorna false.
      */
     public boolean carpeta_des(String path){
-        if(path.substring(path.lastIndexOf("."),path.length()-1).equals(".F")) return true;
-        return false;
+        return path.substring(path.lastIndexOf("."), path.length() - 1).equals(".F");
     }
 
     /**\brief Consultora
@@ -575,11 +573,18 @@ public class gestor_fitxers {
         Path p = Paths.get(path_fitxer);
         int pos= path_fitxer.lastIndexOf(p.getFileSystem().getSeparator());
         String dir= path_fitxer.substring(0,pos);
-        String new_dir;
-        if (!dir.equals(path_c_original)) {
-            new_dir = path_desti + path_fitxer.substring(dir.lastIndexOf(p.getFileSystem().getSeparator()), path_fitxer.lastIndexOf(p.getFileSystem().getSeparator()));
-            File dire = new File(new_dir);
-            dire.mkdir();
+        String new_dir=path_desti;
+        List<String> auxiliar= new ArrayList<>();
+        if(!dir.equals(path_c_original)) {
+            while (!dir.equals(path_c_original)) {
+                auxiliar.add(dir.substring(dir.lastIndexOf(p.getFileSystem().getSeparator())));
+                dir = path_fitxer.substring(0, dir.lastIndexOf(p.getFileSystem().getSeparator()));
+            }
+            for (int i = auxiliar.size()-1; i >=0; --i) {
+                new_dir = new_dir + auxiliar.get(i);
+                File dire = new File(new_dir);
+                dire.mkdir();
+            }
         }
         else new_dir= path_desti;
         return new_dir;
@@ -765,8 +770,7 @@ public class gestor_fitxers {
      */
     public boolean path_valid(String path){
         File file= new File(path);
-        if (file.exists()) return true;
-        else return false;
+        return file.exists();
     }
 
     /**\brief Obtenció de noms.
