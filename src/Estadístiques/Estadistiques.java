@@ -15,6 +15,13 @@ public class Estadistiques {
      * 2/Ratio de l'última compressió.. 3/Velocitat de compressió.  4/Temps de compressió global. 5/ Temps de descompressió global
      * 6/Ratio de compressió global. 7/Número de compressions. 8/Número de descompressions. */
 
+
+    private static String[] noms_unitats = {"ms", "ms" ,"", "bytes/ms",
+            "ms", "ms",  "", "" ,
+            ""};
+    /**<Nom de unitats : Indica les unitats a les que es troben les dades de cada algoritme*/
+
+
     private static Map<String,List<Double>> est = new HashMap<String, List<Double>>(); /**<Estadístiques Globals : les estadistiques de cada algorisme es troben contenides en una List<Double>, identificat amb al seu nom en un Map.
      * El nom de l'estadística en la posició i-èssima es correspon amb el nom contingut en la posició i-èssima de l'String[] "noms_est". També conté com a clau l'últim algorisme usat, acopmanyat de l'id d'aquest*/
 
@@ -22,6 +29,8 @@ public class Estadistiques {
     public static  String [] asociacio_algoritmes () {return new String[] {"LZW", "LZ78", "LZSS", "JPEG"};}
 
     public static Map<String, List<Double>> getparam () {return est;}
+
+    public static String[] getatrib () {return noms_unitats;}
 
     public static void inicialitzar ()  {
         try {
@@ -293,7 +302,6 @@ public class Estadistiques {
 
     public static void actW(double ti, double gr, double vel, boolean comp) {
         if (comp) {
-            System.out.println(lzw.size());
             lzw.set(0,ti);
             lzw.set(4,lzw.get(4)+ti);
             lzw.set(2,gr);
