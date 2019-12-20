@@ -804,7 +804,7 @@ public class gestor_fitxers {
      \post retorna el id de l'algorisme detectat.
      */
     public String getAlgoritme(String path_o, Map<String,List<String>> m_aux) {
-        String aux = path_o.substring(path_o.length() - 2);
+        String aux = path_o.substring(path_o.length() - 3);
         for(String s: m_aux.keySet()){
            for(int i=0; i < m_aux.get(s).size(); ++i){
                if(m_aux.get(s).get(i).equals(aux))return s;
