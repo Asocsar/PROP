@@ -1,27 +1,50 @@
+/**
+ * /file LZ78.java
+ * /author Pau Frederic Bujons
+ * /title Algorisme LZ78
+ */
+
 package Algoritmes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.String;
 
 public class LZ78 extends Algoritmes {
-    private double time;
-    private double grade;
 
-    //PRE: Cert
-    //POST: Crea una instància de la classe Algorisme_LZ78.LZ78
+
+    /** \brief Creadora
+     \pre Cert
+     \post Es crea una instància de la classe LZ78
+     */
     public LZ78(){
-
+        super.time = 0.0;
+        super.grade = 0.0;
     }
 
-    //PRE: Cert
-    //POST: Retorna el temps trigat en la ultima compressió / descompressió
+    /** \brief Obtenció del temps de compressió
+     \pre Cert
+     \post Es retorna el temps de l'última compressió.
+     */
     public double get_Time() {
-        return time;
+
+        return super.time;
     }
-    //PRE: Cert
-    //POST: Retorna un byte[] amb tots els valors de a ajuntats
-    private byte[] transform(List<Byte>a){
+
+    /** \brief Obtenció del ratio de compressió
+     \pre Cert
+     \post Es retorna el ratio de l'última compressió.
+     */
+    public double get_Rate() {
+        return super.grade;
+    }
+
+
+    /** \brief Transformacio de llista a byte[]
+     \pre Cert
+     \post Retorna un byte[] amb els valors de la llista paràmetre
+     */
+
+    public  byte[] transform(List<Byte>a){
         byte[] n = new byte[a.size()];
         for(int i=0; i < a.size(); ++i){
             n[i]= a.get(i);
@@ -29,8 +52,10 @@ public class LZ78 extends Algoritmes {
         return n;
     }
 
-    //PRE: Cert
-    //POST: Retorna un byte[] amb tots els valors de a ajuntats
+    /** \brief Transformacio de llista a byte[] 2
+     \pre Cert
+     \post Retorna un byte[] amb els valors de la llista paràmetre
+     */
     private byte[] transform2(List<List<Byte>>a, int tam){
         byte[] n = new byte[tam];
         int x=0;
@@ -43,8 +68,10 @@ public class LZ78 extends Algoritmes {
         return n;
     }
 
-    //PRE: Cert
-    //POST: Retorna un byte indicant la poscio de la llista b en a, o -1 si no existeix
+    /** \brief Transformacio de llista a byte[] 2
+     \pre Cert
+     \post Retorna un byte indicant la poscio de la llista b en a, o -1 si no existeix
+     */
     private byte found (List<List<Byte>> a, List<Byte> b){
         for(int i= 1; i < a.size(); ++i){
             if (a.get(i).size() == b.size()) {
@@ -59,12 +86,13 @@ public class LZ78 extends Algoritmes {
         return (byte)-1;
     }
 
-    //PRE: Cert
-    //POST: Retorna una llista de Integers que representa el fitxer comprimit
+    /** \brief Codificació de l'arxiu font en byte[] amb l'algorisme_LZ78
+     \pre Cert
+     \post Retorna un byte[] representant el fitxer comprimt
+     */
 
-    //PROBANT CARACTERS ESPECIALS
     public byte[] compress(byte[] fole)  {
-        double starttime = System.currentTimeMillis();
+        long start_time = System.nanoTime();
         int x=0;
         Byte[] file = new Byte[fole.length];
         for(byte a : fole){
@@ -101,17 +129,21 @@ public class LZ78 extends Algoritmes {
                 Caracters.add(null);
             }
         }
-        double endtime = System.currentTimeMillis();
-        time = endtime - starttime;
-        if(fole.length==0) grade= 0;
-        else grade = fole.length/result.size();
+        long end_time = System.nanoTime();
+        super.time = (end_time - start_time)/ 1e6;
+        super.grade = fole.length/result.size();
         return transform(result);
     }
 
-    //PRE: Cert
-    //POST: Retorna un String amb el text original
-    public byte[] descompress(byte[] aux) {
-        double starttime = System.currentTimeMillis();
+
+
+    /** \brief Descompressió LZ78
+     \pre Cert
+     \post Retorna un byte[] corresponent a la decodificació de l'arxiu comprimit
+     */
+
+    public  byte[] descompress(byte[] aux) {
+        long start_time = System.nanoTime();
         int x=0;
         Byte[] file = new Byte[aux.length];
         for(byte a : aux){
@@ -172,16 +204,10 @@ public class LZ78 extends Algoritmes {
         }
         Caracters.remove(0);
         Caracters_aux.addAll(Caracters);
-        double endtime = System.currentTimeMillis();
-        this.time = endtime - starttime;
+        long end_time = System.nanoTime();
+        super.time = (end_time - start_time) / 1e6;
         return transform2(Caracters_aux,tam);
     }
 
-
-    //PRE: Cert
-    //POST: Retorna el rati assolit en la ultima compressió
-    public double get_Rate() {
-        return grade;
-    }
 
 }

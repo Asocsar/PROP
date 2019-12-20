@@ -1,49 +1,98 @@
-import sun.plugin.dom.core.Text;
+/**
+ * /file Comparacion.java
+ * /author Daniel Cano Carrascosa
+ * /title Comparació de imatges o textos
+ */
+
+
+import Controlador_ficheros.controlador_gestor_fitxer;
 
 import javax.swing.*;
-import javax.swing.text.*;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
+/** \brief Clase Comparacion
+    \pre  Cert
+    \post Definicio de la clase Comparacion
+    \details Serveix per comparar dos texts o imatges .ppm
+ */
 public class Comparacion extends JDialog {
+
+
     private JPanel contentPane;
     private JButton buttonCancel;
-    private JTextArea textArea1;
-    private JTextArea textArea2;
+    private JTextPane textArea1;
+    private JTextPane textArea2;
+    private JTextField fitxerOriginalTextField;
+    private JTextField fitxerComprimitTextField;
     private String file1;
     private String file2;
+    private Task_IntegerUpdate tk1;
+    private Task_IntegerUpdate tk2;
+    private static  JTextField fit;
 
 
-    public Comparacion(String s1, String s2) throws IOException, BadLocationException {
-        file1 = s1;
-        file2 = s2;
+    /**
+     * \brief Compara dos fitxers o carpetes i els mostra per pantalla
+     * \pre  Cert
+     * \post Compara dos fitxers o carpetes i els mostra per pantalla
+     * \details Les variables s1 y s2 contenen o bé el text en cas dels textos o be els paths de les imatges altrament
+     */
+    public Comparacion(String s1, String s2, boolean image, JProgressBar p, JTextField fite) throws IOException {
         setContentPane(contentPane);
-        setMaximumSize(new Dimension(500, 700));
-        setSize(new Dimension(400, 600));
+        fit = fite;
+        setMaximumSize(new Dimension(700, 500));
+        setSize(new Dimension(600, 400));
         setModal(false);
         getRootPane().setDefaultButton(buttonCancel);
+        fitxerOriginalTextField.setBorder(BorderFactory.createEmptyBorder());
+        fitxerComprimitTextField.setBorder(BorderFactory.createEmptyBorder());
 
-        textArea1.setMaximumSize(new Dimension(300, 500));
-        textArea1.setColumns(40);
+        if (!image && !s1.equals("-1")) {
 
-        textArea2.setMaximumSize(new Dimension(300, 500));
-        textArea2.setColumns(40);
+            file1 = s1;
+            file2 = s2;
 
-        textArea1.setLineWrap(true);
-        textArea2.setLineWrap(true);
+            textArea1.setMaximumSize(new Dimension(500, 300));
 
-        textArea1.setEditable(false);
-        textArea2.setEditable(false);
-
-        textArea1.setText(s1);
-        textArea2.setText(s2);
+            textArea2.setMaximumSize(new Dimension(500, 300));
 
 
+            textArea1.setVisible(false);
+            textArea2.setVisible(false);
+            textArea1.setEditable(false);
+            textArea2.setEditable(false);
+            p.setMaximum(s1.length() + s2.length());
+            p.setIndeterminate(false);
+            tk1 = new Task_IntegerUpdate(p, textArea1, s1);
+            tk1.execute();
+
+
+
+            tk2 = new Task_IntegerUpdate(p, textArea2, s2);
+            tk2.execute();
+
+
+        } else if (!s1.equals("-1")) {
+            p.setVisible(false);
+            fite.setVisible(false);
+            controlador_gestor_fitxer cf = new controlador_gestor_fitxer();
+            cf.create_img_aux1("temp1", s1);
+            cf.create_img_aux1("temp2", s2);
+            textArea1.insertIcon(new ImageIcon("temp1.png"));
+            textArea2.insertIcon(new ImageIcon("temp2.png"));
+        }
+
+
+        /** \brief Tenca la vista
+         \pre  Cert
+         \post Tenca la vista
+         \details Tenca la vista que esta mostrant o be dos textos o be dos imatges
+         */
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
@@ -66,92 +115,60 @@ public class Comparacion extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    private void onOK() {
-        // add your code here
-        dispose();
-    }
-
     private void onCancel() {
         // add your code here if necessary
-        dispose();
+        this.dispose();
     }
 
+    public static  JTextField getFit () {return fit;}
 
 
-    /*public static void main(String[] args) throws IOException {
-        Comparacion dialog = new Comparacion();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
-    }*/
+    class Task_IntegerUpdate extends SwingWorker<Void, Integer> {
 
+        String s;
+        JTextPane label;
+        JProgressBar p;
 
-    public class BatchDocument extends DefaultStyledDocument {
-        /**
-         * EOL tag that we re-use when creating ElementSpecs
-         */
-        private final char[] EOL_ARRAY = { '\n' };
-
-        /**
-         * Batched ElementSpecs
-         */
-        private ArrayList batch = null;
-
-        public BatchDocument() {
-            batch = new ArrayList();
+        public Task_IntegerUpdate(JProgressBar p, JTextPane label, String s1) {
+            this.label = label;
+            this.s = s1;
+            this.p = p;
         }
 
-        /**
-         * Adds a String (assumed to not contain linefeeds) for
-         * later batch insertion.
-         */
-        public void appendBatchString(String str,
-                                      AttributeSet a) {
-            // We could synchronize this if multiple threads
-            // would be in here. Since we're trying to boost speed,
-            // we'll leave it off for now.
-
-            // Make a copy of the attributes, since we will hang onto
-            // them indefinitely and the caller might change them
-            // before they are processed.
-            a = a.copyAttributes();
-            char[] chars = str.toCharArray();
-            batch.add(new ElementSpec(
-                    a, ElementSpec.ContentType, chars, 0, str.length()));
+        @Override
+        protected void process(java.util.List<Integer> chunks) {
+            int i = chunks.get(chunks.size() - 1);
+            p.setValue(i); // The last value in this array is all we care about.
+            //System.out.println(i);
+            //label.setText("Loading " + i + " of " + max);
         }
 
-        /**
-         * Adds a linefeed for later batch processing
-         */
-        public void appendBatchLineFeed(AttributeSet a) {
-            // See sync notes above. In the interest of speed, this
-            // isn't synchronized.
-
-            // Add a spec with the linefeed characters
-            batch.add(new ElementSpec(
-                    a, ElementSpec.ContentType, EOL_ARRAY, 0, 1));
-
-            // Then add attributes for element start/end tags. Ideally
-            // we'd get the attributes for the current position, but we
-            // don't know what those are yet if we have unprocessed
-            // batch inserts. Alternatives would be to get the last
-            // paragraph element (instead of the first), or to process
-            // any batch changes when a linefeed is inserted.
-            Element paragraph = getParagraphElement(0);
-            AttributeSet pattr = paragraph.getAttributes();
-            batch.add(new ElementSpec(null, ElementSpec.EndTagType));
-            batch.add(new ElementSpec(pattr, ElementSpec.StartTagType));
+        @Override
+        protected Void doInBackground() throws Exception {
+            Document doc = new DefaultStyledDocument();
+            for (int i = 0; i < s.length(); ++i) {
+                doc.insertString(doc.getLength(), String.valueOf(this.s.charAt(i)), null);
+                publish(i+p.getValue());
+            }
+            if (p.getValue() >= s.length()*2 - 5) Comparacion.getFit().setText("Procesant informació per ser mostrada...");
+            //this.label.setText(this.s);
+            this.label.setDocument(doc);
+            this.label.setVisible(true);
+            return null;
         }
 
-        public void processBatchUpdates(int offs) throws
-                BadLocationException {
-            // As with insertBatchString, this could be synchronized if
-            // there was a chance multiple threads would be in here.
-            ElementSpec[] inserts = new ElementSpec[batch.size()];
-            batch.toArray(inserts);
+        @Override
+        protected void done() {
+            try {
+                get();
+                p.setVisible(false);
+                Comparacion.getFit().setVisible(false);
+                Comparacion.getFit().setText("Analitzant fitxer...");
+                //JOptionPane.showMessageDialog(jpb.getParent(), "Success", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-            // Process all of the inserts in bulk
-            super.insert(offs, inserts);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

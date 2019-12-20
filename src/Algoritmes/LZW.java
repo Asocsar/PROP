@@ -1,33 +1,53 @@
+/**
+ * /file LZW.java
+ * /author Daniel Cano
+ * /title Algorisme LZW
+ */
+
 package Algoritmes;
+
 
 
 import java.nio.ByteBuffer;
 import java.util.*;
 
-public class LZW extends Algoritmes{
+/** \class LZW */
+
+public class LZW extends Algoritmes {
 
     //diccionaris que contenen la assosiació entre una seqüència de bytes i un enter
     private Map<List<Byte>, Integer> Alfabet = new HashMap<List<Byte>, Integer>();
     //diccionari que té associat a cada identificador una seqüència de Bytes
     private Map<Integer, List<Byte>> Alfabet_inv = new HashMap<Integer, List<Byte>>();
 
-    // Pre : Cert
-    // Post: Retorna el temps de l'última compressió/descompressió
+
+
+    /** \brief Obtenció del temps de compressió
+     \pre Cert
+     \post Es retorna el temps de l'última compressió.
+     */
     public double getTime () {return  super.time;}
-    // Pre : Certs
-    // Post: Retorna el rati assolit de l'última compressió
+
+    /** \brief Obtenció del ratio de compressió
+     \pre Cert
+     \post Es retorna el ratio de l'última compressió.
+     */
     public double getRate () {return  super.grade;}
 
-    // Pre : Cert
-    // Post: Retorna una instancia de la classe LZW
+    /** \brief Creadora
+     \pre Cert
+     \post Es crea una instància de la classe LZW
+     */
     public LZW () {
         create_alfa();
         super.time = 0;
         super.grade = 0;
     }
 
-    // Pre : Cert
-    // Post: Variables Alfabet i Alfabet_inv inicialitzades
+    /** \brief Alfabets
+     \pre Cert
+     \post S'inicialitzen les variables Alfabet i Alfabet_inv
+     */
     private void create_alfa() {
         int aux = 0;
         byte n = 0;
@@ -42,10 +62,14 @@ public class LZW extends Algoritmes{
 
     }
 
-    // Pre : Cert
-    // Post: Retorna una llista de Integers que representa el fitxer comprimit
+
+    /** \brief Codificació de l'arxiu font en byte[] amb l'algorisme_LZW
+     \pre Cert
+     \post Retorna un byte[] representant el fitxer comprimt
+     */
+
     public byte[] compress(byte [] file)  {
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         // Creem el diccionari de forma local a la funció per un acces més ràpid
         Map<List<Byte>, Integer> Alf_aux = new HashMap<List<Byte>, Integer>(Alfabet);
         List<Integer> result = new ArrayList<>();
@@ -81,8 +105,8 @@ public class LZW extends Algoritmes{
         // en la ultima iteració fem w = k, es a dir que el caràcter k, o la seqüència
         // de caràcters aux no han sigut afegits al resultat
         result.add(Alf_aux.get(Arrays.asList(w)));
-        long end = System.currentTimeMillis();
-        super.time = (end - start) / 1000F;
+        long end = System.nanoTime();
+        super.time = (end - start) / 1e6;
 
         byte [] resul = new byte[result.size()*4];
         int it = 0;
@@ -102,13 +126,15 @@ public class LZW extends Algoritmes{
     }
 
 
-    // Pre : Cert
-    // Post: Retorna un array de bytes que representa el fitxer original
+    /** \brief Descompressió LZ78
+     \pre Cert
+     \post Retorna un byte[] corresponent a la decodificació de l'arxiu comprimit.
+     */
     public byte[] descompress (byte[] bytes) {
         if (bytes.length == 0) {
             return new byte[0];
         }
-        long start = System.currentTimeMillis();
+        long start_time = System.nanoTime();
         Map<Integer, List<Byte>> Alf_aux = new HashMap<Integer, List<Byte>>(Alfabet_inv);
         int i = 0;
         ByteBuffer s = ByteBuffer.wrap(bytes);
@@ -150,8 +176,8 @@ public class LZW extends Algoritmes{
         for (Byte b: result) {
             fin[k++] = b;
         }
-        long end = System.currentTimeMillis();
-        super.time = (end - start) / 1000F;
+        long end_time = System.nanoTime();
+        super.time = (end_time - start_time) / 1e6;
         return fin;
     }
 }

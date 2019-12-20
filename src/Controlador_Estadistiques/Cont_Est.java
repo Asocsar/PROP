@@ -4,79 +4,92 @@ import Estadístiques.Estadistiques;
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class Cont_Est {
 
-
-
-
-   /* public static void main() throws  IOException{
-        Stats_Update();
-        System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
+    /*public static void main (String[] args) throws IOException {
         GetStats();
-        System.out.println(Estadístiques.timeJPEG+Estadístiques.GratioJPEG+Estadístiques.GtimeJPEG);
+        Stats_Update();
+        Map<String,List<Double>> temp = new HashMap<>();
+        temp = Estadistiques.getparam();
+        System.out.print(temp.values());
     }*/
 
-    //DESCRIPCIÓ DEL MÈTODE : S'actualitza l'arxiu de text d'estadístiques amb les últimes generades.
-    //PRE: Cert
-    //POST: L'arxiu d'stats ha estat actualitzat
-    //EXCEPCIONS: IOException
+    /** \brief Actualitza l'arxiu d'estadístiques
+     \pre Cert
+     \post L'arxiu d'stats ha estat actualitzat amb les últimes generades
+     \throw IOException
+     */
 
-    public static void Stats_Update() throws  IOException {
+    public static void Stats_Update() throws IOException {
 
         //Update stats from last compression
+         Estadistiques E = new Estadistiques();
+         File out = new File("Estadisticas.txt");
+         if (!out.exists()) out.createNewFile();
+         PrintWriter pw = new PrintWriter(new FileWriter(out));
+         pw.print("");
+         pw.close();
+         pw = new PrintWriter(new FileWriter(out));
 
-        Estadistiques E = new Estadistiques();
-        File out = new File("Estadisticas.txt");
-        if (!out.exists()) out.createNewFile();
-        PrintWriter pw = new PrintWriter(new FileWriter(out));
+         List<Double> actalg = new ArrayList<>();
 
-        // Save Stats LZW
+         // Save Stats LZW
 
-        E.setLZW(E.getTimeLZW(),E.getGlobTimeLZW(),E.getRatioLZW(),E.getGlobRatioLZW(),E.getQuantLZW());
-
-
-        pw.print(0+E.getTimeLZW()+","+E.getGlobTimeLZW()+","+E.getRatioLZW()+","+E.getGlobRatioLZW()+","+E.getQuantLZW()+"\n");
-
-        // Save Stats LZSS
-
-        E.setLZSS(E.getTimeLZSS(),E.getGlobTimeLZSS(),E.getRatioLZSS(),E.getGlobRatioLZSS(),E.getQuantLZSS());
+         actalg = Estadistiques.getstatsLZW();//act(E.getTimeLZW(), E.getGlobTimeLZW(), E.getDTimeLZW(), E.getDGlobTimeLZW(), E.getRatioLZW(), E.getGlobRatioLZW(), E.getVelLZW(), E.getQuantLZW(), E.getDQuantLZW());
+         E.setLZW(actalg);
 
 
-        pw.print(1+E.getTimeLZSS()+","+E.getGlobTimeLZSS()+","+E.getRatioLZSS()+","+E.getGlobRatioLZSS()+","+E.getQuantLZSS()+"\n");
+         pw.print(0 + "," + actalg.get(0) + "," + actalg.get(1) + "," + actalg.get(2) + "," + actalg.get(3) + "," + actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
+
+         // Save Stats LZSS
+
+         actalg = Estadistiques.getstatsLZSS();//act(E.getTimeLZSS(), E.getGlobTimeLZSS(), E.getDTimeLZSS(), E.getDGlobTimeLZSS(), E.getRatioLZSS(), E.getGlobRatioLZSS(), E.getVelLZSS(), E.getQuantLZSS(), E.getDQuantLZSS());
+         E.setLZSS(actalg);
 
 
-        // Save Stats LZ78
-
-        E.setLZ78(E.getTimeLZ78(),E.getGlobTimeLZ78(),E.getRatioLZ78(),E.getGlobRatioLZ78(),E.getQuantLZ78());
-
-        pw.print(2+E.getTimeLZ78()+","+E.getGlobTimeLZ78()+","+E.getRatioLZ78()+","+E.getGlobRatioLZ78()+","+E.getQuantLZ78()+"\n");
+         pw.print(1 + "," + actalg.get(0) + "," + actalg.get(1) + "," + actalg.get(2) + "," + actalg.get(3) + "," + actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
 
 
-        // Save Stats JPEG
+         // Save Stats LZ78
 
-        E.setJPEG(E.getTimeJPEG(),E.getGlobTimeJPEG(),E.getRatioJPEG(),E.getGlobRatioJPEG(),E.getQuantJPEG());
+         actalg = Estadistiques.getstatsLZ78();//act(E.getTimeLZ78(), E.getGlobTimeLZ78(), E.getDTimeLZ78(), E.getDGlobTimeLZ78(), E.getRatioLZ78(), E.getGlobRatioLZ78(), E.getVelLZ78(), E.getQuantLZ78(), E.getDQuantLZ78());
+         E.setLZ78(actalg);
 
-        pw.print(3+E.getTimeJPEG()+","+E.getGlobTimeJPEG()+","+E.getRatioJPEG()+","+E.getGlobRatioJPEG()+","+E.getQuantJPEG()+"\n");
+         pw.print(2 + "," + actalg.get(0) + "," + actalg.get(1) + "," + actalg.get(2) + "," + actalg.get(3) + "," + actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
 
-        //Save Last Algorithm
 
-        E.setLastAlg(E.getLastAlg());
+         // Save Stats JPEG
 
-        pw.print(4+E.getLastAlg());
+         actalg = Estadistiques.getstatsJPEG();//act(E.getTimeJPEG(), E.getGlobTimeJPEG(), E.getDTimeJPEG(), E.getDGlobTimeJPEG(), E.getRatioJPEG(), E.getGlobRatioJPEG(), E.getVelJPEG(), E.getQuantJPEG(), E.getDQuantJPEG());
+         E.setJPEG(actalg);
+
+         pw.print(3 + "," + actalg.get(0) + "," + actalg.get(1) + "," + actalg.get(2) + "," + actalg.get(3) + "," + actalg.get(4) + "," + actalg.get(5) + "," + actalg.get(6) + "," + actalg.get(7) + "," + actalg.get(8) + "\n");
+
+         //Save Last Algorithm
+
+         E.setLastAlg(E.getLastAlg());
+
+         pw.print(4 + "," + E.getLastAlg());
+
+         pw.close();
+
 
     }
 
 
-    //DESCRIPCIÓ DEL MÈTODE : Obtenim les estadístiques de l'arxiu i inicialitzem els valors d'aquestes en la classe Estadistiques
-    //PRE: Cert
-    //POST: La classe estadístiques ha estat inicialitzada amb els valors que ja teniem, si no en teníem, s'ha creat l'arxiu inicialitzat tot a "null"
-    //EXCEPCIONS: IOException i FileAlreadyExists(no s'ha pogut crear perquè ja existia)
+    /** \brief Obtenció d'estadístiques de l'arxiu
+     \pre Cert
+     \post La classe estadístiques ha estat inicialitzada amb els valors que ja teniem, si no en teníem, s'ha creat l'arxiu inicialitzat tot a "null"
+     \throw IOException i FileAlreadyExists(no s'ha pogut crear perquè ja existia)
+     */
 
-    public static void GetStats () throws IOException{ //Set stats from file to classes
+
+    public static void GetStats() throws IOException{ //Set stats from file to classes
 
 
         File OldStats = new File("Estadisticas.txt");
@@ -87,11 +100,12 @@ public class Cont_Est {
             try {
                 if (OldStats.createNewFile()) {
                     PrintWriter pw = new PrintWriter(new FileWriter(OldStats));
-                    pw.print("0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZW
-                    pw.print("1" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZSS
-                    pw.print("2" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZ78
-                    pw.print('3' + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //JPEG
-                    pw.print('4' + "," + "null");                                                       //LAST ALGORITHM USED
+                    pw.print("0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZW
+                    pw.print("1" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZSS
+                    pw.print("2" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //LZ78
+                    pw.print("3" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "," + "0" + "\n");   //JPEG
+                    pw.print("4" + "," + "Cap");                                                                                                       //LAST ALGORITHM USED
+                    pw.close();
                 }
             }
             catch (Exception FileAlreadyExists){
@@ -106,48 +120,52 @@ public class Cont_Est {
         String line = "";
         int id;
         while ((act = file.read()) != -1) {
-
+            act = Double.parseDouble(Character.toString((char) act));
             if (act == 0 | act == 1 | act == 2 | act == 3 | act == 4) {
                 id = (int)act;
                 line = file.readLine();
 
                 // Get numeric values from file : timelast,timeglob,ratelast,rateglob,quant
 
-                List<Double> values = new ArrayList<>(5);
+                List<Double> values = new ArrayList<>(9);
+                String cas_especial = "";
                 for (int i = 0; i < line.length(); ++i) {
                     String actnumber = "";
-                    while (line.charAt(i) != ',') {
+                    while (i < line.length() && line.charAt(i) != ',') {
                         actnumber += line.charAt(i);
                         ++i;
+                        //System.out.println(i);
                     }
-                    values.add(Double.parseDouble(actnumber));
+                    if (actnumber.equals("Cap")) actnumber = "-1";
+                    if (id == 4) cas_especial = actnumber;
+                    else if (actnumber != "") values.add(Double.parseDouble(actnumber));
                 }
 
                 // Set stats to algorithms
                 switch (id) {
                     case 0: //LZW
 
-                        oldE.setLZW(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
+                        oldE.setLZW(values);
                         break;
 
                     case 1: //LZ78
 
-                        oldE.setLZ78(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
+                        oldE.setLZ78(values);
                         break;
 
                     case 2: //LZSS
 
-                        oldE.setLZSS(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
+                        oldE.setLZSS(values);
                         break;
 
                     case 3: //JPEG
 
-                        oldE.setJPEG(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4));
+                        oldE.setJPEG(values);
                         break;
 
                     case 4: //LastAlgorithmUsed
 
-                        oldE.setLastAlg(line);
+                        oldE.setLastAlg(cas_especial);
 
                     default:
                         break;
